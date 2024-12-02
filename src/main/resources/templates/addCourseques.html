@@ -6,8 +6,40 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Welcome User -->
+        <span class="navbar-text text-white">
+            Welcome, <b th:text="${userId}"></b> <!-- Display user_id -->
+        </span>
+
+        <!-- Tabs Navigation -->
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'course-details' ? 'active' : ''}" 
+                   href="#" 
+                   onclick="showCourseDetails(event)">Add Course Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'questions' ? 'active' : ''}" 
+                   th:href="@{/addCourseQuestion}">Add Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'modify-course' ? 'active' : ''}" 
+                   th:href="@{/modifyCourseDtl}">Modify Course</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'modify-questions' ? 'active' : ''}" 
+                   th:href="@{/modifyCourseQuestion}">Modify Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 <div class="container mt-4">
-    <h2>Add Questions</h2>
+    <h2>Add Questions to Course Details</h2>
     <form th:action="@{/saveCourseQuestion}" method="post">
         <!-- Course Dropdown -->
         <div class="mb-3">
