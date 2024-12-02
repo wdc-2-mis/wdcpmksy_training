@@ -37,7 +37,7 @@ public class User {
     @Column(nullable=false)
     private String password;
     
-    private Set<LMSTrainingDetails> lmsTrainingDetails = new HashSet<LMSTrainingDetails>(0);
+   // private Set<LMSTrainingDetails> lmsTrainingDetails = new HashSet<LMSTrainingDetails>(0);
     
     
     
@@ -116,14 +116,14 @@ public class User {
 		return serialVersionUID;
 	}
 
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="user")
-	public Set<LMSTrainingDetails> getLmsTrainingDetails() {
-		return lmsTrainingDetails;
-	}
-
-	public void setLmsTrainingDetails(Set<LMSTrainingDetails> lmsTrainingDetails) {
-		this.lmsTrainingDetails = lmsTrainingDetails;
-	}
+	/*
+	 * @OneToMany(fetch=FetchType.LAZY, mappedBy="user") public
+	 * Set<LMSTrainingDetails> getLmsTrainingDetails() { return lmsTrainingDetails;
+	 * }
+	 * 
+	 * public void setLmsTrainingDetails(Set<LMSTrainingDetails> lmsTrainingDetails)
+	 * { this.lmsTrainingDetails = lmsTrainingDetails; }
+	 */
 	
 	
 	
