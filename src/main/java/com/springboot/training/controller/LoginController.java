@@ -10,14 +10,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.springboot.training.dto.CourseDetails;
 import com.springboot.training.dto.UserDto;
 import com.springboot.training.dto.UserUrlDto;
 import com.springboot.training.entity.URLDetails;
 import com.springboot.training.entity.User;
 import com.springboot.training.service.UserService;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class LoginController {
@@ -113,8 +120,10 @@ public class LoginController {
     }
 
     @GetMapping("/showCourseDetail")
-    public String showCourseDetail(){
-        return "showCoursedtl";
+    public String showCourseDetail(Model model){
+    	CourseDetails curl = new CourseDetails();
+		 model.addAttribute("curl" , curl);
+    	return "showCoursedtl";
     }
 
     @GetMapping("/showCourseQuestion")
@@ -126,5 +135,100 @@ public class LoginController {
     public String userlogin(){
         return "userlogin";
     }
+    
+    @PostMapping("/saveCourseDetails")
+    public String saveCourseDetails(@Valid @ModelAttribute("completeurl") CourseDetails courseDetails, UserDto userDto,
+                               BindingResult result, Model model){
+	   if(result.hasErrors()){
+            model.addAttribute("completeurl", courseDetails);
+            return "/showCoursedtl";
+        }
+        
+        try {
+        		MultipartFile mfile=courseDetails.getTheFile();
+        		int mid=0, k=0;
+        		String filePath; 
+        		String ext="", file_name = "", concatinate = ".";
+		
+        		float size = mfile.getSize();
+        		size = size / 1024;
+        		if(size/1024 > 20)
+        		{
+        			return "File size should be less than 20 MB";
+        		}
+        		byte[] bytes = mfile.getBytes();
+        		String s1 = new String(bytes);
+			
+        		if (s1 != null && !s1.equals(""))
+        			s1 = s1.substring(0, 2);
+
+				if (s1.startsWith("mz") || s1.startsWith("MZ") || s1.startsWith("4d5a")
+					|| s1.startsWith("7f454c46") || s1.startsWith("7F454C46")
+					|| s1.startsWith("cafebabe") || s1.startsWith("CAFEBABE") 
+					|| s1.startsWith("feedface") || s1.startsWith("FEEDFACE")) 
+				{
+					return "Please select Only .pdf, file for upload!"+"\\n file content exe/malware or Others";
+				}
+		 
+				//filePath = "/usr/local/apache-tomcat90-nic/webapps/filepath/vanyatradoc";
+				filePath="D:\\vanyatradoc\\";
+				String fileName = mfile.getOriginalFilename();
+				
+				Pattern p = Pattern.compile("[.]");
+			    Matcher matcher = p.matcher(fileName);
+			    while(matcher.find()) {
+			        k++;
+			    }
+			    if(k>1)
+			    	return "Please upload a valid file";
+				
+				
+				if(mfile.isEmpty() || fileName.isEmpty())
+				{
+					return "Please upload a valid file";
+				}
+				File file = new File(filePath);
+				if (!file.exists()) 
+				{
+					file.mkdir();
+				}
+				mid = fileName.lastIndexOf(".");
+				ext = fileName.substring(mid + 1, fileName.length()); 
+				if ((ext.compareToIgnoreCase("") == 0) || (ext.compareToIgnoreCase("pdf") == 0)) 
+				{
+					file_name = fileName;
+					file_name = file_name.concat(concatinate).concat(ext);
+					if (!file_name.equals("")) 
+					{
+						File fileToCreate = new File(filePath, file_name);
+						if (!fileToCreate.exists()) 
+						{
+							BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(fileToCreate));
+							outputStream.write(bytes);
+							outputStream.close();
+						}
+					}
+					//return "success";
+				}
+				else {
+						return "fail";
+				}
+				
+				userService.saveCourseDetailUrl(courseDetails, ext, file_name, filePath);
+		 
+		 	} 
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+				return "error";
+			}	
+		 
+        
+        
+        
+        
+        return "redirect:/showCourseDetail?success";
+    }
+
     
 }
