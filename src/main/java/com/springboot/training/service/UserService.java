@@ -19,7 +19,7 @@ public interface UserService {
     User findUserByEmail(String email);
     List<UserDto> findAllUsers();
 
-   void saveUserUrl(UserUrlDto userUrlDto);
+    void saveUserUrl(UserUrlDto userUrlDto);
 
 	List<UserUrlDto> findAllDetails(int PageNo, int PageSize);
 	

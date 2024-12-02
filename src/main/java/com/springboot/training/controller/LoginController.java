@@ -1,5 +1,6 @@
 package com.springboot.training.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -120,10 +121,12 @@ public class LoginController {
     }
 
     @GetMapping("/showCourseDetail")
-    public String showCourseDetail(Model model){
-    	CourseDetails curl = new CourseDetails();
+    public String showCourseDetail(HttpSession session, Model model){
+    	 String userId = (String) session.getAttribute("userId"); 
+    	 CourseDetails curl = new CourseDetails();
 		 model.addAttribute("curl" , curl);
-    	return "showCoursedtl";
+		 model.addAttribute("userId", userId);
+		 return "showCoursedtl";
     }
 
     @GetMapping("/userlogin")
@@ -217,11 +220,7 @@ public class LoginController {
 				e.printStackTrace();
 				return "error";
 			}	
-		 
-        
-        
-        
-        
+		   
         return "redirect:/showCourseDetail?success";
     }
 
