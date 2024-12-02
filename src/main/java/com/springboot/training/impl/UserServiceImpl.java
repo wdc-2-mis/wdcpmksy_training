@@ -1,5 +1,7 @@
 package com.springboot.training.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -11,10 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.springboot.training.dto.CourseDetails;
 import com.springboot.training.dto.UserDto;
 import com.springboot.training.dto.UserUrlDto;
+import com.springboot.training.entity.LMSTrainingDetails;
 import com.springboot.training.entity.URLDetails;
 import com.springboot.training.entity.User;
+import com.springboot.training.repository.CourseDtlRepository;
 import com.springboot.training.repository.ReportRepository;
 import com.springboot.training.repository.RoleRepository;
 import com.springboot.training.repository.SaveURLRepository;
@@ -26,6 +31,7 @@ import jakarta.servlet.http.*;
 public class UserServiceImpl implements UserService{
 
 	private UserRepository userRepository;
+	private CourseDtlRepository courseDtlRepository;
 	private ReportRepository reportRepository;
 	private SaveURLRepository saveURlRepository;
 	 private RoleRepository roleRepository; 
@@ -34,12 +40,14 @@ public class UserServiceImpl implements UserService{
 				/* RoleRepository roleRepository, */
                            ReportRepository reportRepository,
                            SaveURLRepository saveURlRepository,
+                           CourseDtlRepository courseDtlRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
 		/* this.roleRepository = roleRepository; */
         this.passwordEncoder = passwordEncoder;
         this.saveURlRepository = saveURlRepository;
         this.reportRepository = reportRepository;
+        this.courseDtlRepository = courseDtlRepository;
     }
 
 	
@@ -108,5 +116,46 @@ public class UserServiceImpl implements UserService{
 		return this.reportRepository.findAll(pageable);
 	}
 
-	
+
+	@Override
+	public void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath) {
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+		Date fromdt, todt;
+		try {
+			fromdt = formatter.parse(courseDetails.getFromdt());
+			todt=formatter.parse(courseDetails.getTodt());
+		
+			LMSTrainingDetails lmsdtl = new LMSTrainingDetails();
+			
+			lmsdtl.setCourse_name(courseDetails.getCname());
+			lmsdtl.setCourse_description(courseDetails.getCdesc());
+			lmsdtl.setNoof_question(Integer.parseInt(courseDetails.getTotquest()));
+			lmsdtl.setDuration_exam(Integer.parseInt(courseDetails.getDurexam()));
+			lmsdtl.setMin_pass_marks(Integer.parseInt(courseDetails.getPassm()));
+			lmsdtl.setCourse_start(fromdt);
+			lmsdtl.setCourse_end(todt);
+			lmsdtl.setFile_extension(ext);
+			lmsdtl.setFile_name(file_name);
+			lmsdtl.setFile_path(filePath);
+			lmsdtl.setStatus("C");
+			lmsdtl.setCreated_date(new Date());
+			
+			courseDtlRepository.save(lmsdtl);
+		
+		
+		
+		} 
+		catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+	//	System.out.println(date);
+		
+		
+		
+		
+	}
+
+	 
 }
