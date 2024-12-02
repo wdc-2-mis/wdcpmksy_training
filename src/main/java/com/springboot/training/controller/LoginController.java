@@ -117,11 +117,6 @@ public class LoginController {
         return "showCoursedtl";
     }
 
-    @GetMapping("/showCourseQuestion")
-    public String showCourseQuestion(){
-        return "showCourseques";
-    }
-    
     @GetMapping("/userlogin")
     public String userlogin(){
         return "userlogin";
