@@ -127,10 +127,8 @@ public class UserServiceImpl implements UserService{
 			todt=formatter.parse(courseDetails.getTodt());
 		
 			LMSTrainingDetails lmsdtl = new LMSTrainingDetails();
-			
-			User user= new User();
+			User user = new User();
 			user.setUser_reg_id(regId);
-			
 			lmsdtl.setCourse_name(courseDetails.getCname());
 			lmsdtl.setCourse_description(courseDetails.getCdesc());
 			lmsdtl.setNoof_question(Integer.parseInt(courseDetails.getTotquest()));
