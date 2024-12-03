@@ -61,8 +61,6 @@ public class LMSTrainingDetails {
     @Column
     private String file_path;
     
-    @Column(name = "user_reg_id")
-    private Integer userRegId;
     
     @Column
     private String status;
