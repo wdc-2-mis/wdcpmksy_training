@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService{
 
 
 	@Override
-	public void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath) {
+	public void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath, String userId, String regId) {
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
 		Date fromdt, todt;
@@ -140,6 +140,8 @@ public class UserServiceImpl implements UserService{
 			lmsdtl.setFile_path(filePath);
 			lmsdtl.setStatus("C");
 			lmsdtl.setCreated_date(new Date());
+			lmsdtl.setCreated_by(userId);
+			lmsdtl.setUser(regId);
 			
 			courseDtlRepository.save(lmsdtl);
 		

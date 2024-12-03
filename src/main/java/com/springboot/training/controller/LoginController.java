@@ -31,6 +31,8 @@ import java.util.regex.Pattern;
 public class LoginController {
 
     private UserService userService;
+    
+    HttpSession session;
 
     public LoginController(UserService userService) {
         this.userService = userService;
@@ -121,7 +123,7 @@ public class LoginController {
     }
 
     @GetMapping("/showCourseDetail")
-    public String showCourseDetail(HttpSession session, Model model){
+    public String showCourseDetail( Model model){
     	 String userId = (String) session.getAttribute("userId"); 
     	 CourseDetails curl = new CourseDetails();
 		 model.addAttribute("curl" , curl);
@@ -137,6 +139,12 @@ public class LoginController {
     @PostMapping("/saveCourseDetails")
     public String saveCourseDetails(@Valid @ModelAttribute("completeurl") CourseDetails courseDetails, UserDto userDto,
                                BindingResult result, Model model){
+    	
+    	//session = request.getSession(true);
+    	String userId = (String) session.getAttribute("userId"); 
+    	String regid = (String) session.getAttribute("regid");
+    	String userType = (String) session.getAttribute("userType");
+    	
 	   if(result.hasErrors()){
             model.addAttribute("completeurl", courseDetails);
             return "/showCoursedtl";
@@ -212,7 +220,7 @@ public class LoginController {
 						return "fail";
 				}
 				
-				userService.saveCourseDetailUrl(courseDetails, ext, file_name, filePath);
+				userService.saveCourseDetailUrl(courseDetails, ext, file_name, filePath, userId, regid);
 		 
 		 	} 
 			catch (Exception e) 

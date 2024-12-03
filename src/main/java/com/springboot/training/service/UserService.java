@@ -25,5 +25,5 @@ public interface UserService {
 	
 	Page<URLDetails> findPaginated(int PageNo, int PageSize);
 
-	void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath);
+	void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath, String userId, String regId);
 }
