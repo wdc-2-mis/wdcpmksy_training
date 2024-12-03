@@ -19,11 +19,11 @@ public interface UserService {
     User findUserByEmail(String email);
     List<UserDto> findAllUsers();
 
-   void saveUserUrl(UserUrlDto userUrlDto);
+    void saveUserUrl(UserUrlDto userUrlDto);
 
 	List<UserUrlDto> findAllDetails(int PageNo, int PageSize);
 	
 	Page<URLDetails> findPaginated(int PageNo, int PageSize);
 
-	void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath);
+	void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath, String userId, Integer regId);
 }

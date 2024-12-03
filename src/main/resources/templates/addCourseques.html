@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Course Question</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Welcome User -->
+        <span class="navbar-text text-white">
+            Welcome, <b th:text="${userId}"></b> <!-- Display user_id -->
+        </span>
+
+        <!-- Tabs Navigation -->
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'course-details' ? 'active' : ''}" 
+                   href="#" 
+                   onclick="showCourseDetails(event)">Add Course Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'questions' ? 'active' : ''}" 
+                   th:href="@{/addCourseQuestion}">Add Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'modify-course' ? 'active' : ''}" 
+                   th:href="@{/modifyCourseDtl}">Modify Course</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'modify-questions' ? 'active' : ''}" 
+                   th:href="@{/modifyCourseQuestion}">Modify Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-4">
+    <h2>Add Questions to Course Details</h2>
+    <form th:action="@{/saveCourseQuestion}" method="post">
+        <!-- Course Dropdown -->
+        <div class="mb-3">
+            <label for="courseSelect" class="form-label">Select Course</label>
+            <select id="courseSelect" class="form-select" name="courseId" required>
+                <option value="">-- Select Course --</option>
+                <option th:each="course : ${courses}" 
+                        th:value="${course.training_id}" 
+                        th:text="${course.course_name}"></option>
+            </select>
+        </div>
+        <!-- Course Details -->
+        <div id="courseDetails" class="card mb-3" style="display: none;">
+           <div class="card-header">
+                <h5>Course Details</h5>
+            </div>
+
+           <div class="card-body">
+            <div class="row">
+                <!-- Course Description -->
+                <div class="col-md-5">
+                    <p><strong>Course Description:</strong> <span id="courseDescription"></span></p>
+                </div>
+
+                <!-- Current Date -->
+                <div class="col-md-6 text-end">
+                    <p><strong>Date:</strong> <span id="currentDate"></span></p>
+                </div>
+            </div>
+             <p class="mt-1"><strong>Questions SNo.:</strong> <span id="totalQuestions"></span></p>
+            
+              
+        </div>
+</div>
+        <!-- Question Form -->
+        <div id="questionForm" class="card" style="display: none;">
+           <div class="card-header">
+                <h5>Add Question</h5>
+            </div>
+           <div class="card-body">
+            <div class="mb-3">
+                <label for="questionText" class="form-label">Question</label>
+                <textarea id="questionText" class="form-control" name="questionText" rows="2" required></textarea>
+            </div>
+
+             <div class="col-md-6">
+                    <label for="marksInput" class="form-label">Question Marks</label>
+                    <input type="number" id="marksInput" class="form-control" name="marks" placeholder="Enter Marks" required>
+                </div>
+            <div class="mb-3">
+                <label class="form-label">Options</label>
+                <input type="text" class="form-control mb-2" name="option1" placeholder="Option A" required>
+                <input type="text" class="form-control mb-2" name="option2" placeholder="Option B" required>
+                <input type="text" class="form-control mb-2" name="option3" placeholder="Option C" required>
+                <input type="text" class="form-control mb-2" name="option4" placeholder="Option D" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="correctAnswer" class="form-label">Correct Answer</label>
+                <input type="text" id="correctAnswer" class="form-control" name="correctAnswer" required>
+            </div>
+
+            <button type="button" id="prevButton" class="btn btn-secondary" disabled>Previous</button>
+            <button type="button" id="nextButton" class="btn btn-primary">Next</button>
+            <button type="submit" id="submitButton" class="btn btn-success" style="display: none;">Submit</button>
+        </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const courseSelect = document.getElementById('courseSelect');
+        const courseDetails = document.getElementById('courseDetails');
+        const courseDescription = document.getElementById('courseDescription');
+        const marksInput = document.getElementById('marksInput');
+        const currentDateInput = document.getElementById('currentDate');
+        const totalQuestions = document.getElementById('totalQuestions');
+        
+        const questionForm = document.getElementById('questionForm');
+
+        // Set Current Date
+        const today = new Date().toISOString().split('T')[0];
+        currentDateInput.textContent = today;
+
+        // Fetch Course Details
+        courseSelect.addEventListener('change', () => {
+            const trainingId = courseSelect.value;
+            if (trainingId) {
+                fetch(`/getCourseDetails?trainingId=${trainingId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        courseDetails.style.display = 'block';
+                        courseDescription.textContent = data.cdesc;
+                        marksInput.value = data.marks;
+                        totalQuestions.textContent = data.totquest;
+
+                        questionForm.style.display = 'block';
+                    });
+            } else {
+                courseDetails.style.display = 'none';
+                questionForm.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+</html>

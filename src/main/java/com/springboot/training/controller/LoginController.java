@@ -1,5 +1,6 @@
 package com.springboot.training.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -30,6 +31,8 @@ import java.util.regex.Pattern;
 public class LoginController {
 
     private UserService userService;
+    
+    
 
     public LoginController(UserService userService) {
         this.userService = userService;
@@ -120,17 +123,16 @@ public class LoginController {
     }
 
     @GetMapping("/showCourseDetail")
-    public String showCourseDetail(Model model){
-    	CourseDetails curl = new CourseDetails();
+    public String showCourseDetail(HttpSession session, Model model){
+    	 String userId = (String) session.getAttribute("userId"); 
+    	 Integer regid =  Integer.parseInt(session.getAttribute("regid").toString());
+     	 String userType = (String) session.getAttribute("userType");
+    	 CourseDetails curl = new CourseDetails();
 		 model.addAttribute("curl" , curl);
-    	return "showCoursedtl";
+		 model.addAttribute("userId", userId);
+		 return "showCoursedtl";
     }
 
-    @GetMapping("/showCourseQuestion")
-    public String showCourseQuestion(){
-        return "showCourseques";
-    }
-    
     @GetMapping("/userlogin")
     public String userlogin(){
         return "userlogin";
@@ -138,7 +140,13 @@ public class LoginController {
     
     @PostMapping("/saveCourseDetails")
     public String saveCourseDetails(@Valid @ModelAttribute("completeurl") CourseDetails courseDetails, UserDto userDto,
-                               BindingResult result, Model model){
+                               BindingResult result, Model model, HttpSession session){
+    	
+    	//session = request.getSession(true);
+    	String userId = (String) session.getAttribute("userId"); 
+    	Integer regid =  Integer.parseInt(session.getAttribute("regid").toString());
+    	String userType = (String) session.getAttribute("userType");
+    	
 	   if(result.hasErrors()){
             model.addAttribute("completeurl", courseDetails);
             return "/showCoursedtl";
@@ -214,7 +222,7 @@ public class LoginController {
 						return "fail";
 				}
 				
-				userService.saveCourseDetailUrl(courseDetails, ext, file_name, filePath);
+				userService.saveCourseDetailUrl(courseDetails, ext, file_name, filePath, userId, regid);
 		 
 		 	} 
 			catch (Exception e) 
@@ -222,11 +230,7 @@ public class LoginController {
 				e.printStackTrace();
 				return "error";
 			}	
-		 
-        
-        
-        
-        
+		   
         return "redirect:/showCourseDetail?success";
     }
 

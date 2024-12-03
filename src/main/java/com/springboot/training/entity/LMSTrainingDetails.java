@@ -8,7 +8,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="lms_training_details")
+@Table(name="lms_training_details", schema = "public")
 public class LMSTrainingDetails {
 
 	public static long getSerialversionuid() {
@@ -79,7 +81,7 @@ public class LMSTrainingDetails {
     private Date created_date;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_reg_id", nullable = false) 
+    @JoinColumn(name = "user_reg_id", referencedColumnName = "user_reg_id", nullable = false) 
     private User user;
     
 	public Integer getTraining_id() {
