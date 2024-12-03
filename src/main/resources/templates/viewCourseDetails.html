@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WDCPMKSY Training</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+          rel="stylesheet" 
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+          crossorigin="anonymous">
+	<style>
+		
+		.course-container {
+   			 display: flex;
+    		flex-wrap: wrap;
+    		justify-content: left;
+   			 margin: 20px;
+		}
+		.box-container {
+			background-color: white;
+			width: 500px;
+			height: 700px;
+			border: 1px solid #ddd;
+			padding: 5px;
+			margin: 10px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+	</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Welcome User -->
+        <span class="navbar-text text-white">
+            Welcome, <b th:text="${userId}"></b> <!-- Display user_id -->
+        </span>
+
+        <!-- Tabs Navigation -->
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'course-details' ? 'active' : ''}" 
+                   href="#" 
+                   onclick="showCourseDetails(event)">Add Course Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'questions' ? 'active' : ''}" 
+                   th:href="@{/showCourseQuestion}">Add Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'modify-course' ? 'active' : ''}" 
+                   th:href="@{/modifyCourseDtl}">Modify Course</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'modify-questions' ? 'active' : ''}" 
+                   th:href="@{/modifyCourseQuestion}">Modify Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="course-container">
+<div class ="box-container" th:each="list : ${lmsTrainingList}">
+	<img th:src="@{/images/project_temp_image.jpg}" style="max-width: 100%; height: auto;" alt="Wdcpmksy">
+	<p><h3 th:text = "${list.course_name}"/></p>
+	<p>Course Available: From <strong th:text = "${#dates.format(list.course_start, 'dd-MMM-yyyy')}"/> To <strong th:text = "${#dates.format(list.course_end, 'dd-MMM-yyyy')}"/></p>
+	<a th:href="@{/}"><h5>View Course Details</h5> </a>
+	<a href = ""><h5>View Course Material</h5></a>
+	<a href = ""><h5>Add Questions</h5></a>
+	<p>Total Question Entered: <strong th:text = "${list.noof_question}"/></p>
+</div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx" 
+        crossorigin="anonymous"></script>
+</body>
+</html>
