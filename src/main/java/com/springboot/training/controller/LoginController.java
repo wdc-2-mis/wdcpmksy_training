@@ -32,7 +32,7 @@ public class LoginController {
 
     private UserService userService;
     
-    HttpSession session;
+    
 
     public LoginController(UserService userService) {
         this.userService = userService;
@@ -123,8 +123,10 @@ public class LoginController {
     }
 
     @GetMapping("/showCourseDetail")
-    public String showCourseDetail( Model model){
+    public String showCourseDetail(HttpSession session, Model model){
     	 String userId = (String) session.getAttribute("userId"); 
+    	 Integer regid =  Integer.parseInt(session.getAttribute("regid").toString());
+     	 String userType = (String) session.getAttribute("userType");
     	 CourseDetails curl = new CourseDetails();
 		 model.addAttribute("curl" , curl);
 		 model.addAttribute("userId", userId);
@@ -138,11 +140,11 @@ public class LoginController {
     
     @PostMapping("/saveCourseDetails")
     public String saveCourseDetails(@Valid @ModelAttribute("completeurl") CourseDetails courseDetails, UserDto userDto,
-                               BindingResult result, Model model){
+                               BindingResult result, Model model, HttpSession session){
     	
     	//session = request.getSession(true);
     	String userId = (String) session.getAttribute("userId"); 
-    	String regid = (String) session.getAttribute("regid");
+    	Integer regid =  Integer.parseInt(session.getAttribute("regid").toString());
     	String userType = (String) session.getAttribute("userType");
     	
 	   if(result.hasErrors()){

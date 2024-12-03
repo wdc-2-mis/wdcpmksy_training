@@ -56,16 +56,16 @@
             <form th:action="@{/saveCourseDetails}" method="post"  th:object="${curl}" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Course Name:</label>
-                    <input type="text" class="form-control" id="cname" name="cname"  placeholder="Enter Course Name" th:field="*{cname}"  autocomplete = "off"/>
+                    <input type="text" class="form-control" id="cname" name="cname"  placeholder="Enter Course Name" th:field="*{cname}"  autocomplete = "off" required />
                 </div>
                   
                 <div class="mb-3">
                     <label for="courseDescription" class="form-label">Course Description:</label>
-                    <textarea class="form-control" id="cdesc" name="cdesc"  rows="3"></textarea>
+                    <textarea class="form-control" id="cdesc" name="cdesc"  rows="3" required></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Total No. of Question:</label>
-                    <input type="text" class="form-control"  placeholder="Total No. of Question" id="totquest" name="totquest" th:field="*{totquest}"  autocomplete = "off"/>
+                    <input type="text" class="form-control"  placeholder="Total No. of Question" id="totquest" name="totquest" th:field="*{totquest}"  autocomplete = "off" required />
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Duration of Exam:</label>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Course Material:</label>
-                    <input type="file" name="theFile" id="theFile" size="40">
+                    <input type="file" name="theFile" id="theFile" size="40" required>
                     &nbsp;&nbsp;<span class="filletyp" style="color: red;"></span>
           	       <span class="d-none filletyps" style="color: red;">(*Note:File type Only .pdf supported) </span>
                 </div> 
