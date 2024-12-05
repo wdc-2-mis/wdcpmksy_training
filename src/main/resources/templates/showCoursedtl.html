@@ -55,33 +55,33 @@
             <h2>Add Course Details</h2>
             <form th:action="@{/saveCourseDetails}" method="post"  th:object="${curl}" enctype="multipart/form-data">
                 <div class="mb-3">
-                    <label for="courseName" class="form-label">Course Name:</label>
+                    <label for="courseName" class="form-label">Course Name <span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="cname" name="cname"  placeholder="Enter Course Name" th:field="*{cname}"  autocomplete = "off" required />
                 </div>
                   
                 <div class="mb-3">
-                    <label for="courseDescription" class="form-label">Course Description:</label>
+                    <label for="courseDescription" class="form-label">Course Description <span style="color: red;">*</span></label>
                     <textarea class="form-control" id="cdesc" name="cdesc"  rows="3" required></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="courseName" class="form-label">Total No. of Question:</label>
+                    <label for="courseName" class="form-label">Total No. of Question <span style="color: red;">*</span></label>
                     <input type="text" class="form-control"  placeholder="Total No. of Question" id="totquest" name="totquest" th:field="*{totquest}"  autocomplete = "off" required />
                 </div>
                 <div class="mb-3">
-                    <label for="courseName" class="form-label">Duration of Exam:</label>
+                    <label for="courseName" class="form-label">Duration of Exam <span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="durexam" name="durexam" th:field="*{durexam}"  autocomplete = "off"  required/>
                 </div>
                 <div class="mb-3">
-                    <label for="courseName" class="form-label">Minimum Passing Marks:</label>
+                    <label for="courseName" class="form-label">Minimum Passing Marks <span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="passm" name="passm" th:field="*{passm}"  autocomplete = "off" required/>
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Course Available</label>
-                    From: <input type="text" class="form-control" id="fromdt" name="fromdt" placeholder="dd/mm/yyyy" th:field="*{fromdt}"  autocomplete = "off"  required/>
-                    To: <input type="text" class="form-control" id="todt" name="todt" placeholder="dd/mm/yyyy" th:field="*{todt}"  autocomplete = "off"  required/>
+                    From <span style="color: red;">*</span> <input type="text" class="form-control" id="fromdt" name="fromdt" placeholder="dd/mm/yyyy" th:field="*{fromdt}"  autocomplete = "off"  required/>
+                    To <span style="color: red;">*</span> <input type="text" class="form-control" id="todt" name="todt" placeholder="dd/mm/yyyy" th:field="*{todt}"  autocomplete = "off"  required/>
                 </div>
                 <div class="mb-3">
-                    <label for="courseName" class="form-label">Course Material:</label>
+                    <label for="courseName" class="form-label">Course Material <span style="color: red;">*</span></label>
                     <input type="file" name="theFile" id="theFile" size="40" required>
                     &nbsp;&nbsp;<span class="filletyp" style="color: red;"></span>
           	       <span class="d-none filletyps" style="color: red;">(*Note:File type Only .pdf supported) </span>

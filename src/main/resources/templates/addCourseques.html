@@ -88,6 +88,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+
         const courseSelect = document.getElementById('courseSelect');
         const courseDetails = document.getElementById('courseDetails');
         const questionForm = document.getElementById('questionForm');
@@ -99,6 +100,7 @@
         let totalQuestionCount = 0;
 
         courseSelect.addEventListener('change', () => {
+
             const courseId = courseSelect.value;
             if (courseId) {
                 fetch(`/getCourseDetails?courseId=${courseId}`)

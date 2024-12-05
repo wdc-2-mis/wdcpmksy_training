@@ -148,8 +148,6 @@ public class UserServiceImpl implements UserService{
 			
 			courseDtlRepository.save(lmsdtl);
 		
-		
-		
 		} 
 		catch (ParseException e) {
 			
