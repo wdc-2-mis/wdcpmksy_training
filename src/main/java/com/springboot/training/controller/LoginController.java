@@ -131,6 +131,7 @@ public class LoginController {
 		 model.addAttribute("curl" , curl);
 		 model.addAttribute("userId", userId);
 		 return "showCoursedtl";
+		// return "header";
     }
 
     @GetMapping("/userlogin")
@@ -159,11 +160,11 @@ public class LoginController {
         		String ext="", file_name = "", concatinate = ".";
 		
         		float size = mfile.getSize();
-        		size = size / 1024;
-        		if(size/1024 > 20)
-        		{
-        			return "File size should be less than 20 MB";
-        		}
+        		//size = size / 1024;
+        		//if(size/1024 > 20)
+        		//{
+        		//	return "File size should be less than 20 MB";
+        		// }
         		byte[] bytes = mfile.getBytes();
         		String s1 = new String(bytes);
 			
@@ -179,7 +180,12 @@ public class LoginController {
 				}
 		 
 				//filePath = "/usr/local/apache-tomcat90-nic/webapps/filepath/vanyatradoc";
-				filePath="D:\\vanyatradoc\\";
+				//filePath="D:\\vanyatradoc\\";
+				
+				filePath="D:\\EclipseWorkSpace\\wdcpmksy_training\\vanyatradoc\\";
+				
+				
+				
 				String fileName = mfile.getOriginalFilename();
 				
 				Pattern p = Pattern.compile("[.]");
