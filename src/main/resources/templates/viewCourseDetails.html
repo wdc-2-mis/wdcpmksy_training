@@ -8,7 +8,10 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
           crossorigin="anonymous">
 	<style>
-		
+		#title{
+			text-align: center;
+  			color: green;
+		}
 		.course-container {
    			 display: flex;
     		flex-wrap: wrap;
@@ -62,9 +65,9 @@
 <div class="course-container">
 <div class ="box-container" th:each="list : ${lmsTrainingList}">
 	<img th:src="@{/images/project_temp_image.jpg}" style="max-width: 100%; height: auto;" alt="Wdcpmksy">
-	<p><h3 th:text = "${list.course_name}"/></p>
+	<p><h3 id ="title" th:text = "${list.course_name}"/></p>
 	<p>Course Available: From <strong th:text = "${#dates.format(list.course_start, 'dd-MMM-yyyy')}"/> To <strong th:text = "${#dates.format(list.course_end, 'dd-MMM-yyyy')}"/></p>
-	<a th:href="@{/}"><h5>View Course Details</h5> </a>
+	<a th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}"><h5>View Course Details</h5> </a>
 	<a href = ""><h5>View Course Material</h5></a>
 	<a href = ""><h5>Add Questions</h5></a>
 	<p>Total Question Entered: <strong th:text = "${list.noof_question}"/></p>
