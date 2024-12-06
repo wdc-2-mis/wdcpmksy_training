@@ -9,7 +9,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
        <span class="navbar-text text-white">
-            Welcome, <b th:text="${userId}"></b> <!-- Display user_id -->
+            Welcome, <b th:text="${userId}"></b>
         </span>
 
         <ul class="navbar-nav ms-auto">
@@ -37,20 +37,30 @@
     </div>
 </nav>
 <div class="container mt-4">
+	<!-- <div th:if="${success}">
+          <div class="alert alert-info">
+            Question Saved Successfully!
+          </div>
+      </div> -->
+      <div th:if="${successMessage}" class="alert alert-success">
+        <p th:text="${successMessage}"></p>
+    </div>
+      
     <h2 class="mb-4">Add Questions to Course Details</h2>
 
-    <form th:action="@{/saveCourseQuestion}" method="post">
+    <form th:action="@{/saveCourseQuestion}" method="post" th:object="${question}">
         <div class="mb-3">
             <label for="courseSelect" class="form-label">Select Course</label>
-            <select id="courseSelect" class="form-select" name="courseId" required>
+            <select id="courseSelect" class="form-select" name="courseId" th:field="*{courseId}">
                 <option value="">-- Select Course --</option>
                 <option th:each="course : ${courses}" 
                         th:value="${course.training_id}" 
                         th:text="${course.course_name}"></option>
             </select>
+            <p th:if="${#fields.hasErrors('courseId')}" th:errors="*{courseId}" class="text-danger"></p>
         </div>
 
-        <div id="courseDetails" class="card mb-3" style="display: none;">
+        <div id="courseDetails" class="card mb-3" th:if="${courses != null}">
             <div class="card-header bg-info text-white">
                 <h5>Course Details</h5>
             </div>
@@ -67,7 +77,7 @@
              </div>
         </div>
 
-         <div id="questionForm" class="card" style="display: none;">
+         <div id="questionForm" class="card" th:if="${courses != null}">
             <div class="card-header bg-success text-white">
                 <h5>Add Question</h5>
             </div>
@@ -75,32 +85,45 @@
             <div class="card-body">
                 <!-- Question Text -->
                 <div class="mb-3">
-                    <label for="questionText" class="form-label" id="questionNumber">Question 1</label>
-                    <textarea id="questionText" class="form-control" name="questionText" rows="2" required></textarea>
+                    <label for="questionText" class="form-label" id="questionNumber">Question</label>
+                    <textarea id="questionText" class="form-control" name="questionText" rows="2" th:field="*{questionText}"></textarea>
+                <p th:if="${#fields.hasErrors('questionText')}" th:errors = "*{questionText}" class="text-danger"></p>
                 </div>
 
                 <div class="mb-3">
                     <label for="marksInput" class="form-label">Question Marks</label>
-                    <input type="number" id="marksInput" class="form-control" name="marks" placeholder="Enter Marks" required>
-                </div>
+                    <input type="hidden" id="checkcourse" name="checkcourse" th:value="${checkcourse}" />
+                    <input type="number" id="marks" class="form-control" name="marks" placeholder="Enter Marks" th:field="*{marks}">
+                <p th:if="${#fields.hasErrors('marks')}" th:errors = "*{marks}" class="text-danger"></p>
+                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Options</label>
-                    <input type="text" class="form-control mb-2" name="option1" placeholder="Option A" required>
-                    <input type="text" class="form-control mb-2" name="option2" placeholder="Option B" required>
-                    <input type="text" class="form-control mb-2" name="option3" placeholder="Option C" required>
-                    <input type="text" class="form-control mb-2" name="option4" placeholder="Option D" required>
+                    <input type="text" class="form-control mb-2" name="option1" placeholder="Option A" th:field="*{option1}" autocomplete="off">
+                    <p th:if="${#fields.hasErrors('option1')}" th:errors="*{option1}" class="text-danger"></p>
+
+                    <input type="text" class="form-control mb-2" name="option2" placeholder="Option B" th:field="*{option2}" autocomplete="off">
+                    <p th:if="${#fields.hasErrors('option2')}" th:errors="*{option2}" class="text-danger"></p>
+
+                    <input type="text" class="form-control mb-2" name="option3" placeholder="Option C" th:field="*{option3}" autocomplete="off">
+                    <p th:if="${#fields.hasErrors('option3')}" th:errors="*{option3}" class="text-danger"></p>
+
+                    <input type="text" class="form-control mb-2" name="option4" placeholder="Option D" th:field="*{option4}" autocomplete="off">
+                    <p th:if="${#fields.hasErrors('option4')}" th:errors="*{option4}" class="text-danger"></p>
                 </div>
 
                 <div class="mb-3">
                     <label for="correctAnswer" class="form-label">Correct Answer</label>
-                    <input type="text" id="correctAnswer" class="form-control" name="correctAnswer" required>
+                    <input type="text" id="correctAnswer" class="form-control" name="correctAnswer" th:field="*{correctAnswer}" autocomplete="off">
+                    <p th:if="${#fields.hasErrors('correctAnswer')}" th:errors="*{correctAnswer}" class="text-danger"></p>
                 </div>
 
                 <div class="d-flex justify-content-center">
-                    <button type="button" id="nextButton" class="btn btn-primary">Next</button>
-                    <button type="submit" id="submitButton" class="btn btn-success" style="display: none;">Submit</button>
+                    <button type="submit" id="nextButton" class="btn btn-primary" name="action" value="next">Next</button>
+                    <button type="submit" id="submitButton" class="btn btn-success" style="display: none;" name="action" value="submit">Submit</button>
                 </div>
+                
+                
             </div>
         </div>
     </form>
@@ -111,13 +134,41 @@
     const courseSelect = document.getElementById('courseSelect');
     const courseDetails = document.getElementById('courseDetails');
     const courseDescription = document.getElementById('courseDescription');
-    const currentDate = document.getElementById('currentDate');
     const totalQuestions = document.getElementById('totalQuestions');
     const questionForm = document.getElementById('questionForm');
     const questionNumber = document.getElementById('questionNumber'); 
-
+    const nextButton = document.getElementById('nextButton');
+    const submitButton = document.getElementById('submitButton');
     const today = new Date().toISOString().split('T')[0];
     currentDate.textContent = today;
+    
+    const checkCourse = document.getElementById('checkcourse').value;
+      console.log("Check Course:", checkCourse);
+    
+    if (checkCourse) {
+        fetch(`/getCourseDetails?trainingId=${checkCourse}`)
+            .then(response => response.json())
+            .then(data => {
+                courseDetails.style.display = 'block';
+                courseDescription.textContent = data.cdesc;
+                totalQuestions.textContent = data.totquest;
+                questionForm.style.display = 'block';
+
+                fetch(`/getNextQuestionNumber?trainingId=${checkCourse}`)
+                    .then(response => response.json())
+                    .then(nextQuestionNumber => {
+                        questionNumber.textContent = `Question: ${nextQuestionNumber}`;
+
+                        if (parseInt(data.totquest) === nextQuestionNumber) {
+                            nextButton.style.display = 'none';
+                            submitButton.style.display = 'inline-block';
+                        } else {
+                            nextButton.style.display = 'inline-block';
+                            submitButton.style.display = 'none';
+                        }
+                    });
+            });
+    }
 
     courseSelect.addEventListener('change', () => {
         const trainingId = courseSelect.value;
@@ -135,14 +186,14 @@
                         .then(response => response.json())
                         .then(nextQuestionNumber => {
                             questionNumber.textContent = `Question: ${nextQuestionNumber}`;
-                      
-                      if (parseInt(data.totquest) == `${nextQuestionNumber}`) {
-                                    nextButton.style.display = 'none';
-                                    submitButton.style.display = 'inline-block';
-                                } else {
-                                    nextButton.style.display = 'inline-block';
-                                    submitButton.style.display = 'none';
-                                }
+
+                            if (parseInt(data.totquest) === nextQuestionNumber) {
+                                nextButton.style.display = 'none';
+                                submitButton.style.display = 'inline-block';
+                            } else {
+                                nextButton.style.display = 'inline-block';
+                                submitButton.style.display = 'none';
+                            }
                         });
                 });
         } else {
