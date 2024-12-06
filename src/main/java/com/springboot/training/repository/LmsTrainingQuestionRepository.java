@@ -1,5 +1,7 @@
 package com.springboot.training.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +21,7 @@ public interface LmsTrainingQuestionRepository extends JpaRepository<LmsTraining
 	    @Query("UPDATE LmsTrainingQuestion q SET q.status = 'C' WHERE q.trainingId = :trainingId AND q.status = 'D'")
 	    void finalizeDraftQuestions(@Param("trainingId") Integer trainingId);
 
-	    
+	    List<LmsTrainingQuestion> findByTrainingId(Integer trainingId);
+
 	
 }
