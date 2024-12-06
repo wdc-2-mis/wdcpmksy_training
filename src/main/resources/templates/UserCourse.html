@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>WDCPMKSY Training Courses</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+
+<style>
+.course-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: left;
+	margin: 20px;
+	width: 100%;
+	height: 100%;
+}
+
+.course-box {
+	border: 5px solid #ddd;
+	padding: 20px;
+	margin: 10px;
+	width: 300px;
+	height: 550px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	background-color: #fff;
+	position: relative;
+}
+
+.course-box.selected {
+	border: 2px solid #4CAF50;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.participate-button {
+	background-color: #4CAF50;
+	border: none;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 5px;
+	position: absolute;
+	bottom: 60px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.download-button {
+	background-color: #5F58D5; /*  #008CBA; */
+	border: none;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	display: flex;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 5px;
+	position: relative;
+	justify-content: space-between;
+	top: 5px;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	margin: 10px 0;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	display: flex;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.course-box img {
+	max-width: 100%;
+	height: auto;
+}
+</style>
+
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<!-- Welcome User -->
+			<span class="navbar-text text-white"> Welcome, <b
+				th:text="${userId}"></b> <!-- Display user_id -->
+			</span>
+
+			<!-- Tabs Navigation -->
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item">
+					<a class="nav-link" th:href="@{/logout}">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container mt-4">
+		<div id="content">
+			<!-- Default content: Add Course Details -->
+			<div th:if="${param.success}">
+				<div class="alert alert-info">Course Detail Saved Successfully!</div>
+			</div>
+
+			<div id="course-details-content">
+				<h2>Training Quiz</h2>
+
+				<div class="course-container">
+					<div th:each="course : ${courses}">
+						<div class="course-box">
+							<img th:src="@{/images/project_temp_image.jpg}" />
+							<p>
+								Course Name: <b><span th:text="${course.course_name}"></span></b>
+							</p>
+							<p>
+								Course Material:
+
+<!-- 								<button th:onclick="|location.href='/downloadMaterial/' + ${course.training_id}|">Download File</button> -->
+								<a th:href="'/downloadMaterial/' + ${course.training_id}">View/Download</a>
+							<p>
+								Maximum Marks: <span th:text="${map[course.training_id]}"></span>
+							</p>
+							<p>
+								Total Questions: <span th:text="${course.noof_question}"></span>
+							</p>
+							<p>
+								Minimum Qualifying Marks: <span th:text="${course.min_pass_marks}"></span>
+							</p>
+							<p>
+								Duration: <span th:text="${course.duration_exam}"></span> Minutes
+							</p>
+
+
+							<div th:if="${userPassed[course.training_id]} eq true">
+								<button class="download-button"
+									th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&type=participation'|">
+									Participation Certificate</button>
+								<button class="download-button"
+									th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&type=completion'|">
+									Completion Certificate</button>
+							</div>
+							<div th:unless="${userPassed[course.training_id]} eq true">
+								<button class="participate-button"
+									th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">Participate</button>
+							</div>
+
+
+<!-- 							<button th:onclick="'javascript:window.location.href=\'' + @{/test/{training_id}(training_id=${course.training_id})} + '\''">Participate</button> -->
+<!-- 							<button th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">Participate</button> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx"
+		crossorigin="anonymous"></script>
+</body>
+</html>
