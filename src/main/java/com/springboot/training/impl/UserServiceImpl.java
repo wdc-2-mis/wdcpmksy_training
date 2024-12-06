@@ -2,6 +2,7 @@ package com.springboot.training.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -13,13 +14,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.springboot.training.dto.AddCourseQuestion;
 import com.springboot.training.dto.CourseDetails;
 import com.springboot.training.dto.UserDto;
 import com.springboot.training.dto.UserUrlDto;
 import com.springboot.training.entity.LMSTrainingDetails;
+import com.springboot.training.entity.LmsTrainingQuestion;
 import com.springboot.training.entity.URLDetails;
 import com.springboot.training.entity.User;
 import com.springboot.training.repository.CourseDtlRepository;
+import com.springboot.training.repository.LmsTrainingQuestionRepository;
 import com.springboot.training.repository.ReportRepository;
 import com.springboot.training.repository.RoleRepository;
 import com.springboot.training.repository.SaveURLRepository;
@@ -35,12 +39,14 @@ public class UserServiceImpl implements UserService{
 	private ReportRepository reportRepository;
 	private SaveURLRepository saveURlRepository;
 	 private RoleRepository roleRepository; 
+	 private LmsTrainingQuestionRepository trainingQuestionRepository;
     private PasswordEncoder passwordEncoder;
      public UserServiceImpl(UserRepository userRepository,
 				/* RoleRepository roleRepository, */
                            ReportRepository reportRepository,
                            SaveURLRepository saveURlRepository,
                            CourseDtlRepository courseDtlRepository,
+                           LmsTrainingQuestionRepository trainingQuestionRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
 		/* this.roleRepository = roleRepository; */
@@ -48,6 +54,7 @@ public class UserServiceImpl implements UserService{
         this.saveURlRepository = saveURlRepository;
         this.reportRepository = reportRepository;
         this.courseDtlRepository = courseDtlRepository;
+        this.trainingQuestionRepository = trainingQuestionRepository;
     }
 
 	
@@ -153,12 +160,37 @@ public class UserServiceImpl implements UserService{
 			
 			e.printStackTrace();
 		}
-	//	System.out.println(date);
-		
-		
-		
 		
 	}
 
-	 
+	@Override
+	public void saveaddQuestion(AddCourseQuestion question, HttpSession session) {
+		LmsTrainingQuestion trainingQuestion = new LmsTrainingQuestion();
+		  trainingQuestion.setTrainingId(question.getCourseId());
+		  trainingQuestion.setQuestionDescription(question.getQuestionText());
+		  trainingQuestion.setQuestionMarks(question.getMarks());
+		  trainingQuestion.setOption1(question.getOption1());
+		  trainingQuestion.setOption2(question.getOption2());
+		  trainingQuestion.setOption3(question.getOption3());
+		  trainingQuestion.setOption4(question.getOption4());
+		  trainingQuestion.setOptionAnswer(question.getCorrectAnswer());
+		  trainingQuestion.setCreatedDate(LocalDateTime.now());
+		  trainingQuestion.setUpdatedDate(LocalDateTime.now());
+		  trainingQuestion.setStatus("D"); 
+		  String userId = (String)
+		  session.getAttribute("userId"); 
+		  Integer regid = Integer.parseInt(session.getAttribute("regid").toString());
+		  trainingQuestion.setUserRegId(regid); 
+		  trainingQuestion.setCreatedBy(userId);
+		  
+		  trainingQuestionRepository.save(trainingQuestion); 
+		  
+	}
+
+
+	@Override
+	public void updateStatusToComplete(Integer courseId) {
+		trainingQuestionRepository.finalizeDraftQuestions(courseId);
+		
+	}	
 }
