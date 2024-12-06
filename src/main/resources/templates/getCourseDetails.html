@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WDCPMKSY Training</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+          rel="stylesheet" 
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+          crossorigin="anonymous">
+	<style>
+		
+		#course-details-content{
+        	display: grid;
+            place-content: center;
+		}
+		#title{
+			text-align: center;
+  			color: green;
+  			margin-bottom: 30px;
+		}
+		.mb-3 {
+        	display: flex;
+        	align-items: center;
+        	margin-bottom: 10px;
+    	}
+		.form-label {
+            display: table-cell;
+            width: 150px;
+        	text-align: right;
+        	margin-right: 100px;
+            white-space: nowrap;
+        }
+        strong{
+			white-space: nowrap;
+		}
+        
+        span {
+            display: table-cell;
+            padding: 0 4px 0 6px;
+        }
+        
+	</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Welcome User -->
+        <span class="navbar-text text-white">
+            Welcome, <b th:text="${userId}"></b> <!-- Display user_id -->
+        </span>
+
+        <!-- Tabs Navigation -->
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'course-details' ? 'active' : ''}" 
+                   href="#" 
+                   onclick="showCourseDetails(event)">Add Course Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'questions' ? 'active' : ''}" 
+                   th:href="@{/showCourseQuestion}">Add Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'modify-course' ? 'active' : ''}" 
+                   th:href="@{/modifyCourseDtl}">Modify Course</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'modify-questions' ? 'active' : ''}" 
+                   th:href="@{/modifyCourseQuestion}">Modify Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div id="content">
+        <!-- Default content: Add Course Details -->
+        <div id="course-details-content" th:each="list : ${lmsTrainingList}">
+            <h2 id ="title">View Course Details</h2>
+                <div class="mb-3">
+                    <label for="courseName" class="form-label"><strong>Course Name:</strong></label> 
+                    <span>
+						<input type="text" id="cname" name="cname" th:value = "${list.course_description}" style="width: 350px;" disabled />
+					</span>
+                </div>
+                  
+                <div class="mb-3">
+                    <label for="courseDescription" class="form-label"><strong>Course Description:</strong></label>
+                    <span>
+                    <textarea th:text = "${list.course_description}" rows="3" style="width: 350px;" disabled/>
+                    </span>
+                </div>
+                <div class="mb-3">
+                    <label for="courseName" class="form-label"><strong>Total No. of Question:</strong></label>
+                    <span>
+                    <input type="number" id="totquest" name="totquest" th:value = "${list.noof_question}"  disabled/>
+                    </span>
+                </div>
+                <div class="mb-3">
+                    <label for="courseName" class="form-label"><strong>Duration of Exam:</strong></label>
+                    <span>
+                    <input type="number" id="durexam" name="durexam" th:value="${list.duration_exam}" disabled/>
+                    </span>
+                </div>
+                <div class="mb-3">
+                    <label for="courseName" class="form-label"><strong>Minimum Passing Marks:</strong></label>
+                    <span>
+                    <input type="number" id="passm" name="passm" th:value="${list.min_pass_marks}" disabled/>
+                    </span>
+                </div>
+				<div class="mb-3">
+					<label for="courseName" class="form-label"><strong>Course Available:</strong> </label>
+					<span><strong>From: </strong></span>
+					<span>
+						<input type="text" id="fromdt" name="fromdt"
+							th:value="${#dates.format(list.course_start, 'dd-MMM-yyyy')}" disabled />
+					</span>
+					<span><strong>To: </strong></span>
+					<span>
+						<input type="text" id="todt" name="todt"
+							th:value="${#dates.format(list.course_end, 'dd-MMM-yyyy')}" disabled />
+					</span>
+				</div>
+                <div class="mb-3">
+                    <label for="courseName" class="form-label"><strong>Course Material:</strong></label>
+                   <a th:href="@{'~/'+${list.file_path +''+list.file_name+'.'+list.file_extension}}" target="_blank" download>Download PDF</a>
+                </div> 
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx" 
+        crossorigin="anonymous"></script>
+</body>
+</html>
