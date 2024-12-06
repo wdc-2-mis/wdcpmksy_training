@@ -72,4 +72,150 @@ public class LmsTrainingQuestion {
     @ManyToOne
     @JoinColumn(name = "user_reg_id", referencedColumnName = "user_reg_id", insertable = false, updatable = false)
     private User user;
+
+	public Integer getQuestionId() {
+		return questionId;
+	}
+
+	public void setQuestionId(Integer questionId) {
+		this.questionId = questionId;
+	}
+
+	public Integer getTrainingId() {
+		return trainingId;
+	}
+
+	public void setTrainingId(Integer trainingId) {
+		this.trainingId = trainingId;
+	}
+
+	public String getQuestionDescription() {
+		return questionDescription;
+	}
+
+	public void setQuestionDescription(String questionDescription) {
+		this.questionDescription = questionDescription;
+	}
+
+	public String getOption1() {
+		return option1;
+	}
+
+	public void setOption1(String option1) {
+		this.option1 = option1;
+	}
+
+	public String getOption2() {
+		return option2;
+	}
+
+	public void setOption2(String option2) {
+		this.option2 = option2;
+	}
+
+	public String getOption3() {
+		return option3;
+	}
+
+	public void setOption3(String option3) {
+		this.option3 = option3;
+	}
+
+	public String getOption4() {
+		return option4;
+	}
+
+	public void setOption4(String option4) {
+		this.option4 = option4;
+	}
+
+	public String getOptionAnswer() {
+		return optionAnswer;
+	}
+
+	public void setOptionAnswer(String optionAnswer) {
+		this.optionAnswer = optionAnswer;
+	}
+
+	public Integer getQuestionMarks() {
+		return questionMarks;
+	}
+
+	public void setQuestionMarks(Integer questionMarks) {
+		this.questionMarks = questionMarks;
+	}
+
+	public Integer getUserRegId() {
+		return userRegId;
+	}
+
+	public void setUserRegId(Integer userRegId) {
+		this.userRegId = userRegId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getRequestedIp() {
+		return requestedIp;
+	}
+
+	public void setRequestedIp(String requestedIp) {
+		this.requestedIp = requestedIp;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public LocalDateTime getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(LocalDateTime updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public LMSTrainingDetails getTrainingDetails() {
+		return trainingDetails;
+	}
+
+	public void setTrainingDetails(LMSTrainingDetails trainingDetails) {
+		this.trainingDetails = trainingDetails;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+    
+    
 }
