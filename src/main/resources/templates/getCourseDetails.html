@@ -125,7 +125,7 @@
 				</div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label"><strong>Course Material:</strong></label>
-                   <a th:href="@{'~/'+${list.file_path +''+list.file_name+'.'+list.file_extension}}" target="_blank" download>Download PDF</a>
+                   <a th:href="'/downloadMaterial/' + ${list.training_id}" target="_blank" download>Download PDF</a>
                 </div> 
         </div>
     </div>

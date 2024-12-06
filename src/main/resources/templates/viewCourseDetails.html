@@ -68,7 +68,8 @@
 	<p><h3 id ="title" th:text = "${list.course_name}"/></p>
 	<p>Course Available: From <strong th:text = "${#dates.format(list.course_start, 'dd-MMM-yyyy')}"/> To <strong th:text = "${#dates.format(list.course_end, 'dd-MMM-yyyy')}"/></p>
 	<a th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}"><h5>View Course Details</h5> </a>
-	<a href = ""><h5>View Course Material</h5></a>
+<!--	<a href = ""><h5>View Course Material</h5></a>-->
+	<a th:href="'/downloadMaterial/' + ${list.training_id}"><h5>View Course Material</h5></a>
 	<a href = ""><h5>Add Questions</h5></a>
 	<p>Total Question Entered: <strong th:text = "${list.noof_question}"/></p>
 </div>
