@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -18,7 +19,7 @@ public class SpringSecurity {
 
     private final UserDetailsService userDetailsService;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-
+     
     public SpringSecurity(UserDetailsService userDetailsService,
                           CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.userDetailsService = userDetailsService;
@@ -32,9 +33,10 @@ public class SpringSecurity {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf().ignoringRequestMatchers("/otp-login") // Disable CSRF for otp-login endpoint
+                .and()
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/register/**", "/index", "/saveurl", "/page/**").permitAll()
+                        .requestMatchers("/register/**", "/index", "/saveurl", "/send-otp", "/otp-login", "/login", "/page/**").permitAll()
                         .requestMatchers("/showCourseDetail", "/showCourseQuestion", "/userurl").hasRole("ADMIN")
                         .requestMatchers("/userlogin", "/takeATest").hasRole("USER")
                         .anyRequest().authenticated()
@@ -59,4 +61,6 @@ public class SpringSecurity {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 }
+
+
 

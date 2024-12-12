@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.training.dto.CourseDetails;
@@ -23,6 +25,7 @@ import com.springboot.training.service.UserService;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,6 +72,36 @@ public class LoginController {
         return "login";
     }
 
+    @PostMapping("/send-otp") 
+    @ResponseBody public String sendOtp(@RequestParam String username) 
+    { 
+    	User user = userService.findUserByEmail(username); 
+    	if (user != null) 
+    	{ 
+    		userService.generateAndSendOtp(username); 
+    		return "OTP sent successfully to registered Email-Id"; 
+    		} 
+    	else 
+    	{ 
+    		return "User not found"; 
+    		} 
+    	}
+    
+    @PostMapping("/otp-login")
+    public String otpLogin(@RequestParam String username, @RequestParam String otp, HttpSession session) {
+        User user = userService.findUserByEmail(username);
+        System.out.println("i am in...");
+        if (user != null && otp.equals(user.getOtp()) && user.getOtpExpirationTime().isAfter(LocalDateTime.now())) {
+            session.setAttribute("userId", user);
+            session.setAttribute("regid", user.getUser_reg_id());
+            session.setAttribute("userType", user.getUser_type());
+            return "redirect:/login"; 
+        }
+
+        return "redirect:/login?error=Invalid OTP"; 
+    }
+    
+     
      @GetMapping("/register")
     public String showRegistrationForm(Model model){
        
@@ -96,6 +129,8 @@ public class LoginController {
         return "redirect:/register?success";
     }
 
+    
+    
     @GetMapping("/users")
     public String users(Model model){
         List<UserDto> users = userService.findAllUsers();

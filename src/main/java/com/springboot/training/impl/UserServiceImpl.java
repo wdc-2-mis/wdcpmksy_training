@@ -6,11 +6,14 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +43,7 @@ public class UserServiceImpl implements UserService{
 	private SaveURLRepository saveURlRepository;
 	 private RoleRepository roleRepository; 
 	 private LmsTrainingQuestionRepository trainingQuestionRepository;
+	 private final JavaMailSender javaMailSender;
     private PasswordEncoder passwordEncoder;
      public UserServiceImpl(UserRepository userRepository,
 				/* RoleRepository roleRepository, */
@@ -47,6 +51,7 @@ public class UserServiceImpl implements UserService{
                            SaveURLRepository saveURlRepository,
                            CourseDtlRepository courseDtlRepository,
                            LmsTrainingQuestionRepository trainingQuestionRepository,
+                           JavaMailSender javaMailSender,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
 		/* this.roleRepository = roleRepository; */
@@ -54,10 +59,14 @@ public class UserServiceImpl implements UserService{
         this.saveURlRepository = saveURlRepository;
         this.reportRepository = reportRepository;
         this.courseDtlRepository = courseDtlRepository;
+        this.javaMailSender = javaMailSender;
         this.trainingQuestionRepository = trainingQuestionRepository;
     }
 
-	
+     
+     
+    
+     
 	  public void saveUser(UserDto userDto) { User user = new User();
 	  user.setUser_id(userDto.getFirstName() + " " + userDto.getLastName());
 	  user.setEmail(userDto.getEmail()); 
@@ -193,4 +202,45 @@ public class UserServiceImpl implements UserService{
 		trainingQuestionRepository.finalizeDraftQuestions(courseId);
 		
 	}	
+	
+	public void generateAndSendOtp(String email) {
+	    // Generate OTP
+	    String otp = generateOtp();
+
+	    // Get user and set OTP and expiration time
+	    User user = userRepository.findByEmail(email);
+	    if (user != null) {
+	        user.setOtp(otp);
+	        user.setOtpExpirationTime(LocalDateTime.now().plusMinutes(5)); // OTP valid for 5 minutes
+	        userRepository.save(user);
+
+	        // Send OTP to user's email
+	        sendOtpToEmail(user.getEmail(), otp);
+	    }
+	}
+
+	private String generateOtp() {
+		Random random = new Random(); 
+		int otp = 100000 + random.nextInt(900000); 
+		String generatedOtp = String.valueOf(otp);
+		System.out.println("Generated OTP: " + generatedOtp);
+		return generatedOtp;
+	}
+
+	
+	private void sendOtpToEmail(String email, String otp) {
+	    SimpleMailMessage message = new SimpleMailMessage();
+	    message.setTo(email);
+	    message.setSubject("One Time Password");
+
+	    // Update the message format
+	    String emailContent = String.format(
+	        "Dear User,\n\n%s is the One Time Password for your login which is valid for only 5 minutes. " +
+	        "Please don't share it with anyone for security reasons.\n\nBest Regards,\n DoLR, Ministry of Rural Development"
+	    , otp);
+
+	    message.setText(emailContent);
+	    javaMailSender.send(message); 
+	}
+	
 }

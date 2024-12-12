@@ -1,5 +1,7 @@
 package com.springboot.training.entity;
 import lombok.*;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import jakarta.persistence.*;
 
@@ -36,6 +38,12 @@ public class User {
     
     @Column(nullable=false)
     private String password;
+    
+    @Column
+    private String otp;
+    
+    @Column
+    private LocalDateTime otpExpirationTime;
     
    // private Set<LMSTrainingDetails> lmsTrainingDetails = new HashSet<LMSTrainingDetails>(0);
     
@@ -114,6 +122,22 @@ public class User {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	public LocalDateTime getOtpExpirationTime() {
+		return otpExpirationTime;
+	}
+
+	public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
+		this.otpExpirationTime = otpExpirationTime;
 	}
 
 	/*
