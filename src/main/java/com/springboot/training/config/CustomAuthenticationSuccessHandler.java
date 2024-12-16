@@ -37,7 +37,7 @@ public class CustomAuthenticationSuccessHandler implements org.springframework.s
         System.out.println("User role: " + authentication.getAuthorities());
 
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            response.sendRedirect("/showCourseDetail");
+            response.sendRedirect("/getCourseDetail");
         } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             response.sendRedirect("/userlogin");
         } else {
