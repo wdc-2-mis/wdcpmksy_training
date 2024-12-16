@@ -1,126 +1,144 @@
 <!DOCTYPE html>
-<html lang="en"
-    xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>WDCpmksy Training Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-      
-       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function toggleAuthInput() {
-            const authType = document.querySelector('input[name="authType"]:checked').value;
-            const otpField = document.getElementById('otpField');
-            const passwordField = document.getElementById('passwordField');
+        document.addEventListener("DOMContentLoaded", function () {
+            function toggleAuthInput() {
+                const authType = document.querySelector('input[name="authType"]:checked').value;
+                const otpField = document.getElementById('otpField');
+                const passwordField = document.getElementById('passwordField');
+                const passwordInput = document.getElementById('password');
+                const otpInput = document.getElementById('otp');
+                const loginForm = document.getElementById("loginForm");
 
-            if (authType === 'otp') {
-                otpField.style.display = 'block';
-                passwordField.style.display = 'none';
-            } else {
-                otpField.style.display = 'none';
-                passwordField.style.display = 'block';
+                if (authType === 'otp') {
+                    otpField.style.display = 'block';
+                    passwordField.style.display = 'none';
+                    passwordInput.removeAttribute('required');
+                    otpInput.setAttribute('required', 'required');
+                    loginForm.setAttribute("action", "/otp-login");
+
+                    // Trigger AJAX call to send OTP
+                    const username = document.getElementById('username').value;
+                    if (username) {
+                        sendOtp(username);
+                    } else {
+                        alert("Please enter your email/phone number first.");
+                    }
+                } else {
+                    otpField.style.display = 'none';
+                    passwordField.style.display = 'block';
+                    otpInput.removeAttribute('required');
+                    passwordInput.setAttribute('required', 'required');
+                    loginForm.setAttribute("action", "/login");
+                }
             }
-        }
+
+            function sendOtp(username) {
+                const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/send-otp",
+                    data: { username: username, _csrf: csrfToken },
+                    success: function(response) {
+                        alert("OTP has been sent to your email.");
+                    },
+                    error: function(error) {
+                        alert("Error sending OTP. Please try again.");
+                    }
+                });
+            }
+
+            function resendOtp() {
+                const username = document.getElementById('username').value;
+                if (username) {
+                    sendOtp(username);
+                } else {
+                    alert("Please enter your email/phone number first.");
+                }
+            }
+
+            document.getElementById("otpAuth").addEventListener("change", toggleAuthInput);
+            document.getElementById("passwordAuth").addEventListener("change", toggleAuthInput);
+
+            // Trigger initial state
+            toggleAuthInput();
+        });
     </script>
 </head>
+
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/index}">Home</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
-                </li>
-            </ul>
-        </div>
+        <a class="navbar-brand" href="#">Home</a>
     </div>
 </nav>
-<br /><br />
-<div class="container">
+
+<div class="container mt-4">
     <div class="row">
         <div class="col-md-6 offset-md-3">
 
-            <div th:if="${param.error}">
-                <div class="alert alert-danger">Invalid Email or Password</div>
-            </div>
-            <div th:if="${param.logout}">
-                <div class="alert alert-success"> You have been logged out.</div>
-            </div>
+            <!-- Error Messages -->
+            <div th:if="${param.error == 'otp'}" class="alert alert-danger">Invalid OTP. Please try again.</div>
+            <div th:if="${param.error == 'password'}" class="alert alert-danger">Invalid Email or Password. Please try again.</div>
+            <div th:if="${param.logout}" class="alert alert-success">You have been logged out successfully.</div>
 
             <div class="card">
                 <div class="card-header">
                     <h2 class="text-center">Login</h2>
                 </div>
                 <div class="card-body">
-                    <form
-                        method="post"
-                        role="form"
-                        th:action="@{/login}"
-                        class="form-horizontal"
-                    >
+                    <form id="loginForm" method="post" th:action="@{/login}" class="form-horizontal">
+
+                        <!-- CSRF Token -->
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+                        <!-- Email Field -->
                         <div class="form-group mb-3">
                             <label class="control-label"> Email</label>
-                            <input
-                                type="text"
-                                id="username"
-                                name="username"
-                                class="form-control"
-                                autocomplete="off"
-                                placeholder="Enter email / phone no."
-                            />
+                            <input type="email" id="username" name="username" class="form-control" autocomplete="off" placeholder="Enter email / phone no." required />
                         </div>
 
+                        <!-- Authentication Type Selection -->
                         <div class="form-group mb-3">
-                            <label class="control-label"> Select Authentication Type:</label><br />
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="authType" id="otp" value="otp" onclick="toggleAuthInput()" />
-                                <label class="form-check-label" for="otp">OTP</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="authType" id="passwordAuth" value="password" onclick="toggleAuthInput()" checked />
-                                <label class="form-check-label" for="passwordAuth">Password</label>
-                            </div>
+                            <label>Select Authentication Type:</label><br />
+                            <input class="form-check-input" type="radio" name="authType" id="otpAuth" value="otp">
+                            <label for="otpAuth">OTP</label>
+
+                            <input class="form-check-input" type="radio" name="authType" id="passwordAuth" value="password" checked>
+                            <label for="passwordAuth">Password</label>
                         </div>
 
+                        <!-- Password Field -->
                         <div id="passwordField" class="form-group mb-3">
-                            <label class="control-label"> Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="form-control"
-                                placeholder="Enter password"
-                            />
+                            <label>Password</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
                         </div>
 
+                        <!-- OTP Field -->
                         <div id="otpField" class="form-group mb-3" style="display: none;">
-                            <label class="control-label"> OTP</label>
-                            <input
-                                type="text"
-                                id="otp"
-                                name="otp"
-                                class="form-control"
-                                placeholder="Enter OTP"
-                            />
+                            <label>OTP</label>
+                            <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP">
+                            <a href="#" onclick="resendOtp()">Resend OTP</a>
                         </div>
 
+                        <!-- Submit Button -->
                         <div class="form-group mb-3">
                             <button type="submit" class="btn btn-primary">Submit</button>
-                           <!-- <span> Not registered ?
-                                <a th:href="@{/register}">Register/Signup here</a>
-                            </span>-->
                         </div>
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

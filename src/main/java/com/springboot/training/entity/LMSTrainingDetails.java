@@ -79,6 +79,9 @@ public class LMSTrainingDetails {
     
     @Column
     private Date created_date;
+    
+    @Column
+    private Integer attempt_question;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_reg_id", referencedColumnName = "user_reg_id", nullable = false) 
@@ -235,6 +238,14 @@ public class LMSTrainingDetails {
 
 	public void setMin_pass_marks(Integer min_pass_marks) {
 		this.min_pass_marks = min_pass_marks;
+	}
+
+	public Integer getAttempt_question() {
+		return attempt_question;
+	}
+
+	public void setAttempt_question(Integer attempt_question) {
+		this.attempt_question = attempt_question;
 	}
 
 

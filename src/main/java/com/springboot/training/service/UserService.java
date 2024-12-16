@@ -3,6 +3,7 @@ package com.springboot.training.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import com.springboot.training.dto.AddCourseQuestion;
 import com.springboot.training.dto.CourseDetails;
@@ -31,4 +32,7 @@ public interface UserService {
    
 	void saveaddQuestion(@Valid AddCourseQuestion question, HttpSession session);
     void updateStatusToComplete(Integer courseId);
+    void generateAndSendOtp(String email);
+    
+
 }
