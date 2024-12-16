@@ -8,24 +8,51 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
           crossorigin="anonymous">
 	<style>
-		#title{
+		#title {
 			text-align: center;
-  			color: green;
+			color: green;
 		}
+	
 		.course-container {
-   			 display: flex;
-    		flex-wrap: wrap;
-    		justify-content: left;
-   			 margin: 20px;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			margin: 20px;
 		}
+	
 		.box-container {
 			background-color: white;
-			width: 500px;
-			height: 700px;
+			width: 300px;
+			height: 600px;
 			border: 1px solid #ddd;
+			border-radius: 10px;
 			padding: 5px;
-			margin: 10px;
+			margin: 20px;
 			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	
+		}
+	
+		.course-container :hover {
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+			border: 2px solid #aaa;
+		}
+	
+		#achor:link, #achor:visited {
+			flex-wrap: wrap;
+			background-color: cornflowerblue;
+			color: white;
+			padding: 4px 7px;
+			text-align: center;
+			font-weight: bold;
+			display: block;
+		}
+	
+		#achor:hover, #achor:active {
+			background-color: sandybrown;
+		}
+		
+		strong{
+			color: cornflowerblue;
 		}
 	</style>
 </head>
@@ -49,14 +76,6 @@
                    th:href="@{/showCourseQuestion}">Add Questions</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'modify-course' ? 'active' : ''}" 
-                   th:href="@{/modifyCourseDtl}">Modify Course</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'modify-questions' ? 'active' : ''}" 
-                   th:href="@{/modifyCourseQuestion}">Modify Questions</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" th:href="@{/logout}">Logout</a>
             </li>
         </ul>
@@ -64,14 +83,15 @@
 </nav>
 <div class="course-container">
 <div class ="box-container" th:each="list : ${lmsTrainingList}">
-	<img th:src="@{/images/project_temp_image.jpg}" style="max-width: 100%; height: auto;" alt="Wdcpmksy">
-	<p><h3 id ="title" th:text = "${list.course_name}"/></p>
+	<img th:src="@{/images/project_temp_image.jpg}" style="max-width: 100%; height: 25%; border-radius: 8%;" alt="Wdcpmksy">
+	<u><h5 id ="title" th:text = "${list.course_name}"/></u>
 	<p>Course Available: From <strong th:text = "${#dates.format(list.course_start, 'dd-MMM-yyyy')}"/> To <strong th:text = "${#dates.format(list.course_end, 'dd-MMM-yyyy')}"/></p>
-	<a th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}"><h5>View Course Details</h5> </a>
-<!--	<a href = ""><h5>View Course Material</h5></a>-->
-	<a th:href="'/downloadMaterial/' + ${list.training_id}"><h5>View Course Material</h5></a>
-	<a href = ""><h5>Add Questions</h5></a>
 	<p>Total Question Entered: <strong th:text = "${list.noof_question}"/></p>
+	<p>Total Participants Attempt Quiz: <strong th:text = "${list.userIdCount}"/></p>
+	<p>Total Participants Entered Passed: <strong th:text = "${list.noof_question}"/></p>
+	<a id ="achor" th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}">View Course Details </a>&nbsp;
+	<a id ="achor" th:href="'/downloadMaterial/' + ${list.training_id}">View Course Material</a>&nbsp;
+	<a id ="achor" th:href="@{/addCourseQuestion}">Add Questions</a>
 </div>
 </div>
 

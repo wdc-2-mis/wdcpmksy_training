@@ -9,11 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import com.springboot.training.dto.CourseDetails;
+import com.springboot.training.dto.ViewCourseDetails;
 import com.springboot.training.entity.LMSTrainingDetails;
 import com.springboot.training.repository.CourseDtlRepository;
+import com.springboot.training.repository.CousreDetailBeanRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -23,32 +24,52 @@ public class ViewCourseAndAddQuestionController {
 	@Autowired
 	CourseDtlRepository courseDtlRepo;
 	
+	@Autowired
+	CousreDetailBeanRepository courseDtlBeanRepo;
+	
 	
 	@GetMapping("/getCourseDetail")
 	public String viewCourseDtlAndAddQustn(HttpSession session, Model model) {
+		String userId = (String) session.getAttribute("userId");
 		List<LMSTrainingDetails> lmsTrainingList =  new ArrayList<>();
 		lmsTrainingList = courseDtlRepo.findAll();
-		model.addAttribute("lmsTrainingList", lmsTrainingList);
-		model.addAttribute("lmsTrainingListSize", lmsTrainingList.size());
-//		List<CourseDetails> courseDtlList =  new ArrayList<>();
-//		for(LMSTrainingDetails dtl: lmsTrainingList) {
-//			CourseDetails courseDtl = new CourseDetails();
-//			courseDtl.setCname(dtl.getCourse_name());
-//			courseDtl.setCdesc(dtl.getCourse_description());
-//			courseDtl.setTotquest(dtl.getNoof_question());
-//		}
+		List<ViewCourseDetails> courseDtlList =  new ArrayList<>();
+		courseDtlList = courseDtlBeanRepo.getCousrseDetails();
 		
+		List<ViewCourseDetails> crseDtLst =  new ArrayList<>();
+		for(LMSTrainingDetails dtl: lmsTrainingList) {
+			
+			for(ViewCourseDetails crsdtl : courseDtlList) {
+				if(dtl.getTraining_id().equals(crsdtl.getTraining_id())) {
+					ViewCourseDetails courseDtl = new ViewCourseDetails();
+					courseDtl.setTraining_id(crsdtl.getTraining_id());
+					courseDtl.setCourse_name(dtl.getCourse_name());
+					courseDtl.setCourse_description(dtl.getCourse_description());
+					courseDtl.setNoof_question(dtl.getNoof_question());
+					courseDtl.setCourse_start(dtl.getCourse_start());
+					courseDtl.setCourse_end(dtl.getCourse_end());
+					courseDtl.setUserIdCount(crsdtl.getUserIdCount());
+					courseDtl.setStatus(dtl.getStatus());
+					crseDtLst.add(courseDtl);
+				}
+			}
+		}
+		model.addAttribute("lmsTrainingList", crseDtLst);
+		model.addAttribute("lmsTrainingListSize", crseDtLst.size());
+		model.addAttribute("userId", userId);
 		return "viewCourseDetails";
 		
 	}
 	
 	@GetMapping("/viewCourseDetail/{id}")
-	public String viewCourseDtl(@PathVariable("id") int id, Model model) {
+	public String viewCourseDtl(HttpSession session, @PathVariable("id") int id, Model model) {
+		String userId = (String) session.getAttribute("userId");
 		List<LMSTrainingDetails> lmsTrainingList =  new ArrayList<>();
 		LMSTrainingDetails list = courseDtlRepo.findById(id).orElse(null);
 		lmsTrainingList.add(list);
 		model.addAttribute("lmsTrainingList", lmsTrainingList);
 		model.addAttribute("lmsTrainingListSize", lmsTrainingList.size());
+		model.addAttribute("userId", userId);
 //		List<CourseDetails> courseDtlList =  new ArrayList<>();
 //		for(LMSTrainingDetails dtl: lmsTrainingList) {
 //			CourseDetails courseDtl = new CourseDetails();
