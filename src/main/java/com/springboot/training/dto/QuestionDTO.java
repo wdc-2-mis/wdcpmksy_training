@@ -9,7 +9,17 @@ public class QuestionDTO {
     private Integer questionId;
     private Integer trainingId;
     private Integer userRegId;
+    private Integer questionMarks;
     
+    
+	public Integer getQuestionMarks() {
+		return questionMarks;
+	}
+
+	public void setQuestionMarks(Integer questionMarks) {
+		this.questionMarks = questionMarks;
+	}
+
 	public Integer getTrainingId() {
 		return trainingId;
 	}

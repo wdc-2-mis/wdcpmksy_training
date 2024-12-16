@@ -22,6 +22,7 @@ public interface LmsTrainingQuestionRepository extends JpaRepository<LmsTraining
 	    void finalizeDraftQuestions(@Param("trainingId") Integer trainingId);
 
 	    List<LmsTrainingQuestion> findByTrainingId(Integer trainingId);
-
-	
+	    
+	    List<LmsTrainingQuestion> findByTrainingIdAndStatus(Integer trainingId, String status);
+	 
 }

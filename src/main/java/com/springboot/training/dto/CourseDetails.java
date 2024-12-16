@@ -33,9 +33,15 @@ public class CourseDetails {
 	
 	private MultipartFile theFile;
 	
+	private Integer trainingId;
 	
 	
-	
+	public Integer getTrainingId() {
+		return trainingId;
+	}
+	public void setTrainingId(Integer trainingId) {
+		this.trainingId = trainingId;
+	}
 	public String getCname() {
 		return cname;
 	}
