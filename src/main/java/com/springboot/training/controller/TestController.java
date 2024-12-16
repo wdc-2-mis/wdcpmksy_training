@@ -2,6 +2,7 @@ package com.springboot.training.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,13 +79,18 @@ public class TestController {
         return null;
     }
 	  
-	
+
 	@ResponseBody
 	@GetMapping("/getquestions")
 	public List<QuestionDTO> getQuestions(@RequestParam Integer trainingId) {
 	    List<LmsTrainingQuestion> questions = questionRepository.findByTrainingIdAndStatus(trainingId, "C");
+	    
+	    Collections.shuffle(questions);
+
+	    List<LmsTrainingQuestion> randomQuestions = questions.subList(0, Math.min(20, questions.size()));
+	    
 	    List<QuestionDTO> dtos = new ArrayList<>();
-	    for (LmsTrainingQuestion ques : questions) {
+	    for (LmsTrainingQuestion ques : randomQuestions) {
 	        QuestionDTO dto = new QuestionDTO();
 	        dto.setQuestionId(ques.getQuestionId());
 	        dto.setTrainingId(ques.getTrainingId());
@@ -99,7 +105,6 @@ public class TestController {
 	    }
 	    return dtos;
 	}
-
 	
 	@ResponseBody
 	@PostMapping("/submitTest")
@@ -126,24 +131,5 @@ public class TestController {
 	}
 	
 	
-
-	@GetMapping("/viewCertificate")
-	public String getCertificate(@RequestParam("trainingId") Integer trainingId, HttpSession session, Model model) {
-	    
-		String userId = (String) session.getAttribute("userId");
- 
-	    LMSTrainingDetails course = ucSer.getCourseById(trainingId).orElse(null);
-
-	    model.addAttribute("userId", userId);
-	    model.addAttribute("courseId", course.getTraining_id());
-	    model.addAttribute("courseName", course.getCourse_description());
-	    model.addAttribute("totalQuestions", course.getNoof_question());
-	    model.addAttribute("passingMarks", course.getMin_pass_marks());
-	    model.addAttribute("trainingId", trainingId);
-	    return "certificate";
-	}
-	
-
-
 
 }
