@@ -1,5 +1,6 @@
 package com.springboot.training.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -73,7 +74,7 @@ public class LoginController {
     }
 
     @PostMapping("/send-otp") 
-    @ResponseBody public String sendOtp(@RequestParam String username) 
+    @ResponseBody public String sendOtp(@RequestParam String username, HttpServletResponse response) 
     { 
     	User user = userService.findUserByEmail(username); 
     	if (user != null) 
@@ -83,24 +84,23 @@ public class LoginController {
     		} 
     	else 
     	{ 
-    		return "User not found"; 
-    		} 
+    		return "User not registered";
+    	}
     	}
     
-    @PostMapping("/otp-login")
-    public String otpLogin(@RequestParam String username, @RequestParam String otp, HttpSession session) {
-        User user = userService.findUserByEmail(username);
-        System.out.println("i am in...");
-        if (user != null && otp.equals(user.getOtp()) && user.getOtpExpirationTime().isAfter(LocalDateTime.now())) {
-            session.setAttribute("userId", user);
-            session.setAttribute("regid", user.getUser_reg_id());
-            session.setAttribute("userType", user.getUser_type());
-            return "redirect:/login"; 
-        }
-
-        return "redirect:/login?error=Invalid OTP"; 
-    }
-    
+		/*
+		 * @PostMapping("/otp-login") public String otpLogin(@RequestParam String
+		 * username, @RequestParam String otp, HttpSession session) { User user =
+		 * userService.findUserByEmail(username); System.out.println("i am in..."); if
+		 * (user != null && otp.equals(user.getOtp()) &&
+		 * user.getOtpExpirationTime().isAfter(LocalDateTime.now())) {
+		 * session.setAttribute("userId", user.getUser_id());
+		 * session.setAttribute("regid", user.getUser_reg_id());
+		 * session.setAttribute("userType", user.getUser_type()); return
+		 * "redirect:/home"; }
+		 * 
+		 * return "redirect:/login?error=Invalid OTP"; }
+		 */
      
      @GetMapping("/register")
     public String showRegistrationForm(Model model){
@@ -160,6 +160,9 @@ public class LoginController {
     @GetMapping("/showCourseDetail")
     public String showCourseDetail(HttpSession session, Model model){
     	 String userId = (String) session.getAttribute("userId"); 
+    	 if (userId == null) { 
+    		 return "redirect:/login?error=session"; 
+    		 }
     	 Integer regid =  Integer.parseInt(session.getAttribute("regid").toString());
      	 String userType = (String) session.getAttribute("userType");
     	 CourseDetails curl = new CourseDetails();

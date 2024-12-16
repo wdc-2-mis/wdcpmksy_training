@@ -20,7 +20,7 @@
                     passwordField.style.display = 'none';
                     passwordInput.removeAttribute('required');
                     otpInput.setAttribute('required', 'required');
-                    loginForm.setAttribute("action", "/otp-login");
+                    loginForm.setAttribute("action", "/login");
 
                     // Trigger AJAX call to send OTP
                     const username = document.getElementById('username').value;
@@ -45,31 +45,58 @@
                     type: "POST",
                     url: "/send-otp",
                     data: { username: username, _csrf: csrfToken },
-                    success: function(response) {
-                        alert("OTP has been sent to your email.");
-                    },
-                    error: function(error) {
-                        alert("Error sending OTP. Please try again.");
-                    }
-                });
-            }
+                   
+                    success: function(response) { 
+						if (response === "OTP sent successfully to registered Email-Id") 
+						{ 
+							alert(response);
+							} 
+							else { 
+								window.location.href = "/login?otpusernotfound"; 
+								} 
+								                }, 
+								error: function() 
+								{ 
+									alert("Error sending OTP. Please try again."); 
+								} 
+						}); 
+									   }
 
-            function resendOtp() {
-                const username = document.getElementById('username').value;
-                if (username) {
-                    sendOtp(username);
-                } else {
-                    alert("Please enter your email/phone number first.");
-                }
-            }
+            
+        
 
             document.getElementById("otpAuth").addEventListener("change", toggleAuthInput);
             document.getElementById("passwordAuth").addEventListener("change", toggleAuthInput);
-
-            // Trigger initial state
+             // Trigger initial state
             toggleAuthInput();
         });
     </script>
+    <script>
+		function resendOtp() {
+        const username = document.getElementById('username').value;
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+        if (username) {
+            $.ajax({
+                type: "POST",
+                url: "/send-otp",
+                data: { username: username, _csrf: csrfToken },
+                success: function(response) {
+                    if (response === "OTP sent successfully to registered Email-Id") {
+                        alert("Resend again in your registered Email-Id. Please check your spam mail as well.");
+                    } else {
+                        window.location.href = "/login?otpusernotfound";
+                    }
+                },
+                error: function() {
+                    alert("Error sending OTP. Please try again.");
+                }
+            });
+        } else {
+            alert("Please enter your email ID first.");
+        }
+    }
+	</script>
 </head>
 
 <body>
@@ -84,12 +111,13 @@
         <div class="col-md-6 offset-md-3">
 
             <!-- Error Messages -->
-            <div th:if="${param.error == 'otp'}" class="alert alert-danger">Invalid OTP. Please try again.</div>
-            <div th:if="${param.error == 'password'}" class="alert alert-danger">Invalid Email or Password. Please try again.</div>
+            <div th:if="${param.otperror}" class="alert alert-danger">Invalid Email or OTP. Please try again.</div>
+            <div th:if="${param.error}" class="alert alert-danger">Invalid Email or Password. Please try again.</div>
             <div th:if="${param.logout}" class="alert alert-success">You have been logged out successfully.</div>
-
+            <div th:if="${param.otpusernotfound}" class="alert alert-danger">User not registered, Please register User.</div>
+    
             <div class="card">
-                <div class="card-header">
+                <div class="card-header"> 
                     <h2 class="text-center">Login</h2>
                 </div>
                 <div class="card-body">
@@ -101,7 +129,7 @@
                         <!-- Email Field -->
                         <div class="form-group mb-3">
                             <label class="control-label"> Email</label>
-                            <input type="email" id="username" name="username" class="form-control" autocomplete="off" placeholder="Enter email / phone no." required />
+                            <input type="email" id="username" name="username" class="form-control" autocomplete="off" placeholder="Enter email Id." required />
                         </div>
 
                         <!-- Authentication Type Selection -->

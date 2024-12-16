@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -236,11 +239,10 @@ public class UserServiceImpl implements UserService{
 	    // Update the message format
 	    String emailContent = String.format(
 	        "Dear User,\n\n%s is the One Time Password for your login which is valid for only 5 minutes. " +
-	        "Please don't share it with anyone for security reasons.\n\nBest Regards,\n DoLR, Ministry of Rural Development"
+	        "Please don't share it with anyone for security reasons.\n\nBest Regards,\nDoLR, Ministry of Rural Development"
 	    , otp);
 
 	    message.setText(emailContent);
 	    javaMailSender.send(message); 
 	}
-	
 }
