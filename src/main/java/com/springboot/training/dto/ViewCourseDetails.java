@@ -28,25 +28,14 @@ private Integer training_id;
     
     private String status;
 	
-	private Integer userIdCount;
+	private Integer useridcount;
 	
 	
-	public ViewCourseDetails() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-
-	public ViewCourseDetails(Integer training_id, Integer userIdCount) {
-		super();
-		this.training_id = training_id;
-		this.userIdCount = userIdCount;
-	}
-
-
+	
+	
+	
 	public ViewCourseDetails(Integer training_id, String course_name, String course_description, Integer noof_question,
-			Integer duration_exam, Integer min_pass_marks, Date course_start, Date course_end, String file_extension,
-			String file_name, String file_path, String status, Integer trainingId, Integer userIdCount) {
+			Integer duration_exam, Integer min_pass_marks, Date course_start, Date course_end, String status, Integer useridcount) {
 		super();
 		this.training_id = training_id;
 		this.course_name = course_name;
@@ -56,11 +45,8 @@ private Integer training_id;
 		this.min_pass_marks = min_pass_marks;
 		this.course_start = course_start;
 		this.course_end = course_end;
-		this.file_extension = file_extension;
-		this.file_name = file_name;
-		this.file_path = file_path;
 		this.status = status;
-		this.userIdCount = userIdCount;
+		this.useridcount = useridcount;
 	}
 
 
@@ -184,13 +170,13 @@ private Integer training_id;
 	}
 
 
-	public Integer getUserIdCount() {
-		return userIdCount;
+	public Integer getUseridcount() {
+		return useridcount;
 	}
 
 
-	public void setUserIdCount(Integer userIdCount) {
-		this.userIdCount = userIdCount;
+	public void setUseridcount(Integer useridcount) {
+		this.useridcount = useridcount;
 	}
 	
 	

@@ -31,31 +31,31 @@ public class ViewCourseAndAddQuestionController {
 	@GetMapping("/getCourseDetail")
 	public String viewCourseDtlAndAddQustn(HttpSession session, Model model) {
 		String userId = (String) session.getAttribute("userId");
-		List<LMSTrainingDetails> lmsTrainingList =  new ArrayList<>();
-		lmsTrainingList = courseDtlRepo.findAll();
+//		List<LMSTrainingDetails> lmsTrainingList =  new ArrayList<>();
+//		lmsTrainingList = courseDtlRepo.findAll();
 		List<ViewCourseDetails> courseDtlList =  new ArrayList<>();
 		courseDtlList = courseDtlBeanRepo.getCousrseDetails();
 		
-		List<ViewCourseDetails> crseDtLst =  new ArrayList<>();
-		for(LMSTrainingDetails dtl: lmsTrainingList) {
-			
-			for(ViewCourseDetails crsdtl : courseDtlList) {
-				if(dtl.getTraining_id().equals(crsdtl.getTraining_id())) {
-					ViewCourseDetails courseDtl = new ViewCourseDetails();
-					courseDtl.setTraining_id(crsdtl.getTraining_id());
-					courseDtl.setCourse_name(dtl.getCourse_name());
-					courseDtl.setCourse_description(dtl.getCourse_description());
-					courseDtl.setNoof_question(dtl.getNoof_question());
-					courseDtl.setCourse_start(dtl.getCourse_start());
-					courseDtl.setCourse_end(dtl.getCourse_end());
-					courseDtl.setUserIdCount(crsdtl.getUserIdCount());
-					courseDtl.setStatus(dtl.getStatus());
-					crseDtLst.add(courseDtl);
-				}
-			}
-		}
-		model.addAttribute("lmsTrainingList", crseDtLst);
-		model.addAttribute("lmsTrainingListSize", crseDtLst.size());
+//		List<ViewCourseDetails> crseDtLst =  new ArrayList<>();
+//		for(LMSTrainingDetails dtl: lmsTrainingList) {
+//			
+//			for(ViewCourseDetails crsdtl : courseDtlList) {
+//				if(dtl.getTraining_id().equals(crsdtl.getTraining_id())) {
+//					ViewCourseDetails courseDtl = new ViewCourseDetails();
+//					courseDtl.setTraining_id(crsdtl.getTraining_id());
+//					courseDtl.setCourse_name(dtl.getCourse_name());
+//					courseDtl.setCourse_description(dtl.getCourse_description());
+//					courseDtl.setNoof_question(dtl.getNoof_question());
+//					courseDtl.setCourse_start(dtl.getCourse_start());
+//					courseDtl.setCourse_end(dtl.getCourse_end());
+//					courseDtl.setUseridcount(crsdtl.getUseridcount());
+//					courseDtl.setStatus(dtl.getStatus());
+//					crseDtLst.add(courseDtl);
+//				}
+//			}
+//		}
+		model.addAttribute("lmsTrainingList", courseDtlList);
+		model.addAttribute("lmsTrainingListSize", courseDtlList.size());
 		model.addAttribute("userId", userId);
 		return "viewCourseDetails";
 		
