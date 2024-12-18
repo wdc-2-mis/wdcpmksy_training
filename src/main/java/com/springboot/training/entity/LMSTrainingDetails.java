@@ -61,7 +61,6 @@ public class LMSTrainingDetails {
     @Column
     private String file_path;
     
-    
     @Column
     private String status;
     

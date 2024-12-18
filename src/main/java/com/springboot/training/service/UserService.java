@@ -3,7 +3,6 @@ package com.springboot.training.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.mail.javamail.JavaMailSender;
 
 import com.springboot.training.dto.AddCourseQuestion;
 import com.springboot.training.dto.CourseDetails;

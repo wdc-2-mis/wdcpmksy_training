@@ -33,7 +33,7 @@ public class CourseDetails {
 	
 	private MultipartFile theFile;
 	
-	
+	private String attemptquest;
 	
 	
 	public String getCname() {
@@ -89,6 +89,13 @@ public class CourseDetails {
 	 { 
 		 this.theFile = theFile; 
 	 }
+	public String getAttemptquest() {
+		return attemptquest;
+	}
+	public void setAttemptquest(String attemptquest) {
+		this.attemptquest = attemptquest;
+	}
+	 
 	 
 	
 }

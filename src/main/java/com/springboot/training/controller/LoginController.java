@@ -240,7 +240,7 @@ public class LoginController {
 				if ((ext.compareToIgnoreCase("") == 0) || (ext.compareToIgnoreCase("pdf") == 0)) 
 				{
 					file_name = fileName;
-					file_name = file_name.concat(concatinate).concat(ext);
+					file_name = file_name.concat(concatinate);          //	.concat(ext);
 					if (!file_name.equals("")) 
 					{
 						File fileToCreate = new File(filePath, file_name);
