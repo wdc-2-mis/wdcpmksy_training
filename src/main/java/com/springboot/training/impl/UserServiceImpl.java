@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService{
 				lmsdtl.setFile_extension(ext);
 				lmsdtl.setFile_name(file_name);
 				lmsdtl.setFile_path(filePath);
-				lmsdtl.setStatus("C");
+				lmsdtl.setStatus("D");
 				lmsdtl.setCreated_date(new Date());
 				lmsdtl.setCreated_by(userId);
 				lmsdtl.setUser(user);
