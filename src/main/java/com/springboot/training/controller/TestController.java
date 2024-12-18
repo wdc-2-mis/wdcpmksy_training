@@ -41,11 +41,6 @@ public class TestController {
 	@Autowired
 	private UserQuestionAnswerRepository userQuestionAnswerRepository;
 	
-	@Autowired
-	private UserCourseService ucSer;
-	
-	
-	
 	@GetMapping("/getTest")
 	public String getTest(HttpSession session, @RequestParam("training_id") Integer trainingId, Model model) {
 	    String userId = (String) session.getAttribute("userId");
@@ -87,7 +82,7 @@ public class TestController {
 	    
 	    Collections.shuffle(questions);
 
-	    List<LmsTrainingQuestion> randomQuestions = questions.subList(0, Math.min(20, questions.size()));
+	    List<LmsTrainingQuestion> randomQuestions = questions.subList(0, Math.min(10, questions.size()));
 	    
 	    List<QuestionDTO> dtos = new ArrayList<>();
 	    for (LmsTrainingQuestion ques : randomQuestions) {
@@ -128,6 +123,7 @@ public class TestController {
 	    }
 
 	    return "Answers submitted successfully";
+	    
 	}
 	
 	

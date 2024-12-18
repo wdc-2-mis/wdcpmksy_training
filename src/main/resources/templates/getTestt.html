@@ -92,7 +92,7 @@
             margin-bottom: 20px;
         }
 		.btn-skip {
-		    background-color: #20c997; /* Teal color */
+		    background-color: #17a589; /* Teal color */
 		    color: white;
 		    border: none;
 		    min-width: 100px;
@@ -125,7 +125,7 @@
     <!-- Main Container for Quiz -->
     <div class="container">
         <div class="row mb-3">
-            <h2 class="text-center">Quiz</h2>
+            <h2 class="text-center">QUIZ</h2>
             <div class="col-6 text-start">
                 <p><strong>Date:</strong> <span id="currentDate"></span></p>
                 <div id="courseDetails" style="display: none;">
@@ -144,7 +144,8 @@
                 <div class="mb-3">
                     <!-- Instruction Label with Navy Blue Background -->
                     <label class="form-label instruction-label">
-                        <b>Instruction:</b> Choose the correct option for the following questions:
+<!--                        <b>Instructions:</b> Choose the correct option for the following questions:-->
+					<b>Instructions: </b>Test your knowledge and obtain a Certificate of Completion,by answering the questions given below. Choose 1 response only. 
                     </label>
                     <p id="questionCounter" style="font-weight: bold;"></p>
                     <p id="questionText"></p>
@@ -162,199 +163,205 @@
     </div>
 
     <!-- JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const timerDisplay = document.getElementById('timerDisplay');
-            const courseDetails = document.getElementById('courseDetails');
-            const courseDescription = document.getElementById('courseDescription');
-            const questionForm = document.getElementById('questionForm');
-            const questionCounter = document.getElementById('questionCounter');
-            const questionText = document.getElementById('questionText');
-            const questionMark = document.getElementById('questionMark');
-            const optionsContainer = document.getElementById('options');
-            const prevButton = document.getElementById('prevButton');
-			const skipButton = document.getElementById('skipButton');
-            const nextButton = document.getElementById('nextButton');
-            const submitButton = document.getElementById('submitButton');
-			const currentDateInput = document.getElementById('currentDate');
-			const currentDate = new Date();
-			const formattedDate = currentDate.toLocaleDateString('en-GB'); // 'en-GB' uses dd/mm/yyyy format
-			currentDateInput.textContent = formattedDate;
+	<script>
+	  document.addEventListener('DOMContentLoaded', () => {
+	    const timerDisplay = document.getElementById('timerDisplay');
+	    const courseDetails = document.getElementById('courseDetails');
+	    const courseDescription = document.getElementById('courseDescription');
+	    const questionForm = document.getElementById('questionForm');
+	    const questionCounter = document.getElementById('questionCounter');
+	    const questionText = document.getElementById('questionText');
+	    const questionMark = document.getElementById('questionMark');
+	    const optionsContainer = document.getElementById('options');
+	    const prevButton = document.getElementById('prevButton');
+	    const skipButton = document.getElementById('skipButton');
+	    const nextButton = document.getElementById('nextButton');
+	    const submitButton = document.getElementById('submitButton');
+	    const currentDateInput = document.getElementById('currentDate');
 
-            let currentQuestionIndex = 0;
-            let allQuestions = [];
-            let selectedAnswers = {};
-            let examTimer;
-          
-			const trainingId = '[[${trainingId}]]';
-			const userRegId = '[[${userId}]]';
-            fetch(`/getTesstt?trainingId=${trainingId}`)
-                .then(response => response.json())
-                .then(data => {
-                    courseDetails.style.display = 'block';
-                    courseDescription.textContent = data.cdesc;
-                    document.getElementById('examDuration').textContent = data.durexam;
-                    startExamTimer(data.durexam); // Start timer
-                    fetchQuestions(trainingId);
-                });
+	    const currentDate = new Date();
+	    const formattedDate = currentDate.toLocaleDateString('en-GB'); // 'en-GB' uses dd/mm/yyyy format
+	    currentDateInput.textContent = formattedDate;
 
-            function startExamTimer(durationMinutes) {
-                let remainingTime = durationMinutes * 60;
-                let fiveMinuteWarningShown = false;
-                updateTimerDisplay(remainingTime);
+	    let currentQuestionIndex = 0;
+	    let allQuestions = [];
+	    let selectedAnswers = {}; // To store user answers
+	    let examTimer;
 
-                examTimer = setInterval(() => {
-                    remainingTime--;
-                    updateTimerDisplay(remainingTime);
+	    const trainingId = '[[${trainingId}]]';
 
-                    // Show alert when 5 minutes are left
-                    if (remainingTime === 300 && !fiveMinuteWarningShown) {
-                        alert('You have 5 minutes remaining!');
-                        fiveMinuteWarningShown = true;
-                    }
+	    // Fetch course and exam details
+	    fetch(`/getTesstt?trainingId=${trainingId}`)
+	      .then(response => response.json())
+	      .then(data => {
+	        courseDetails.style.display = 'block';
+	        courseDescription.textContent = data.cdesc;
+	        document.getElementById('examDuration').textContent = data.durexam;
+	        startExamTimer(data.durexam); // Start timer
+	        fetchQuestions(trainingId);
+	      });
 
-                    if (remainingTime <= 0) {
-                        clearInterval(examTimer);
-                        saveTestAutomatically();
-                    }
-                }, 1000);
-            }
+	    // Start exam timer
+	    function startExamTimer(durationMinutes) {
+	      let remainingTime = durationMinutes * 60;
+	      let fiveMinuteWarningShown = false;
 
-            function updateTimerDisplay(remainingTime) {
-                const minutes = Math.floor(remainingTime / 60);
-                const seconds = remainingTime % 60;
-                timerDisplay.textContent = `Time Remaining: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-            }
+	      updateTimerDisplay(remainingTime);
 
-            function fetchQuestions(trainingId) {
-                fetch(`/getquestions?trainingId=${trainingId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data) {
-                            allQuestions = shuffleArray(data);
-                            displayQuestion();
-                        }
-                    });
-            }
+	      examTimer = setInterval(() => {
+	        remainingTime--;
+	        updateTimerDisplay(remainingTime);
 
-            function displayQuestion() {
-                if (allQuestions.length > 0) {
-                    questionForm.style.display = 'block';
-                    const question = allQuestions[currentQuestionIndex];
-                    questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${allQuestions.length}`;
-                    questionText.textContent = question.questionDescription;
-                    questionMark.textContent = `Mark: ${question.questionMarks}`;
-                    const options = shuffleArray([question.option1, question.option2, question.option3, question.option4]);
-                    const optionLabels = ['A', 'B', 'C', 'D'];
-                    optionsContainer.innerHTML = options.map((option, index) => `
-                        <div>
-                            <input type="radio" name="option" value="${option}" id="option${index}">
-                            <label for="option${index}">${optionLabels[index]}. ${option}</label>
-                        </div>
-                    `).join('');
+	        if (remainingTime === 300 && !fiveMinuteWarningShown) {
+	          alert('You have 5 minutes remaining!');
+	          fiveMinuteWarningShown = true;
+	        }
 
-                    prevButton.disabled = currentQuestionIndex === 0;
-                    nextButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
-                    submitButton.style.display = currentQuestionIndex === allQuestions.length - 1 ? 'inline-block' : 'none';
+	        if (remainingTime <= 0) {
+	          clearInterval(examTimer);
+	          saveTestAutomatically();
+	        }
+	      }, 1000);
+	    }
 
-                    // Restore previously selected answer if exists
-                    if (selectedAnswers[currentQuestionIndex]) {
-                        document.querySelector(`input[name="option"][value="${selectedAnswers[currentQuestionIndex]}"]`).checked = true;
-                    }
-                }
-            }
+	    function updateTimerDisplay(remainingTime) {
+	      const minutes = Math.floor(remainingTime / 60);
+	      const seconds = remainingTime % 60;
+	      timerDisplay.textContent = `Time Remaining: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+	    }
 
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            }
+	    // Fetch questions
+	    function fetchQuestions(trainingId) {
+	      fetch(`/getquestions?trainingId=${trainingId}`)
+	        .then(response => response.json())
+	        .then(data => {
+	          if (data) {
+	            allQuestions = shuffleArray(data); // Shuffle questions
+	            displayQuestion();
+	          }
+	        });
+	    }
 
-            nextButton.addEventListener('click', () => {
-                saveCurrentAnswer();
-                if (currentQuestionIndex < allQuestions.length) {
-                    currentQuestionIndex++;
-                    displayQuestion();
-                }
-            });
+	    // Display question
+	    function displayQuestion() {
+	      if (allQuestions.length > 0) {
+	        questionForm.style.display = 'block';
+	        const question = allQuestions[currentQuestionIndex];
 
-            prevButton.addEventListener('click', () => {
-                saveCurrentAnswer();
-                if (currentQuestionIndex > 0) {
-                    currentQuestionIndex--;
-                    displayQuestion();
-                }
-            });
-			
-			skipButton.addEventListener('click', () => {
-			    if (currentQuestionIndex < allQuestions.length - 1) {
-			        currentQuestionIndex++;
-			        displayQuestion();
-			    } else {
-//			        alert('This is the last question, skipping is not allowed.');
-			    }
-			});
+	        questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${allQuestions.length}`;
+	        questionText.textContent = question.questionDescription;
+	        questionMark.textContent = `Mark: ${question.questionMarks}`;
 
-            function saveCurrentAnswer() {
-                const selectedOption = document.querySelector('input[name="option"]:checked');
-                if (selectedOption) {
-                    selectedAnswers[currentQuestionIndex] = selectedOption.value;
-                }
-            }
+	        // Render options
+	        optionsContainer.innerHTML = `
+	          <div>
+	            <input type="radio" name="option" value="${question.option1}" id="option1">
+	            <label for="option1">A. ${question.option1}</label>
+	          </div>
+	          <div>
+	            <input type="radio" name="option" value="${question.option2}" id="option2">
+	            <label for="option2">B. ${question.option2}</label>
+	          </div>
+	          <div>
+	            <input type="radio" name="option" value="${question.option3}" id="option3">
+	            <label for="option3">C. ${question.option3}</label>
+	          </div>
+	          <div>
+	            <input type="radio" name="option" value="${question.option4}" id="option4">
+	            <label for="option4">D. ${question.option4}</label>
+	          </div>
+	        `;
 
-            // Save and submit the test when time expires
-            function saveTestAutomatically() {
-                saveCurrentAnswer(); // Save the current answer if any
-                const answers = Object.keys(selectedAnswers).map(index => ({
-                    questionId: allQuestions[index].questionId,
-                    userAnswer: selectedAnswers[index]
-                }));
+	        // Restore previously selected answer
+	        if (selectedAnswers[currentQuestionIndex]) {
+	          document.querySelector(`input[name="option"][value="${selectedAnswers[currentQuestionIndex]}"]`).checked = true;
+	        }
 
-                fetch(`/submitTest?trainingId=${trainingId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(answers)
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to save test');
-                        }
-                        return response.text();
-                    })
-                    .then(() => {
-                        window.location.href = `/viewCertificate?trainingId=${trainingId}`;
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
+	        prevButton.disabled = currentQuestionIndex === 0;
+	        nextButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
+	        submitButton.style.display = currentQuestionIndex === allQuestions.length - 1 ? 'inline-block' : 'none';
+	      }
+	    }
 
-            document.getElementById('testForm').addEventListener('submit', (event) => {
-                event.preventDefault();
-                saveCurrentAnswer();
+	    // Shuffle array
+	    function shuffleArray(array) {
+	      for (let i = array.length - 1; i > 0; i--) {
+	        const j = Math.floor(Math.random() * (i + 1));
+	        [array[i], array[j]] = [array[j], array[i]];
+	      }
+	      return array;
+	    }
 
-                const answers = Object.keys(selectedAnswers).map(index => ({
-                    questionId: allQuestions[index].questionId,
-                    userAnswer: selectedAnswers[index]
-                }));
+	    // Button events
+	    nextButton.addEventListener('click', () => {
+	      saveCurrentAnswer();
+	      if (currentQuestionIndex < allQuestions.length - 1) {
+	        currentQuestionIndex++;
+	        displayQuestion();
+	      }
+	    });
 
-                fetch(`/submitTest?trainingId=${trainingId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(answers)
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to submit test');
-                        }
-                        return response.text();
-                    })
-                    .then(() => {
-                        window.location.href = `/viewCertificate?trainingId=${trainingId}`;
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-        });
-    </script>
+	    prevButton.addEventListener('click', () => {
+	      saveCurrentAnswer();
+	      if (currentQuestionIndex > 0) {
+	        currentQuestionIndex--;
+	        displayQuestion();
+	      }
+	    });
+
+	    skipButton.addEventListener('click', () => {
+	      if (currentQuestionIndex < allQuestions.length - 1) {
+	        currentQuestionIndex++;
+	        displayQuestion();
+	      }
+	    });
+
+	    submitButton.addEventListener('click', () => {
+	      saveCurrentAnswer();
+	      submitTest();
+	    });
+
+	    // Save current answer
+	    function saveCurrentAnswer() {
+	      const selectedOption = document.querySelector('input[name="option"]:checked');
+	      if (selectedOption) {
+	        selectedAnswers[currentQuestionIndex] = selectedOption.value;
+	      }
+	    }
+
+	    // Submit test
+	    function submitTest() {
+	      const answers = Object.keys(selectedAnswers).map(index => ({
+	        questionId: allQuestions[index].questionId,
+	        userAnswer: selectedAnswers[index]
+	      }));
+
+	      fetch(`/submitTest?trainingId=${trainingId}`, {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(answers)
+	      })
+	        .then(response => {
+	          if (!response.ok) {
+	            //throw new Error('Failed to submit test');
+	          }
+	          return response.text();
+	        })
+	        .then(() => {
+	          window.location.href = `/viewCertificate?trainingId=${trainingId}`;
+	        })
+	        .catch(error => {
+	          console.error('Error:', error);
+	        });
+	    }
+
+	    // Auto-submit test when time is up
+	    function saveTestAutomatically() {
+	      saveCurrentAnswer();
+	      submitTest();
+	    }
+	  });
+	</script>
+
 </body>
 </html>

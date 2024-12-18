@@ -48,12 +48,12 @@ public class SpringSecurity {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager);
         customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
 
-        http.csrf().ignoringRequestMatchers("/send-otp", "/otp-login")
+        http.csrf().ignoringRequestMatchers("/send-otp", "/otp-login", "/submitTest")
             .and()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register/**", "/index", "/saveurl", "/send-otp", "/otp-login", "/login", "/custom-login", "/page/**").permitAll()
                 .requestMatchers("/showCourseDetail", "/showCourseQuestion", "/userurl").hasRole("ADMIN")
-                 .requestMatchers("/userlogin", "/takeATest").hasRole("USER")
+                 .requestMatchers("/userCourse", "/takeATest","/submitTest", "/getquestions", "/getTesstt","/getTest").hasRole("USER")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
