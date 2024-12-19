@@ -61,7 +61,14 @@ private Integer training_id;
 
 
 	public String getCourse_name() {
-		return course_name;
+		String[] crse = course_name.split("\\s");
+		StringBuilder strb = new StringBuilder();
+		for(String str : crse) {
+			strb.append(Character.toTitleCase(str.charAt(0)))
+			.append(str.substring(1))
+			.append(" ");
+		}
+		return strb.toString().trim();
 	}
 
 

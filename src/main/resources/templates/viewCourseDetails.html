@@ -80,7 +80,7 @@
 	<p>Course Available: From <strong th:text = "${#dates.format(list.course_start, 'dd-MMM-yyyy')}"/> To <strong th:text = "${#dates.format(list.course_end, 'dd-MMM-yyyy')}"/></p>
 	<p>Total Question Entered: <strong th:text = "${list.noof_question}"/></p>
 	<p>Total Participants Attempt Quiz: <strong th:text = "${list.useridcount}"/></p>
-	<p>Total Participants Entered Passed: <strong th:text = "${list.noof_question}"/></p>
+	<p>Total Participants Passed: <strong th:text = "${list.noof_question}"/></p>
 	<a id ="achor" th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}">View Course Details </a>&nbsp;
 	<a id ="achor" th:href="'/downloadMaterial/' + ${list.training_id}">View Course Material</a>&nbsp;
 	<a id ="achor" th:href="@{/addCourseQuestion/{id}(id = ${list.training_id})}">Add Questions</a>

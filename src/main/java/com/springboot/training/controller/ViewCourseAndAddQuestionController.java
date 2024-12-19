@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.springboot.training.dto.CourseDetails;
 import com.springboot.training.dto.ViewCourseDetails;
 import com.springboot.training.entity.LMSTrainingDetails;
+import com.springboot.training.entity.LmsTrainingQuestion;
 import com.springboot.training.repository.CourseDtlRepository;
 import com.springboot.training.repository.CousreDetailBeanRepository;
+import com.springboot.training.repository.QuestionRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -26,6 +28,9 @@ public class ViewCourseAndAddQuestionController {
 	
 	@Autowired
 	CousreDetailBeanRepository courseDtlBeanRepo;
+	
+	@Autowired
+	QuestionRepository qustnRepo;
 	
 	
 	@GetMapping("/getCourseDetail")
@@ -67,9 +72,14 @@ public class ViewCourseAndAddQuestionController {
 		List<LMSTrainingDetails> lmsTrainingList =  new ArrayList<>();
 		LMSTrainingDetails list = courseDtlRepo.findById(id).orElse(null);
 		lmsTrainingList.add(list);
+		List<LmsTrainingQuestion> qList = new ArrayList<>();
+		qList = qustnRepo.findByTrainingId(id);
 		model.addAttribute("lmsTrainingList", lmsTrainingList);
 		model.addAttribute("lmsTrainingListSize", lmsTrainingList.size());
 		model.addAttribute("userId", userId);
+		model.addAttribute("questionList", qList);
+		model.addAttribute("questionListSize", qList.size());
+		model.addAttribute("courseDesc",list.getCourse_description());
 //		List<CourseDetails> courseDtlList =  new ArrayList<>();
 //		for(LMSTrainingDetails dtl: lmsTrainingList) {
 //			CourseDetails courseDtl = new CourseDetails();
