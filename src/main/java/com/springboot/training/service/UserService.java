@@ -1,8 +1,11 @@
 package com.springboot.training.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.springboot.training.dto.AddCourseQuestion;
 import com.springboot.training.dto.CourseDetails;
@@ -33,5 +36,5 @@ public interface UserService {
     void updateStatusToComplete(Integer courseId);
     void generateAndSendOtp(String email);
     
-
+   
 }
