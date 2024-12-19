@@ -19,9 +19,8 @@ public interface LmsTrainingQuestionRepository extends JpaRepository<LmsTraining
 	    @Query("SELECT COUNT(q) FROM LmsTrainingQuestion q WHERE q.trainingId = :trainingId")
 	    int countQuestionsByTrainingId(@Param("trainingId") Integer trainingId);
 
-	    @Transactional
 	    @Modifying
-	    @Query("UPDATE LmsTrainingQuestion SET status = :status WHERE trainingId = :trainingId AND q.status = 'D'")
+	    @Query("UPDATE LmsTrainingQuestion SET status = :status WHERE trainingId = :trainingId AND status = 'D'")
 	    void updateQuestionStatus(@Param("trainingId") Integer trainingId, @Param("status") String status);
 
 	    Page<LmsTrainingQuestion> findByTrainingId(Integer trainingId, PageRequest pageable);
