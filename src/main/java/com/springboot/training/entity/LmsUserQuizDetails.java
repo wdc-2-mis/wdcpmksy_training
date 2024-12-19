@@ -21,12 +21,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "lms_user_quiz_details", schema = "public")
 public class LmsUserQuizDetails {
 	
-	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_quiz_id", nullable = false)
     private Integer user_quiz_id;
-	
 	
 	@Column(name = "training_id")
     private Integer trainingId;
