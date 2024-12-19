@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WDCPMKSY Training Certificate</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+<style>
+body {
+	background-color: #f4f4f9;
+	font-family: 'Arial', sans-serif;
+}
+
+.navbar {
+	margin-bottom: 20px;
+}
+
+.certificate-container {
+	background: #ffffff;
+/* 	border: 3px solid #008CBA; /* #5F58D5; */ 
+	border: 1px solid #ddd;
+	padding: 40px;
+	width: 50%;
+	max-width: 800px;
+	margin: 20px auto;
+	text-align: center;
+	border-radius: 15px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+	font-family: 'Georgia', serif;
+	color: #5F58D5; 
+	text-transform: uppercase;
+	margin-bottom: 30px;
+}
+
+p {
+	font-size: 18px;
+	margin-bottom: 15px;
+	font-weight: 500;
+	color: #333333;
+	text-align: left;
+	margin-right: 100px;
+	white-space: nowrap;
+}
+
+/* strong { */
+/*   text-align: right; /* Align the strong text to the right */ 
+/*   padding-right: 10px; /* Add some padding to create space between the colon and the value */ 
+/* } */
+
+/* span { */
+/*   text-align: left; /* Align the span text to the left */ 
+/* } */
+
+
+.certificate-detail {
+	font-size: 18px;
+	margin-bottom: 15px;
+	font-weight: 500;
+	color:   #008CBA; /* #333333; */
+}
+
+.certificate-highlight {
+	font-size: 20px;
+	font-weight: bold;
+	color: #5F58D5;
+}
+
+
+.download-button {
+    background-color: #008CBA;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px 10px;
+}
+
+.button-container {
+    text-align: center;
+}
+
+.button-container button {
+    margin: 0 10px;
+}
+
+
+/*
+.download-button {
+	background-color: #008CBA;
+	border: none;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	display: flex;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 5px;
+	position: relative;
+	justify-content: space-between;
+	top: 5px;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	margin: 10px 0;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	display: flex;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 5px;
+} */
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<span class="navbar-text text-white"> Welcome, <b
+				th:text="${userId}"></b>
+			</span>
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="certificate-container">
+			<h2>View/Download Certificate</h2>
+			<!--         <p class="certificate-detail"> -->
+			<!--             This certifies that <span class="certificate-highlight" th:text="${userId}"></span> -->
+			<!--         </p> -->
+			<!--         <p class="certificate-detail"> -->
+			<!--             has successfully completed the course -->
+			<!--         </p> -->
+			<!--         <p class="certificate-highlight" th:text="${courseName}"></p> -->
+
+			<hr style="margin: 20px 0; border-top: 1px solid #cccccc;">
+
+			<div th:if="${passed}">
+				<b style="color: #008000;">"Congratulations! You have successfully Passed the quiz."</b>
+			</div>
+			<div th:unless="${passed}">
+				<b style="color: #FF0000;">"You have not passed the quiz."</b>
+			</div>
+			
+			<br>
+			
+			
+			<p>
+				<strong>Course Name	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span th:text="${courseName}"></span>
+			</p>
+			<p>
+				<strong>User Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span th:text="${userName}"></span>
+			</p>
+			<p>
+				<strong>Total Questions &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span th:text="${totalQuestions}"></span>
+			</p>
+			<p>
+				<strong>Questions Attempted &nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span th:text="${questionsAttempted}"></span>
+			</p>
+			<p>
+				<strong>Passing Marks &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span th:text="${passingMarks}"></span>
+			</p>
+			<p>
+				<strong>Marks Obtained &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span
+					class="certificate-highlight" th:text="${marksObtained}"></span>
+			</p>
+
+
+			<div th:if="${passed}">
+			<p style="color: #008000;">
+<strong style="color: #333333;">Status &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>PASSED
+			</p>
+			</div>
+			<div th:unless="${passed}">
+			<p style="color: #FF0000;">
+<strong style="color: #333333;">Status &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>FAILED
+			</p>
+			</div>
+
+
+<!-- 			<div th:if="${passed}"> -->
+<!-- <!-- 			<b style="color: #008000;">"Congratulations! You have successfully Passed the quiz."</b> --> 
+<!-- 				<button class="download-button" -->
+<!-- 					th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=participation'|"> -->
+<!-- 					Participation Certificate</button> -->
+
+<!-- 				<button class="download-button" -->
+<!-- 					th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=completion'|"> -->
+<!-- 					Completion Certificate</button> -->
+<!-- 			</div>  -->
+
+
+<div th:if="${passed}" class="button-container">
+    <button class="download-button"
+        th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=participation'|">
+        Participation Certificate
+    </button>
+
+    <button class="download-button"
+        th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=completion'|">
+        Completion Certificate
+    </button>
+</div>
+
+
+			<div th:unless="${passed}">
+<!-- 				<b style="color: #FF0000;">"You have not passed the quiz. You can review the Course Material and attempt the exam again."</b> -->
+<!-- 				<button class="download-button" -->
+<!-- 					th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=participation'|"> -->
+<!-- 					Participation Certificate</button> -->
+			</div>
+
+		</div>
+	</div>
+</body>
+</html>
