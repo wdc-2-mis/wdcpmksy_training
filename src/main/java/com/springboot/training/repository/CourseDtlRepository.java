@@ -23,7 +23,7 @@ public interface CourseDtlRepository extends JpaRepository<LMSTrainingDetails, I
     String getTrainingStatus(@Param("trainingId") Integer trainingId);
 
 	@Modifying
-	@Query("UPDATE LMSTrainingDetails SET status = :status WHERE training_id = :trainingId")
+	@Query(value = "UPDATE lms_training_details SET status = :status WHERE training_id = :trainingId", nativeQuery = true)
 	void updateTrainingStatus(@Param("trainingId") Integer trainingId, @Param("status") String status);
 
 	

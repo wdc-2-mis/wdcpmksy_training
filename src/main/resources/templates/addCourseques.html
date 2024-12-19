@@ -163,6 +163,7 @@
         if (!options.includes(correctAnswer)) {
             e.preventDefault();
             alert("Correct Answer must match one of the provided options.");
+            document.querySelector("#correctAnswer").focus(); 
         }
     });
 </script>

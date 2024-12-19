@@ -23,6 +23,7 @@ import com.springboot.training.repository.LmsTrainingQuestionRepository;
 import com.springboot.training.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -125,6 +126,7 @@ public class AddQuestionController {
         return "viewQuestions";  
     }
     
+    @Transactional
     @PostMapping("/saveCourseQuestion")
     public String saveCourseQuestion(@RequestParam("trainingId") Integer trainingId,Model model) {
     	
