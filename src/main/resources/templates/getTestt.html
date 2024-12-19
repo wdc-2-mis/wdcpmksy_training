@@ -139,7 +139,7 @@
         </div>
 
         <!-- Question Form -->
-        <form id="testForm" method="post">
+        <form id="testForm">
             <div id="questionForm" style="display: none;">
                 <div class="mb-3">
                     <!-- Instruction Label with Navy Blue Background -->
@@ -316,7 +316,8 @@
 	      }
 	    });
 
-	    submitButton.addEventListener('click', () => {
+	    submitButton.addEventListener('click', (e) => {
+	      e.preventDefault();
 	      saveCurrentAnswer();
 	      submitTest();
 	    });
