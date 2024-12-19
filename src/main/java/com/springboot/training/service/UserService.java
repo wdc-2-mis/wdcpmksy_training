@@ -32,9 +32,8 @@ public interface UserService {
 
 	void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath, String userId, Integer regId);
    
-	void saveaddQuestion(@Valid AddCourseQuestion question, HttpSession session);
-    void updateStatusToComplete(Integer courseId);
-    void generateAndSendOtp(String email);
+	void saveaddQuestion(@Valid AddCourseQuestion question, HttpSession session, Integer trainingId);
+     void generateAndSendOtp(String email);
     
    
 }

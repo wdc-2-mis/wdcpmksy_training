@@ -52,7 +52,7 @@ public class SpringSecurity {
             .and()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register/**", "/index", "/saveurl", "/send-otp", "/otp-login", "/login", "/custom-login", "/page/**").permitAll()
-                .requestMatchers("/showCourseDetail", "/showCourseQuestion", "/userurl").hasRole("ADMIN")
+                .requestMatchers("/showCourseDetail", "/addCourseQuestion", "/userurl").hasRole("ADMIN")
                  .requestMatchers("/userCourse", "/takeATest","/submitTest", "/getquestions", "/getTesstt","/getTest").hasRole("USER")
                 .anyRequest().authenticated()
             )

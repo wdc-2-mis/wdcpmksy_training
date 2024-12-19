@@ -66,11 +66,7 @@ public class UserServiceImpl implements UserService{
         this.trainingQuestionRepository = trainingQuestionRepository;
     }
 
-     
-     
-    
-     
-	  public void saveUser(UserDto userDto) { User user = new User();
+  	  public void saveUser(UserDto userDto) { User user = new User();
 	  user.setUser_id(userDto.getFirstName() + " " + userDto.getLastName());
 	  user.setEmail(userDto.getEmail()); 
 	  user.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -176,9 +172,9 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void saveaddQuestion(AddCourseQuestion question, HttpSession session) {
+	public void saveaddQuestion(AddCourseQuestion question, HttpSession session, Integer trainingId) {
 		LmsTrainingQuestion trainingQuestion = new LmsTrainingQuestion();
-		  trainingQuestion.setTrainingId(question.getCourseId());
+		  trainingQuestion.setTrainingId(trainingId);
 		  trainingQuestion.setQuestionDescription(question.getQuestionText());
 		  trainingQuestion.setQuestionMarks(question.getMarks());
 		  trainingQuestion.setOption1(question.getOption1());
@@ -198,13 +194,7 @@ public class UserServiceImpl implements UserService{
 		  trainingQuestionRepository.save(trainingQuestion); 
 		  
 	}
-
-
-	@Override
-	public void updateStatusToComplete(Integer courseId) {
-		trainingQuestionRepository.finalizeDraftQuestions(courseId);
-		
-	}	
+	
 	
 	public void generateAndSendOtp(String email) {
 	    // Generate OTP

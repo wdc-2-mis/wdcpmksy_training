@@ -83,7 +83,7 @@
 	<p>Total Participants Passed: <strong th:text = "${list.noof_question}"/></p>
 	<a id ="achor" th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}">View Course Details </a>&nbsp;
 	<a id ="achor" th:href="'/downloadMaterial/' + ${list.training_id}">View Course Material</a>&nbsp;
-	<a id ="achor" th:href="@{/addCourseQuestion/{id}(id = ${list.training_id})}">Add Questions</a>
+	<a id ="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id})}">Add Questions</a>
 </div>
 </div>
 

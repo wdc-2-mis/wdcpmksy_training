@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddCourseQuestion {
-
-	@NotNull(message = "Course selection is required")
-    private Integer courseId;
 	
 	@NotBlank(message = "Question should not be empty")
 	private String questionText;
@@ -94,16 +91,6 @@ public class AddCourseQuestion {
 		this.correctAnswer = correctAnswer;
 	}
 
-	public Integer getCourseId() {
-		return courseId;
-	}
-
-	public void setCourseId(Integer courseId) {
-		this.courseId = courseId;
-	}
-
-	
-	
 	
 	
 }

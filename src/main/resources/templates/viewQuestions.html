@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Questions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        h2, h3 {
+            color: #2c3e50;
+        }
+        .card {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        .card-header {
+            background-color: #3498db;
+            color: white;
+            font-size: 1.2rem;
+        }
+        .pagination {
+            justify-content: center;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+    </style>
+    
+    <script>
+		function confirmFinalSubmit() {
+               return confirm("Are you sure you want to Complete this Course..?");
+           }
+		
+	</script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-text text-white">Welcome, <b th:text="${userId}"></b></span>
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-4">
+    <h2 class="text-center">Course Questions Overview</h2>
+
+    <!-- Course Details -->
+    <div class="card mb-4">
+        <div class="card-header">Course Details</div>
+        <div class="card-body">
+            <p><strong>Course Name:</strong> <span th:text="${course.course_name}"></span></p>
+            <p><strong>Course Description:</strong> <span th:text="${course.course_description}"></span></p>
+            <p><strong>Total Questions:</strong> <span th:text="${noofques}"></span></p>
+        </div>
+    </div>
+
+    <!-- Questions Section -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between">
+            <div>Questions & Answers</div>
+        </div>
+
+        <table class="table table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>SNo.</th>
+                    <th>Question</th>
+                    <th>Options</th>
+                    <th>Correct Answer</th>
+                    <th>Marks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="question, stat : ${questionsPage.content}">
+                    <td th:text="${stat.index + 1 + ((currentPage - 1) * 10)}"></td>
+                    <td th:text="${question.questionDescription}"></td>
+                    <td>
+                        <ul>
+                            <li th:text="'A. ' + ${question.option1}"></li>
+                            <li th:text="'B. ' + ${question.option2}"></li>
+                            <li th:text="'C. ' + ${question.option3}"></li>
+                            <li th:text="'D. ' + ${question.option4}"></li>
+                        </ul>
+                    </td>
+                    <td th:text="${question.optionAnswer}"></td>
+                    <td th:text="${question.questionMarks}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Conditional Submit Button After the Last Question -->
+        <div th:if="${status == 'D' and currentPage == totalPages}" class="card-footer text-center">
+            <form th:action="@{/saveCourseQuestion}" method="post" onsubmit="return confirmFinalSubmit()">
+                <input type="hidden" name="trainingId" th:value="${trainingId}" />
+                <button type="submit" class="btn btn-success btn-lg mt-3">Final Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pagination Navigation -->
+    <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-3">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/viewAllQuestions(trainingId=${trainingId}, page=${currentPage - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/viewAllQuestions(trainingId=${trainingId}, page=${i})}" th:text="${i}"></a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/viewAllQuestions(trainingId=${trainingId}, page=${currentPage + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+</body>
+</html>

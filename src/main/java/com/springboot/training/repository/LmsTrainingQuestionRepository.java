@@ -1,7 +1,10 @@
 package com.springboot.training.repository;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,11 +21,14 @@ public interface LmsTrainingQuestionRepository extends JpaRepository<LmsTraining
 
 	    @Transactional
 	    @Modifying
-	    @Query("UPDATE LmsTrainingQuestion q SET q.status = 'C' WHERE q.trainingId = :trainingId AND q.status = 'D'")
-	    void finalizeDraftQuestions(@Param("trainingId") Integer trainingId);
+	    @Query("UPDATE LmsTrainingQuestion SET status = :status WHERE trainingId = :trainingId AND q.status = 'D'")
+	    void updateQuestionStatus(@Param("trainingId") Integer trainingId, @Param("status") String status);
 
-	    List<LmsTrainingQuestion> findByTrainingId(Integer trainingId);
+	    Page<LmsTrainingQuestion> findByTrainingId(Integer trainingId, PageRequest pageable);
 	    
 	    List<LmsTrainingQuestion> findByTrainingIdAndStatus(Integer trainingId, String status);
 	 
+
+
+
 }
