@@ -77,7 +77,17 @@ public class User {
 	}
 
 	public String getUser_id() {
-		return user_id;
+//		return user_id;
+		
+		String[] usr = user_id.split("\\s");
+		StringBuilder strb = new StringBuilder();
+		for(String str : usr) {
+			strb.append(Character.toTitleCase(str.charAt(0)))
+			.append(str.substring(1))
+			.append(" ");
+		}
+		return strb.toString().trim();
+		
 	}
 
 	public void setUser_id(String user_id) {
