@@ -14,9 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.training.entity.LMSTrainingDetails;
+import com.springboot.training.entity.LmsTrainingQuestion;
 import com.springboot.training.service.UserCourseService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +35,7 @@ public class UserCourseController {
 	public String getUserCourse(HttpSession session, Model model, HttpServletRequest request) {
 
 		String userId = (String) session.getAttribute("userId");
+		Integer userRegId = (Integer) session.getAttribute("regid");
 		Integer totMarks = 0;
 		Integer courseId = 0;
 		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
@@ -40,34 +43,40 @@ public class UserCourseController {
 		List<LMSTrainingDetails> courses = ucSer.getUserCourse();
 		for (LMSTrainingDetails course : courses) {
 			courseId = course.getTraining_id();
-			totMarks = ucSer.calTotalMarks(courseId);
-			model.addAttribute("totMarks", totMarks);
-			map.put(courseId, totMarks);
-			model.addAttribute("map", map);
 
-			// Check if user has passed the course
-			boolean passed = ucSer.isUserPassed(userId, courseId);
-			userPassed.put(courseId, passed);
+			List<LmsTrainingQuestion> questions = ucSer.findByTrainingIdAndStatus(courseId, "C");
+			if (!questions.isEmpty()) {
+				totMarks = ucSer.calTotalMarks(courseId);
+				model.addAttribute("totMarks", totMarks);
+				map.put(courseId, totMarks);
+				model.addAttribute("map", map);
 
-			model.addAttribute("userPassed", userPassed);
+				// Check if user has passed the course
+				boolean passed = ucSer.isUserPassed(userRegId, courseId);
+				userPassed.put(courseId, passed);
 
-			LMSTrainingDetails courseDetails = ucSer.getCourseById(courseId).orElse(null);
+				model.addAttribute("userPassed", userPassed);
 
-			if (courseDetails != null) {
-				String fileName = courseDetails.getFile_name();
-				String fileExtension = courseDetails.getFile_extension();
-				String filePath = courseDetails.getFile_path();
+				LMSTrainingDetails courseDetails = ucSer.getCourseById(courseId).orElse(null);
 
-				// Store the file details in the model
-				model.addAttribute("fileName", fileName);
-				model.addAttribute("fileExtension", fileExtension);
-				model.addAttribute("filePath", filePath);
+				if (courseDetails != null) {
+					String fileName = courseDetails.getFile_name();
+					String fileExtension = courseDetails.getFile_extension();
+					String filePath = courseDetails.getFile_path();
+
+					// Store the file details in the model
+					model.addAttribute("fileName", fileName);
+					model.addAttribute("fileExtension", fileExtension);
+					model.addAttribute("filePath", filePath);
+				}
+				model.addAttribute("courses", courses);
+				model.addAttribute("userId", userId);
+				model.addAttribute("userRegId", userRegId);
 			}
-			
 		}
-
-		model.addAttribute("courses", courses);
-		model.addAttribute("userId", userId);
+//		model.addAttribute("courses", courses);
+//		model.addAttribute("userId", userId);
+//		model.addAttribute("userRegId", userRegId);
 
 		return "UserCourse";
 	}
@@ -137,6 +146,53 @@ public class UserCourseController {
 		// Delete the temporary file
 		file.delete();
 	}
+	
+	@GetMapping("/viewCertificate")
+	public String getCertificate(@RequestParam Integer trainingId, HttpSession session, Model model, HttpServletRequest request) {
 
+		String userId = (String) session.getAttribute("userId");
+		Integer userRegId = (Integer) session.getAttribute("regid");
+		Integer courseId = trainingId;
+		String courseName;
+		String userName;
+		Integer questionsAttempted;
+		Integer marksObtained;
+		
+//		String[] nameParts = userId.split(" ");
+		LinkedHashMap<Integer, Boolean> userPassed = new LinkedHashMap<>();
+		
+//		List<LMSTrainingDetails> courses = ucSer.getUserCourse();
+		
+//		for (LMSTrainingDetails course : courses) {
+//			courseId = course.getTraining_id();
 
+			// Check if user has passed the course
+			boolean passed = ucSer.isUserPassed(userRegId, courseId);
+			userPassed.put(courseId, passed);
+
+			model.addAttribute("passed", passed);
+//		}
+		
+		LMSTrainingDetails course = ucSer.getCourseById(courseId).orElse(null);
+		
+		courseId = course.getTraining_id();
+		courseName = course.getCourse_name();
+		userName = userId;
+		questionsAttempted = ucSer.getQuestionsAttempted(courseId, userRegId);
+		marksObtained = ucSer.calculateMarksObtained(courseId, userRegId);
+		
+		model.addAttribute("userId", userId);
+		model.addAttribute("userName", userName);
+		model.addAttribute("courseId", courseId);
+		model.addAttribute("courseName", courseName);
+		model.addAttribute("totalQuestions", course.getAttempt_question());
+	    model.addAttribute("passingMarks", course.getMin_pass_marks());
+	    model.addAttribute("trainingId", trainingId);
+	    model.addAttribute("userRegId", userRegId);
+		model.addAttribute("questionsAttempted", questionsAttempted);
+		model.addAttribute("marksObtained", marksObtained);
+
+		return "certificate";
+	}
+	
 }

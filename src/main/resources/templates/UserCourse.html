@@ -13,16 +13,17 @@
 .course-container {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: left;
+	justify-content: center;
 	margin: 20px;
 	width: 100%;
 	height: 100%;
 }
 
 .course-box {
-	border: 5px solid #ddd;
-	padding: 20px;
-	margin: 10px;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	padding: 5px;
+	margin: 5px;
 	width: 300px;
 	height: 550px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -31,9 +32,19 @@
 	position: relative;
 }
 
-.course-box.selected {
-	border: 2px solid #4CAF50;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+/* .course-box.selected { */
+/* 	border: 2px solid #4CAF50; */
+/* 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); */
+/* } */
+
+.course-container :hover {
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	border: 2px solid #aaa;
+}
+
+h2 {
+	text-align: center;
+	color: #008CBA;
 }
 
 .participate-button {
@@ -87,7 +98,8 @@
 
 .course-box img {
 	max-width: 100%;
-	height: auto;
+	height: 25%;
+	border-radius: 8%;
 }
 </style>
 
@@ -117,10 +129,11 @@
 			</div>
 
 			<div id="course-details-content">
-				<h2>Training Quiz</h2>
+				<h2>QUIZ</h2>
 
 				<div class="course-container">
 					<div th:each="course : ${courses}">
+					<div th:if="${map[course.training_id]} ne null">
 						<div class="course-box">
 							<img th:src="@{/images/project_temp_image.jpg}" />
 							<p>
@@ -135,7 +148,7 @@
 								Maximum Marks: <span th:text="${map[course.training_id]}"></span>
 							</p>
 							<p>
-								Total Questions: <span th:text="${course.noof_question}"></span>
+								Total Questions: <span th:text="${course.attempt_question}"></span>
 							</p>
 							<p>
 								Minimum Qualifying Marks: <span th:text="${course.min_pass_marks}"></span>
@@ -149,6 +162,14 @@
 								<button class="download-button"
 									th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&type=participation'|">
 									Participation Certificate</button>
+	
+<!-- 	<button class="download-button" th:onclick="|location.href='/viewCertificate?trainingId=' + ${course.training_id}|">Participate</button> -->
+									
+<!-- 									<button class="download-button" -->
+<!-- 									th:onclick="|location.href='/viewCertificate?training_id=' + ${course.training_id}|"> -->
+<!-- 									Participation Certificate</button> -->
+									
+									
 								<button class="download-button"
 									th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&type=completion'|">
 									Completion Certificate</button>
@@ -156,11 +177,16 @@
 							<div th:unless="${userPassed[course.training_id]} eq true">
 								<button class="participate-button"
 									th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">Participate</button>
+									
+<!-- <button class="participate-button" th:onclick="|location.href='/viewCertificate?trainingId=' + ${course.training_id}|">Participate</button> -->
+									
+									
 							</div>
 
 
 <!-- 							<button th:onclick="'javascript:window.location.href=\'' + @{/test/{training_id}(training_id=${course.training_id})} + '\''">Participate</button> -->
 <!-- 							<button th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">Participate</button> -->
+						</div>
 						</div>
 					</div>
 				</div>

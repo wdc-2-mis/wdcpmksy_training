@@ -12,8 +12,8 @@ public interface UserCourseRepository extends JpaRepository<LMSTrainingDetails, 
 
 	@Query("SELECT SUM(CASE WHEN ua.lmsTrainingQuestion.optionAnswer = ua.userAnswer THEN ua.lmsTrainingQuestion.questionMarks ELSE 0 END) "
 			+ "FROM LmsUserQuestionAnswer ua "
-			+ "WHERE ua.trainingDetails.training_id = :courseId AND ua.user.user_id = :userId")
-	Integer getUserScore(@Param("userId") String userId, @Param("courseId") Integer courseId);
+			+ "WHERE ua.trainingDetails.training_id = :courseId AND ua.user.user_reg_id = :userRegId")
+	Integer getUserScore(@Param("userRegId") Integer userRegId, @Param("courseId") Integer courseId);
 
 	@Query("SELECT td.min_pass_marks FROM LMSTrainingDetails td WHERE td.training_id = :courseId")
 	Integer getMinPassMarks(@Param("courseId") Integer courseId);

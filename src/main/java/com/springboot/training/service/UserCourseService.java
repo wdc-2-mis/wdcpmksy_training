@@ -14,5 +14,11 @@ public interface UserCourseService {
 
 	Integer calTotalMarks(Integer Training_id);
 
-	boolean isUserPassed(String userId, Integer courseId);
+	boolean isUserPassed(Integer userRegId, Integer courseId);
+
+	Integer getQuestionsAttempted(Integer trainingId, Integer userRegId);
+
+	Integer calculateMarksObtained(Integer courseId, Integer userRegId);
+
+	List<LmsTrainingQuestion> findByTrainingIdAndStatus(Integer trainingId, String status);
 }
