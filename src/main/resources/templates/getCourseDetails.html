@@ -77,6 +77,7 @@
 			margin: 20px;
 			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 			place-content: center;
+			width: 1250px;
 		}
 	
 		#achor:link,
@@ -180,7 +181,7 @@
         <li th:text="'C. ' + ${question.option3}"></li>
         <li th:text="'D. ' + ${question.option4}"></li>
     </ul>
-    <Strong th:text="'Answer: '+${question.optionAnswer}"></Strong>
+    <Strong th:text="'Answer: '+${question.optionAnswer}" style="color: green;"></Strong>
 		
 		
 </div>

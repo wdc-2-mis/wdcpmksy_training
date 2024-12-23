@@ -30,12 +30,14 @@ private Integer training_id;
 	
 	private Integer useridcount;
 	
+	private Integer totpassed;
+	
 	
 	
 	
 	
 	public ViewCourseDetails(Integer training_id, String course_name, String course_description, Integer noof_question,
-			Integer duration_exam, Integer min_pass_marks, Date course_start, Date course_end, String status, Integer useridcount) {
+			Integer duration_exam, Integer min_pass_marks, Date course_start, Date course_end, String status, Integer useridcount, Integer totpassed) {
 		super();
 		this.training_id = training_id;
 		this.course_name = course_name;
@@ -47,6 +49,7 @@ private Integer training_id;
 		this.course_end = course_end;
 		this.status = status;
 		this.useridcount = useridcount;
+		this.totpassed = totpassed;
 	}
 
 
@@ -184,6 +187,16 @@ private Integer training_id;
 
 	public void setUseridcount(Integer useridcount) {
 		this.useridcount = useridcount;
+	}
+
+
+	public Integer getTotpassed() {
+		return totpassed;
+	}
+
+
+	public void setTotpassed(Integer totpassed) {
+		this.totpassed = totpassed;
 	}
 	
 	
