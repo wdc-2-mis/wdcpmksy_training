@@ -35,6 +35,8 @@ public class CourseDetails {
 	
 	private Integer trainingId;
 	
+	private String attemptquest;
+	
 	
 	public Integer getTrainingId() {
 		return trainingId;
@@ -95,6 +97,12 @@ public class CourseDetails {
 	 { 
 		 this.theFile = theFile; 
 	 }
+	public String getAttemptquest() {
+		return attemptquest;
+	}
+	public void setAttemptquest(String attemptquest) {
+		this.attemptquest = attemptquest;
+	}
 	 
 	
 }

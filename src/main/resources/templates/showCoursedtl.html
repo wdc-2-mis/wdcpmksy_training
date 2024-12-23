@@ -7,6 +7,45 @@
           rel="stylesheet" 
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
           crossorigin="anonymous">
+          
+ <script type="text/javascript">
+ 
+ function dateChecks() 
+ {
+ 	var today = new Date();
+ 	
+ 	var fromdt=document.getElementById("fromdt").value;
+ 	var todt=document.getElementById("todt").value;
+ 	if(fromdt=='')
+ 	{
+ 		document.getElementById("todt").value='';
+ 		alert('Please select From Date !');
+ 		$('#fromdt').focus();
+ 		return false;
+ 	}
+ 	
+ 	var d1=new Date(fromdt);
+ 	var d2=new Date(todt);
+ 		if(d1>=d2)  
+ 		{  
+ 			alert(" From Date can not be Greater than and Equal To Date.");  
+ 			document.getElementById("fromdt").value='';
+ 			document.getElementById("todt").value='';
+ 			
+ 		  	return false;
+ 		}
+
+ }
+ function datefrom() 
+ {
+ 	var today = new Date();
+ 	document.getElementById("todt").value='';
+
+ }
+ 
+ 
+ 
+ </script>         
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -20,20 +59,11 @@
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
                 <a class="nav-link" th:classappend="${activeTab == 'course-details' ? 'active' : ''}" 
-                   href="#" 
-                   onclick="showCourseDetails(event)">Add Course Details</a>
+                    th:href="@{/showCourseDetail}">Add Course Details</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'questions' ? 'active' : ''}" 
-                   th:href="@{/addCourseQuestion}">Add Questions</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'modify-course' ? 'active' : ''}" 
-                   th:href="@{/modifyCourseDtl}">Modify Course</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'modify-questions' ? 'active' : ''}" 
-                   th:href="@{/modifyCourseQuestion}">Modify Questions</a>
+                <a class="nav-link" th:classappend="${activeTab == 'download-certificate' ? 'active' : ''}" 
+                    th:href="@{/listofUserSearch}">List of Users</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/logout}">Logout</a>
@@ -56,29 +86,35 @@
             <form th:action="@{/saveCourseDetails}" method="post"  th:object="${curl}" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Course Name:</label>
-                    <input type="text" class="form-control" id="cname" name="cname"  placeholder="Enter Course Name" th:field="*{cname}"  autocomplete = "off" required />
+                    <input type="text" class="form-control" id="cname" name="cname"  th:field="*{cname}"  autocomplete="off" required />
                 </div>
                   
                 <div class="mb-3">
                     <label for="courseDescription" class="form-label">Course Description:</label>
-                    <textarea class="form-control" id="cdesc" name="cdesc"  rows="3" required></textarea>
+                    <textarea class="form-control" id="cdesc" name="cdesc"  rows="3" autocomplete="off" required></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Total No. of Question:</label>
-                    <input type="text" class="form-control"  placeholder="Total No. of Question" id="totquest" name="totquest" th:field="*{totquest}"  autocomplete = "off" required />
+                    <input type="text" class="form-control" id="totquest" name="totquest" th:field="*{totquest}"  autocomplete="off" required />
+                </div>
+                <div class="mb-3">
+                    <label for="courseName" class="form-label">Total No. of Question Attempt:</label>
+                    <input type="text" class="form-control" id="attemptquest" name="attemptquest" th:field="*{attemptquest}"  autocomplete="off"  required/>
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Duration of Exam:</label>
-                    <input type="text" class="form-control" id="durexam" name="durexam" th:field="*{durexam}"  autocomplete = "off"  required/>
+                    <input type="text" class="form-control" id="durexam" name="durexam" th:field="*{durexam}"  autocomplete="off"  required/>
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Minimum Passing Marks:</label>
-                    <input type="text" class="form-control" id="passm" name="passm" th:field="*{passm}"  autocomplete = "off" required/>
+                    <input type="text" class="form-control" id="passm" name="passm" th:field="*{passm}"  autocomplete="off" required/>
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Course Available</label>
-                    From: <input type="text" class="form-control" id="fromdt" name="fromdt" placeholder="dd/mm/yyyy" th:field="*{fromdt}"  autocomplete = "off"  required/>
-                    To: <input type="text" class="form-control" id="todt" name="todt" placeholder="dd/mm/yyyy" th:field="*{todt}"  autocomplete = "off"  required/>
+                    &nbsp;&nbsp; From: <!-- <input type="text" class="form-control" id="fromdt" name="fromdt" placeholder="dd/mm/yyyy" th:field="*{fromdt}"  autocomplete = "off"  required/> -->
+                    &nbsp;&nbsp;<input type="date" id="fromdt" name="fromdt" placeholder="dd-mm-yyyy"  value="" min="2020-01-01" max="2049-12-31" onblur="datefrom();" required />   &nbsp;&nbsp;&nbsp;&nbsp;
+                    To: <!-- <input type="text" class="form-control" id="todt" name="todt" placeholder="dd/mm/yyyy" th:field="*{todt}"  autocomplete = "off"  required/> -->
+                    		&nbsp;&nbsp;<input type="date" id="todt" name="todt" placeholder="dd-mm-yyyy"  value="" min="2020-01-01" max="2050-12-31" onblur="dateChecks();" required  />
                 </div>
                 <div class="mb-3">
                     <label for="courseName" class="form-label">Course Material:</label>

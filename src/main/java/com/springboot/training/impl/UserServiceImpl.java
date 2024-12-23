@@ -135,31 +135,32 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void saveCourseDetailUrl(CourseDetails courseDetails, String ext, String file_name, String filePath, String userId, Integer regId) {
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Date fromdt, todt;
 		try {
-			fromdt = formatter.parse(courseDetails.getFromdt());
-			todt=formatter.parse(courseDetails.getTodt());
-		
-			LMSTrainingDetails lmsdtl = new LMSTrainingDetails();
-			User user = new User();
-			user.setUser_reg_id(regId);
-			lmsdtl.setCourse_name(courseDetails.getCname());
-			lmsdtl.setCourse_description(courseDetails.getCdesc());
-			lmsdtl.setNoof_question(Integer.parseInt(courseDetails.getTotquest()));
-			lmsdtl.setDuration_exam(Integer.parseInt(courseDetails.getDurexam()));
-			lmsdtl.setMin_pass_marks(Integer.parseInt(courseDetails.getPassm()));
-			lmsdtl.setCourse_start(fromdt);
-			lmsdtl.setCourse_end(todt);
-			lmsdtl.setFile_extension(ext);
-			lmsdtl.setFile_name(file_name);
-			lmsdtl.setFile_path(filePath);
-			lmsdtl.setStatus("C");
-			lmsdtl.setCreated_date(new Date());
-			lmsdtl.setCreated_by(userId);
-			lmsdtl.setUser(user);
+				fromdt = formatter.parse(courseDetails.getFromdt());
+				todt=formatter.parse(courseDetails.getTodt());
 			
-			courseDtlRepository.save(lmsdtl);
+				LMSTrainingDetails lmsdtl = new LMSTrainingDetails();
+				User user = new User();
+				user.setUser_reg_id(regId);
+				lmsdtl.setCourse_name(courseDetails.getCname());
+				lmsdtl.setCourse_description(courseDetails.getCdesc());
+				lmsdtl.setNoof_question(Integer.parseInt(courseDetails.getTotquest()));
+				lmsdtl.setDuration_exam(Integer.parseInt(courseDetails.getDurexam()));
+				lmsdtl.setMin_pass_marks(Integer.parseInt(courseDetails.getPassm()));
+				lmsdtl.setAttempt_question(Integer.parseInt(courseDetails.getAttemptquest()));
+				lmsdtl.setCourse_start(fromdt);
+				lmsdtl.setCourse_end(todt);
+				lmsdtl.setFile_extension(ext);
+				lmsdtl.setFile_name(file_name);
+				lmsdtl.setFile_path(filePath);
+				lmsdtl.setStatus("D");
+				lmsdtl.setCreated_date(new Date());
+				lmsdtl.setCreated_by(userId);
+				lmsdtl.setUser(user);
+				
+				courseDtlRepository.save(lmsdtl);
 		
 		
 		

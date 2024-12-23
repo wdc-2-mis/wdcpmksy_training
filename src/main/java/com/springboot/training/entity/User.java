@@ -47,7 +47,8 @@ public class User {
     
    // private Set<LMSTrainingDetails> lmsTrainingDetails = new HashSet<LMSTrainingDetails>(0);
     
-    
+    @Column
+    private String registration_id; 
     
 	
 	public String getEmail() {
@@ -148,6 +149,14 @@ public class User {
 
 	public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
 		this.otpExpirationTime = otpExpirationTime;
+	}
+
+	public String getRegistration_id() {
+		return registration_id;
+	}
+
+	public void setRegistration_id(String registration_id) {
+		this.registration_id = registration_id;
 	}
 
 	/*
