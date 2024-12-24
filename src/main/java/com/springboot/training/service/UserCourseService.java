@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.springboot.training.entity.LMSTrainingDetails;
 import com.springboot.training.entity.LmsTrainingQuestion;
+import com.springboot.training.entity.LmsUserQuizDetails;
 
 public interface UserCourseService {
 
@@ -21,4 +22,6 @@ public interface UserCourseService {
 	Integer calculateMarksObtained(Integer courseId, Integer userRegId);
 
 	List<LmsTrainingQuestion> findByTrainingIdAndStatus(Integer trainingId, String status);
+
+	LmsUserQuizDetails getquizDetails(Integer trainingId, Integer userRegId);
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.training.entity.LMSTrainingDetails;
 import com.springboot.training.entity.LmsTrainingQuestion;
+import com.springboot.training.entity.LmsUserQuizDetails;
 import com.springboot.training.service.UserCourseService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -157,9 +158,11 @@ public class UserCourseController {
 		String userName;
 		Integer questionsAttempted;
 		Integer marksObtained;
+		Boolean passed;
+		
 		
 //		String[] nameParts = userId.split(" ");
-		LinkedHashMap<Integer, Boolean> userPassed = new LinkedHashMap<>();
+//		LinkedHashMap<Integer, Boolean> userPassed = new LinkedHashMap<>();
 		
 //		List<LMSTrainingDetails> courses = ucSer.getUserCourse();
 		
@@ -167,10 +170,10 @@ public class UserCourseController {
 //			courseId = course.getTraining_id();
 
 			// Check if user has passed the course
-			boolean passed = ucSer.isUserPassed(userRegId, courseId);
-			userPassed.put(courseId, passed);
-
-			model.addAttribute("passed", passed);
+//			boolean passed = ucSer.isUserPassed(userRegId, courseId);
+//			userPassed.put(courseId, passed);
+//
+//			model.addAttribute("passed", passed);
 //		}
 		
 		LMSTrainingDetails course = ucSer.getCourseById(courseId).orElse(null);
@@ -178,13 +181,20 @@ public class UserCourseController {
 		courseId = course.getTraining_id();
 		courseName = course.getCourse_name();
 		userName = userId;
-		questionsAttempted = ucSer.getQuestionsAttempted(courseId, userRegId);
-		marksObtained = ucSer.calculateMarksObtained(courseId, userRegId);
+		
+		LmsUserQuizDetails quizDetails = ucSer.getquizDetails(courseId, userRegId);
+		questionsAttempted = quizDetails.getQuestionAttempt();
+		marksObtained = quizDetails.getMarksObtained();
+		passed = quizDetails.getStatus().equalsIgnoreCase("P");
+		
+//		questionsAttempted = ucSer.getQuestionsAttempted(courseId, userRegId);
+//		marksObtained = ucSer.calculateMarksObtained(courseId, userRegId);
 		
 		model.addAttribute("userId", userId);
 		model.addAttribute("userName", userName);
 		model.addAttribute("courseId", courseId);
 		model.addAttribute("courseName", courseName);
+		model.addAttribute("passed", passed);
 		model.addAttribute("totalQuestions", course.getAttempt_question());
 	    model.addAttribute("passingMarks", course.getMin_pass_marks());
 	    model.addAttribute("trainingId", trainingId);

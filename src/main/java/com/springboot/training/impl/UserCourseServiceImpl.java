@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.springboot.training.entity.LMSTrainingDetails;
 import com.springboot.training.entity.LmsTrainingQuestion;
 import com.springboot.training.entity.LmsUserQuestionAnswer;
+import com.springboot.training.entity.LmsUserQuizDetails;
+import com.springboot.training.repository.LmsUserQuizDetailsRepository;
 import com.springboot.training.repository.QuestionRepository;
 import com.springboot.training.repository.UserCourseRepository;
 import com.springboot.training.repository.UserQuestionAnswerRepository;
@@ -25,6 +27,9 @@ public class UserCourseServiceImpl implements UserCourseService {
 	
 	@Autowired
 	private UserQuestionAnswerRepository uaRepo;
+	
+	@Autowired
+	private LmsUserQuizDetailsRepository qdRepo;
 
 	@Override
 	public List<LMSTrainingDetails> getUserCourse() {
@@ -93,6 +98,11 @@ public class UserCourseServiceImpl implements UserCourseService {
 	@Override
 	public List<LmsTrainingQuestion> findByTrainingIdAndStatus(Integer trainingId, String status) {
 		return tqRepo.findByTrainingIdAndStatus(trainingId,status);
+	}
+
+	@Override
+	public LmsUserQuizDetails getquizDetails(Integer trainingId, Integer userRegId) {
+		return qdRepo.getQuizDetails(trainingId, userRegId);
 	}
 
 }
