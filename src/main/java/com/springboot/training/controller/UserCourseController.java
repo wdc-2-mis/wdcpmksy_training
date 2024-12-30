@@ -1,25 +1,48 @@
 package com.springboot.training.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.springboot.training.entity.LMSTrainingDetails;
 import com.springboot.training.entity.LmsTrainingQuestion;
 import com.springboot.training.entity.LmsUserQuizDetails;
+import com.springboot.training.repository.LmsUserQuizDetailsRepository;
 import com.springboot.training.service.UserCourseService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +54,11 @@ public class UserCourseController {
 
 	@Autowired
 	private UserCourseService ucSer;
+	
+	@Autowired
+	LmsUserQuizDetailsRepository userQuizRepo;
+	
+	private final TemplateEngine templateEngine;
 
 	@GetMapping("/userCourse")
 	public String getUserCourse(HttpSession session, Model model, HttpServletRequest request) {
@@ -108,44 +136,205 @@ public class UserCourseController {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Course details not found");
 		}
 	}
+	
+	public UserCourseController(TemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
+    }
 
 	@GetMapping("/downloadCertificate")
-	public void downloadCertificate(@RequestParam("training_id") Integer trainingId, @RequestParam("type") String type,
-			HttpServletResponse response) throws IOException {
+	public void downloadCertificate(@RequestParam("training_id") Integer trainingId,@RequestParam Integer userRegId, @RequestParam("type") String type,
+			HttpServletResponse response) throws IOException, DocumentException {
+		
+		
+		LmsUserQuizDetails object = userQuizRepo.getQuizDetails(trainingId, userRegId);
 
-		String certificatePath;
-		String certificateName;
+		Rectangle layout = new Rectangle(PageSize.A4.rotate());
+		layout.setBackgroundColor(new BaseColor(255, 255, 255));
+		Document document = new Document(layout, 50, 50, 50, 50);
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		PdfWriter pdfWriter = PdfWriter.getInstance(document, byteArrayOutputStream);
+		document.open();
 
-		if (type.equals("participation")) {
-			certificatePath = "classpath:static/certificates/Participation Certificate.pdf";
-			certificateName = "Participation Certificate" + ".pdf";
-		} else if (type.equals("completion")) {
-			certificatePath = "classpath:static/certificates/CompletionCertificate.pdf";
-			certificateName = "Completion Certificate" + ".pdf";
-		} else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid certificate type");
-			return;
+		PdfContentByte canvas;
+		try {
+			canvas = pdfWriter.getDirectContent();
+			canvas.rectangle(50, 50, 743, 500); // x, y, width, height
+			canvas.stroke();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		ClassPathResource imgResource = new ClassPathResource("/static/images/tiranga_national_emblem.png");
+		byte[] imgBytes = FileCopyUtils.copyToByteArray(imgResource.getInputStream());
 
-		// Get the certificate file
-		InputStream inputStream = getClass().getClassLoader()
-				.getResourceAsStream(certificatePath.replace("classpath:", ""));
-		File file = File.createTempFile("original-certificate", ".pdf");
-		Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		Image logo = Image.getInstance(imgBytes);
+		logo.scaleAbsolute(50, 50); // resize the logo
+		logo.setAbsolutePosition(450, 640); // set the position of the logo
+
+		PdfPTable table = new PdfPTable(3);
+		table.setWidthPercentage(100);
+		table.setWidths(new int[] { 1, 1, 2 });
+		table.getDefaultCell().setFixedHeight(60);
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+		table.getDefaultCell().setBorder(Rectangle.BOTTOM);
+		table.getDefaultCell().setBorderColor(BaseColor.WHITE);
+
+		PdfPCell cell = new PdfPCell();
+		cell.setPadding(10);
+		cell.setBorder(Rectangle.BOTTOM);
+		cell.setBorderColor(BaseColor.WHITE);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		Paragraph par = new Paragraph("Logo of PIA", FontFactory.getFont(FontFactory.TIMES_BOLD, 18, BaseColor.GRAY));
+		par.setAlignment(Element.ALIGN_LEFT);
+		cell.addElement(par);
+		table.addCell(cell);
+		table.addCell(logo);
+
+		cell = new PdfPCell();
+		cell.setPadding(10);
+		cell.setBorder(Rectangle.BOTTOM);
+		cell.setBorderColor(BaseColor.WHITE);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		Paragraph para = new Paragraph("Department of Land Resources",
+				FontFactory.getFont(FontFactory.TIMES_BOLD, 18, BaseColor.GRAY));
+		para.setAlignment(Element.ALIGN_RIGHT);
+		cell.addElement(para);
+		table.addCell(cell);
+
+		if (type.equals("completion")) {
+
+			cell = new PdfPCell();
+			cell.setColspan(3);
+			cell.setFixedHeight(200);
+			cell.setPadding(20);
+			cell.setBackgroundColor(new BaseColor(0, 128, 0));
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			Paragraph p = new Paragraph("Certificate of Course Completion",
+					FontFactory.getFont(FontFactory.TIMES_BOLDITALIC, 34, BaseColor.WHITE));
+			cell.addElement(p);
+			cell.addElement(new Paragraph(object.getCreatedBy(), FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
+			table.addCell(cell);
+
+			cell = new PdfPCell();
+			cell.setColspan(3);
+			cell.setPadding(30);
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			
+			LocalDateTime  date = object.getCreatedDate();
+			DateTimeFormatter  formatter =  DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+			String strDate= formatter.format(date);  
+			
+			Paragraph p1 = new Paragraph(
+					"This is to certify that he/she has successfully completed the online course on Watershed Structures in "+strDate+". The Course administered by Department of Land Resources, Ministry of Rural Development, Government of India in association with My Bharat Portal. ",
+					FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.GRAY));
+			cell.addElement(p1);
+			table.addCell(cell);
+
+			
+
+		}else if(type.equals("participation")) {
+
+			cell = new PdfPCell();
+			cell.setColspan(3);
+			cell.setFixedHeight(200);
+			cell.setPadding(20);
+			cell.setBackgroundColor(new BaseColor(160, 32, 240));
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			Paragraph p = new Paragraph("Certificate of Participation",
+					FontFactory.getFont(FontFactory.TIMES_BOLDITALIC, 34, BaseColor.WHITE));
+			cell.addElement(p);
+			cell.addElement(new Paragraph(object.getCreatedBy(), FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
+			table.addCell(cell);
+
+			cell = new PdfPCell();
+			cell.setColspan(3);
+			cell.setPadding(30);
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			LocalDateTime  date = object.getCreatedDate();
+			DateTimeFormatter  formatter =  DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+			String strDate= formatter.format(date);  
+			Paragraph p1 = new Paragraph(
+					"This is to certify that he/she has participated in shramdan in "+strDate+" organised by the Department of Land Resources, Ministry of Rural Development, Government of India.",
+					FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.GRAY));
+			cell.addElement(p1);
+			table.addCell(cell);
+
+			
+
+		}
+		
+		cell = new PdfPCell();
+		cell.setColspan(3);
+		cell.setBorder(Rectangle.BOTTOM);
+		cell.setBorderColor(BaseColor.WHITE);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		Paragraph p2 = new Paragraph("Sign:", FontFactory.getFont(FontFactory.HELVETICA, 18, BaseColor.GRAY));
+		p2.setIndentationLeft(400);
+		cell.addElement(p2);
+		table.addCell(cell);
+
+		cell = new PdfPCell();
+		cell.setColspan(2);
+		cell.setBorder(Rectangle.BOTTOM);
+		cell.setBorderColor(BaseColor.WHITE);
+		cell.setVerticalAlignment(Element.ALIGN_TOP);
+		Paragraph p3 = new Paragraph("_____________________________",
+				FontFactory.getFont(FontFactory.HELVETICA, 18));
+		p3.setIndentationLeft(20);
+		cell.addElement(p3);
+		table.addCell(cell);
+
+		cell = new PdfPCell();
+		cell.setBorder(Rectangle.BOTTOM);
+		cell.setBorderColor(BaseColor.WHITE);
+		cell.setVerticalAlignment(Element.ALIGN_TOP);
+		Paragraph p4 = new Paragraph("_____________________________",
+				FontFactory.getFont(FontFactory.HELVETICA, 18));
+		p4.setIndentationLeft(30);
+		cell.addElement(p4);
+		table.addCell(cell);
+
+		cell = new PdfPCell();
+		cell.setColspan(2);
+		cell.setBorder(Rectangle.BOTTOM);
+		cell.setBorderColor(BaseColor.WHITE);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		Paragraph p5 = new Paragraph("Date", FontFactory.getFont(FontFactory.HELVETICA, 18, BaseColor.GRAY));
+		p5.setIndentationLeft(20);
+		cell.addElement(p5);
+		table.addCell(cell);
+
+		cell = new PdfPCell();
+		cell.setBorder(Rectangle.BOTTOM);
+		cell.setBorderColor(BaseColor.WHITE);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		Paragraph p6 = new Paragraph("Designation:",
+				FontFactory.getFont(FontFactory.HELVETICA, 16, BaseColor.GRAY));
+		p6.setIndentationLeft(30);
+		cell.addElement(p6);
+		Paragraph p7 = new Paragraph("Department Name:",
+				FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.GRAY));
+		p7.setIndentationLeft(30);
+		cell.addElement(p7);
+		table.addCell(cell);
+		
+		document.add(table);
+
+		document.close();
+		pdfWriter.close();
 
 		response.setContentType("application/pdf");
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + certificateName + "\"");
-		response.setHeader("Content-Length", String.valueOf(file.length()));
-
-		// Copy the file to the response output stream
-		Files.copy(file.toPath(), response.getOutputStream());
-
-		// Flush and close the output stream
-		response.getOutputStream().flush();
-		response.getOutputStream().close();
-
-		// Delete the temporary file
-		file.delete();
+		response.setHeader("Content-Disposition", "attachment; filename=certificate.pdf");
+		response.getOutputStream().write(byteArrayOutputStream.toByteArray());
 	}
 	
 	@GetMapping("/viewCertificate")

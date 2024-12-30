@@ -282,11 +282,11 @@ span {
 
 				<div th:if="${passed}" class="button-container">
 					<button class="download-button"
-						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=participation'|">
+						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&userRegId=' + ${userRegId} + '&type=participation'|">
 						Participation Certificate</button>
 
 					<button class="download-button"
-						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=completion'|">
+						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&userRegId=' + ${userRegId} + '&type=completion'|">
 						Completion Certificate</button>
 				</div>
 
@@ -294,7 +294,7 @@ span {
 				<div th:unless="${passed}">
 					<!-- 				<b style="color: #FF0000;">"You have not passed the quiz. You can review the Course Material and attempt the exam again."</b> -->
 					<button class="download-button"
-						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=participation'|">
+						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&userRegId=' + ${userRegId} + '&type=participation'|">
 						Participation Certificate</button>
 				</div>
 			</div>
