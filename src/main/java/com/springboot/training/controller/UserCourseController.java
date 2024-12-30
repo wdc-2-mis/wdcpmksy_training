@@ -139,11 +139,11 @@ public class UserCourseController {
     }
 
 	@GetMapping("/downloadCertificate")
-	public void downloadCertificate(@RequestParam("training_id") Integer trainingId, @RequestParam("type") String type,
+	public void downloadCertificate(@RequestParam("training_id") Integer trainingId,@RequestParam Integer userRegId, @RequestParam("type") String type,
 			HttpServletResponse response) throws IOException, DocumentException {
 		
 		
-		LmsUserQuizDetails object = userQuizRepo.getQuizDetails(trainingId, trainingId);
+		LmsUserQuizDetails object = userQuizRepo.getQuizDetails(trainingId, userRegId);
 
 		Rectangle layout = new Rectangle(PageSize.A4.rotate());
 		layout.setBackgroundColor(new BaseColor(255, 255, 255));
