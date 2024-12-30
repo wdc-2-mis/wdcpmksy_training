@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Take Test</title>
+    <title>Quiz</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* General body and container styling */
@@ -242,49 +242,52 @@
 	          }
 	        });
 	    }
+	
+		function displayQuestion() {
+		  if (allQuestions.length > 0) {
+		    questionForm.style.display = 'block';
+		    const question = allQuestions[currentQuestionIndex];
 
-	    // Display question
-	    function displayQuestion() {
-	      if (allQuestions.length > 0) {
-	        questionForm.style.display = 'block';
-	        const question = allQuestions[currentQuestionIndex];
+		    questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${allQuestions.length}`;
+		    questionText.textContent = question.questionDescription;
+		    questionMark.textContent = `Mark: ${question.questionMarks}`;
 
-	        questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${allQuestions.length}`;
-	        questionText.textContent = question.questionDescription;
-	        questionMark.textContent = `Mark: ${question.questionMarks}`;
+		    // Render options
+		    optionsContainer.innerHTML = `
+		      <div>
+		        <input type="radio" name="option" value="${question.option1}" id="option1">
+		        <label for="option1">A. ${question.option1}</label>
+		      </div>
+		      <div>
+		        <input type="radio" name="option" value="${question.option2}" id="option2">
+		        <label for="option2">B. ${question.option2}</label>
+		      </div>
+		      <div>
+		        <input type="radio" name="option" value="${question.option3}" id="option3">
+		        <label for="option3">C. ${question.option3}</label>
+		      </div>
+		      <div>
+		        <input type="radio" name="option" value="${question.option4}" id="option4">
+		        <label for="option4">D. ${question.option4}</label>
+		      </div>
+		    `;
 
-	        // Render options
-	        optionsContainer.innerHTML = `
-	          <div>
-	            <input type="radio" name="option" value="${question.option1}" id="option1">
-	            <label for="option1">A. ${question.option1}</label>
-	          </div>
-	          <div>
-	            <input type="radio" name="option" value="${question.option2}" id="option2">
-	            <label for="option2">B. ${question.option2}</label>
-	          </div>
-	          <div>
-	            <input type="radio" name="option" value="${question.option3}" id="option3">
-	            <label for="option3">C. ${question.option3}</label>
-	          </div>
-	          <div>
-	            <input type="radio" name="option" value="${question.option4}" id="option4">
-	            <label for="option4">D. ${question.option4}</label>
-	          </div>
-	        `;
+		    // Restore previously selected answer
+		    if (selectedAnswers[currentQuestionIndex]) {
+		      document.querySelector(`input[name="option"][value="${selectedAnswers[currentQuestionIndex]}"]`).checked = true;
+		    }
 
-	        // Restore previously selected answer
-	        if (selectedAnswers[currentQuestionIndex]) {
-	          document.querySelector(`input[name="option"][value="${selectedAnswers[currentQuestionIndex]}"]`).checked = true;
-	        }
+		    prevButton.disabled = currentQuestionIndex === 0;
+		    nextButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
 
-	        prevButton.disabled = currentQuestionIndex === 0;
-	        nextButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
-	        submitButton.style.display = currentQuestionIndex === allQuestions.length - 1 ? 'inline-block' : 'none';
-	      }
-	    }
+		    // Show submit button only on the last question and if at least one question is attempted
+		    const hasAttemptedAtLeastOne = Object.keys(selectedAnswers).length > 0;
+		    submitButton.style.display =
+		      currentQuestionIndex === allQuestions.length - 1 && hasAttemptedAtLeastOne ? 'inline-block' : 'none';
+		  }
+		}
 
-	    // Shuffle array
+	  	    // Shuffle array
 	    function shuffleArray(array) {
 	      for (let i = array.length - 1; i > 0; i--) {
 	        const j = Math.floor(Math.random() * (i + 1));
@@ -293,14 +296,20 @@
 	      return array;
 	    }
 
-	    // Button events
-	    nextButton.addEventListener('click', () => {
-	      saveCurrentAnswer();
-	      if (currentQuestionIndex < allQuestions.length - 1) {
-	        currentQuestionIndex++;
-	        displayQuestion();
-	      }
-	    });
+	   
+
+	   nextButton.addEventListener('click', () => {
+	     const selectedOption = document.querySelector('input[name="option"]:checked');
+	     if (!selectedOption) {
+	       //alert('Please select an answer before proceeding to the next question.');
+	       return; // Prevent navigating to the next question
+	     }
+	     saveCurrentAnswer();
+	     if (currentQuestionIndex < allQuestions.length - 1) {
+	       currentQuestionIndex++;
+	       displayQuestion();
+	     }
+	   });
 
 	    prevButton.addEventListener('click', () => {
 	      saveCurrentAnswer();
