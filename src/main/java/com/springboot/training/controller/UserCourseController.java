@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -212,7 +215,7 @@ public class UserCourseController {
 			Paragraph p = new Paragraph("Certificate of Course Completion",
 					FontFactory.getFont(FontFactory.TIMES_BOLDITALIC, 34, BaseColor.WHITE));
 			cell.addElement(p);
-			cell.addElement(new Paragraph("Name", FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
+			cell.addElement(new Paragraph(object.getCreatedBy(), FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
 			table.addCell(cell);
 
 			cell = new PdfPCell();
@@ -221,8 +224,13 @@ public class UserCourseController {
 			cell.setBorder(Rectangle.BOTTOM);
 			cell.setBorderColor(BaseColor.WHITE);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			
+			LocalDateTime  date = object.getCreatedDate();
+			DateTimeFormatter  formatter =  DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+			String strDate= formatter.format(date);  
+			
 			Paragraph p1 = new Paragraph(
-					"This is to certify that he/she has successfully completed the online course on Watershed Structures in <Month 2024>. The Course administered by Department of Land Resources, Ministry of Rural Development, Government of India in association with My Bharat Portal. ",
+					"This is to certify that he/she has successfully completed the online course on Watershed Structures in "+strDate+". The Course administered by Department of Land Resources, Ministry of Rural Development, Government of India in association with My Bharat Portal. ",
 					FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.GRAY));
 			cell.addElement(p1);
 			table.addCell(cell);
@@ -242,7 +250,7 @@ public class UserCourseController {
 			Paragraph p = new Paragraph("Certificate of Participation",
 					FontFactory.getFont(FontFactory.TIMES_BOLDITALIC, 34, BaseColor.WHITE));
 			cell.addElement(p);
-			cell.addElement(new Paragraph("Name", FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
+			cell.addElement(new Paragraph(object.getCreatedBy(), FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
 			table.addCell(cell);
 
 			cell = new PdfPCell();
@@ -251,8 +259,11 @@ public class UserCourseController {
 			cell.setBorder(Rectangle.BOTTOM);
 			cell.setBorderColor(BaseColor.WHITE);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			LocalDateTime  date = object.getCreatedDate();
+			DateTimeFormatter  formatter =  DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+			String strDate= formatter.format(date);  
 			Paragraph p1 = new Paragraph(
-					"This is to certify that he/she has participated in shramdan in <Month 2024>organised by the Department of Land Resources, Ministry of Rural Development, Government of India.",
+					"This is to certify that he/she has participated in shramdan in "+strDate+" organised by the Department of Land Resources, Ministry of Rural Development, Government of India.",
 					FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.GRAY));
 			cell.addElement(p1);
 			table.addCell(cell);
