@@ -173,7 +173,7 @@ h2 {
 
 						<span th:if="${userPassed[course.training_id]} eq true">
 							<button class="download-button"
-								th:onclick="|location.href='/training/downloadCertificate?training_id=' + ${course.training_id} + '&userRegId=' + ${userRegId} + '&type=participation'|">
+								th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&userRegId=' + ${userRegId} + '&type=participation'|">
 								Participation Certificate</button> <!-- 	<button class="download-button" th:onclick="|location.href='/viewCertificate?trainingId=' + ${course.training_id}|">Participate</button> -->
 
 							<!-- 									<button class="download-button" --> <!-- 									th:onclick="|location.href='/viewCertificate?training_id=' + ${course.training_id}|"> -->
@@ -181,11 +181,11 @@ h2 {
 
 
 							<button class="download-button"
-								th:onclick="|location.href='/training/downloadCertificate?training_id=' + ${course.training_id} + '&userRegId=' + ${userRegId} + '&type=completion'|">
+								th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&userRegId=' + ${userRegId} + '&type=completion'|">
 								Completion Certificate</button>
 						</span> <span th:unless="${userPassed[course.training_id]} eq true">
 							<button class="participate-button"
-								th:onclick="|location.href='/training/getTest?training_id=' + ${course.training_id}|">Participate</button>
+								th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">Participate</button>
 
 							<!-- <button class="participate-button" th:onclick="|location.href='/viewCertificate?trainingId=' + ${course.training_id}|">Participate</button> -->
 
