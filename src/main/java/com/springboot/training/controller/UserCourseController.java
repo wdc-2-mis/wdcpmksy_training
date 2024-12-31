@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
@@ -215,7 +216,7 @@ public class UserCourseController {
 			Paragraph p = new Paragraph("Certificate of Course Completion",
 					FontFactory.getFont(FontFactory.TIMES_BOLDITALIC, 34, BaseColor.WHITE));
 			cell.addElement(p);
-			cell.addElement(new Paragraph(object.getCreatedBy(), FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
+			cell.addElement(new Paragraph(object.getUser().getUser_id(), FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
 			table.addCell(cell);
 
 			cell = new PdfPCell();
@@ -250,7 +251,7 @@ public class UserCourseController {
 			Paragraph p = new Paragraph("Certificate of Participation",
 					FontFactory.getFont(FontFactory.TIMES_BOLDITALIC, 34, BaseColor.WHITE));
 			cell.addElement(p);
-			cell.addElement(new Paragraph(object.getCreatedBy(), FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
+			cell.addElement(new Paragraph(object.getUser().getUser_id(), FontFactory.getFont(FontFactory.TIMES_BOLD, 55, BaseColor.WHITE)));
 			table.addCell(cell);
 
 			cell = new PdfPCell();
@@ -287,8 +288,7 @@ public class UserCourseController {
 		cell.setBorder(Rectangle.BOTTOM);
 		cell.setBorderColor(BaseColor.WHITE);
 		cell.setVerticalAlignment(Element.ALIGN_TOP);
-		Paragraph p3 = new Paragraph("_____________________________",
-				FontFactory.getFont(FontFactory.HELVETICA, 18));
+		Paragraph p3 = new Paragraph("________________________________________");
 		p3.setIndentationLeft(20);
 		cell.addElement(p3);
 		table.addCell(cell);
@@ -297,21 +297,31 @@ public class UserCourseController {
 		cell.setBorder(Rectangle.BOTTOM);
 		cell.setBorderColor(BaseColor.WHITE);
 		cell.setVerticalAlignment(Element.ALIGN_TOP);
-		Paragraph p4 = new Paragraph("_____________________________",
-				FontFactory.getFont(FontFactory.HELVETICA, 18));
+		Paragraph p4 = new Paragraph("________________________________________");
 		p4.setIndentationLeft(30);
 		cell.addElement(p4);
 		table.addCell(cell);
 
+		DateTimeFormatter  formatter =  DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+		String strDate= formatter.format(LocalDate.now());
 		cell = new PdfPCell();
 		cell.setColspan(2);
 		cell.setBorder(Rectangle.BOTTOM);
 		cell.setBorderColor(BaseColor.WHITE);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		Paragraph p5 = new Paragraph("Date", FontFactory.getFont(FontFactory.HELVETICA, 18, BaseColor.GRAY));
+		Paragraph p5 = new Paragraph("Date: "+strDate, FontFactory.getFont(FontFactory.HELVETICA, 18, BaseColor.GRAY));
 		p5.setIndentationLeft(20);
 		cell.addElement(p5);
 		table.addCell(cell);
+		
+//		cell = new PdfPCell();
+//		cell.setBorder(Rectangle.BOTTOM);
+//		cell.setBorderColor(BaseColor.WHITE);
+//		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//		Paragraph p8 = new Paragraph(strDate, FontFactory.getFont(FontFactory.HELVETICA, 18));
+//		p8.setIndentationLeft(20);
+//		cell.addElement(p8);
+//		table.addCell(cell);
 
 		cell = new PdfPCell();
 		cell.setBorder(Rectangle.BOTTOM);
@@ -333,7 +343,10 @@ public class UserCourseController {
 		pdfWriter.close();
 
 		response.setContentType("application/pdf");
-		response.setHeader("Content-Disposition", "attachment; filename=certificate.pdf");
+		if(type.equals("completion")) 
+			response.setHeader("Content-Disposition", "attachment; filename=Completion Certificate.pdf");
+		else if(type.equals("participation"))
+			response.setHeader("Content-Disposition", "attachment; filename=Participation Certificate.pdf");
 		response.getOutputStream().write(byteArrayOutputStream.toByteArray());
 	}
 	

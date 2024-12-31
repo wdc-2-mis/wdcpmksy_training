@@ -113,10 +113,17 @@
                         <td th:text="${usr.email}"></td>
                         <td th:text="${usr.mobile_no}"></td>
                         <td th:text="${usr.user_type}"></td>
-                        <td th:if="${usr.user_type} eq 'user'">
-                            <a th:href="'/viewParticipantCertificate?userid='+${usr.user_reg_id}">Participant Certificate</a>, 
-                            <a th:href="'/completedParticipantCertificate?userid='+${usr.user_reg_id}">Completed Certificate</a>
-                        </td>
+                        <span th:if="${usr.status} eq 'P'">
+						<td>
+							<a th:href="'/downloadCertificate?training_id=' + ${trainingId} + '&userRegId=' + ${usr.user_reg_id} + '&type=participation'">Participant Certificate</a>, 
+							<a th:href="'/downloadCertificate?training_id=' + ${trainingId} + '&userRegId=' + ${usr.user_reg_id} + '&type=completion'">Completed Certificate</a>
+						</td>
+                        </span>
+						<span th:if="${usr.status} eq 'F'">
+							<td>
+								<a th:href="'/downloadCertificate?training_id=' + ${trainingId} + '&userRegId=' + ${usr.user_reg_id} + '&type=participation'">Participant Certificate</a>
+							</td>
+						</span>
                     </tr>
                     
                     

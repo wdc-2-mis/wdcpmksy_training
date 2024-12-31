@@ -22,7 +22,7 @@
 		.box-container {
 			background-color: white;
 			width: 300px;
-			height: 600px;
+			height: 700px;
 			border: 1px solid #ddd;
 			border-radius: 10px;
 			padding: 5px;
@@ -74,10 +74,6 @@
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link" th:classappend="${activeTab == 'course-details' ? 'active' : ''}"
-						th:href="@{/listofUserSearch}">List of Users</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" th:href="@{/logout}">Logout</a>
 				</li>
 			</ul>
@@ -98,11 +94,12 @@
 			<a id="achor" th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}">View Course Details </a>&nbsp;
 			<a id="achor" th:href="'/downloadMaterial/' + ${list.training_id}">View Course Material</a>&nbsp;
 			<span th:if="${list.status}=='D'">
-				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id})}">Add Questions</a>
+				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id})}">Add Questions</a>&nbsp;
 			</span>
 			<span th:if="${list.status}=='C'">
-				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id})}">View Questions</a>
+				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id})}">View Questions</a>&nbsp;
 			</span>
+			<a id="achor" th:href="@{/listofUserSearch/{id}(id = ${list.training_id})}">View Course Details </a>&nbsp;
 
 		</div>
 	</div>
