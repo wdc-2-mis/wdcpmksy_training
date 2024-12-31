@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -243,8 +244,8 @@ public class UserCourseController {
 			cell.setBorderColor(BaseColor.WHITE);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			
-			LocalDateTime  date = object.getCreatedDate();
-			DateTimeFormatter  formatter =  DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+			Date  date = object.getCreatedDate();
+			SimpleDateFormat  formatter =  new SimpleDateFormat("dd-MMM-yyyy");
 			String strDate= formatter.format(date);  
 			
 			Paragraph p1 = new Paragraph(
@@ -277,9 +278,9 @@ public class UserCourseController {
 			cell.setBorder(Rectangle.BOTTOM);
 			cell.setBorderColor(BaseColor.WHITE);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			LocalDateTime  date = object.getCreatedDate();
-			DateTimeFormatter  formatter =  DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-			String strDate= formatter.format(date);  
+			Date  date = object.getCreatedDate();
+			SimpleDateFormat  formatter =  new SimpleDateFormat("dd-MMM-yyyy");
+			String strDate= formatter.format(date);    
 			Paragraph p1 = new Paragraph(
 					"This is to certify that he/she has participated in shramdan in "+strDate+" organised by the Department of Land Resources, Ministry of Rural Development, Government of India.",
 					FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.GRAY));
