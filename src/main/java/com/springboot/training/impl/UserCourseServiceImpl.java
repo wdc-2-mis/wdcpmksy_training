@@ -105,4 +105,9 @@ public class UserCourseServiceImpl implements UserCourseService {
 		return qdRepo.getQuizDetails(trainingId, userRegId);
 	}
 
+	@Override
+	public LmsUserQuizDetails getQuizResult(Integer trainingId, Integer userRegId) {
+		return qdRepo.getQuizResult(trainingId, userRegId);
+	}
+
 }

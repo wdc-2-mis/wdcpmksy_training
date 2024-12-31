@@ -69,6 +69,7 @@ public class UserCourseController {
 		Integer totMarks = 0;
 		Integer courseId = 0;
 		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
+		LinkedHashMap<Integer, Boolean> firstTimeUser = new LinkedHashMap<>();
 		LinkedHashMap<Integer, Boolean> userPassed = new LinkedHashMap<>();
 		List<LMSTrainingDetails> courses = ucSer.getUserCourse();
 		for (LMSTrainingDetails course : courses) {
@@ -82,10 +83,26 @@ public class UserCourseController {
 				model.addAttribute("map", map);
 
 				// Check if user has passed the course
-				boolean passed = ucSer.isUserPassed(userRegId, courseId);
-				userPassed.put(courseId, passed);
+				LmsUserQuizDetails quizDetails = ucSer.getquizDetails(courseId, userRegId);
 
+//				boolean passed = quizDetails.getStatus().equalsIgnoreCase("P");
+////				boolean passed = ucSer.isUserPassed(userRegId, courseId);
+//				userPassed.put(courseId, passed);
+//
+//				model.addAttribute("userPassed", userPassed);
+				
+				if (quizDetails != null) {
+				    boolean passed = quizDetails.getStatus().equalsIgnoreCase("P");
+				    userPassed.put(courseId, passed);
+				    firstTimeUser.put(courseId, false);
+				} 
+				else {
+				    firstTimeUser.put(courseId, true);
+				}
+
+				model.addAttribute("firstTimeUser", firstTimeUser);
 				model.addAttribute("userPassed", userPassed);
+				
 
 				LMSTrainingDetails courseDetails = ucSer.getCourseById(courseId).orElse(null);
 
@@ -384,7 +401,7 @@ public class UserCourseController {
 		courseName = course.getCourse_name();
 		userName = userId;
 		
-		LmsUserQuizDetails quizDetails = ucSer.getquizDetails(courseId, userRegId);
+		LmsUserQuizDetails quizDetails = ucSer.getQuizResult(courseId, userRegId);
 		questionsAttempted = quizDetails.getQuestionAttempt();
 		marksObtained = quizDetails.getMarksObtained();
 		passed = quizDetails.getStatus().equalsIgnoreCase("P");

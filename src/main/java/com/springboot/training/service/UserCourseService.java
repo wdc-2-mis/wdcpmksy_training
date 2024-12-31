@@ -24,4 +24,6 @@ public interface UserCourseService {
 	List<LmsTrainingQuestion> findByTrainingIdAndStatus(Integer trainingId, String status);
 
 	LmsUserQuizDetails getquizDetails(Integer trainingId, Integer userRegId);
+
+	LmsUserQuizDetails getQuizResult(Integer trainingId, Integer userRegId);
 }

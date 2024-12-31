@@ -117,6 +117,20 @@ span {
 }
 
 /* Responsive design */
+@media only screen and (max-width: 1024px) {
+  .certificate-container {
+    width: 80%;
+    padding: 25px;
+  }
+  .certificate-container p {
+    font-size: 16px;
+  }
+  .download-button {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+}
+
 @media only screen and (max-width: 768px) {
 	.certificate-container {
 		width: 90%;
@@ -129,6 +143,34 @@ span {
 		padding: 8px 15px;
 		font-size: 14px;
 	}
+}
+
+@media only screen and (max-width: 576px) {
+  .certificate-container {
+    width: 95%;
+    padding: 15px;
+  }
+  .certificate-container p {
+    font-size: 14px;
+  }
+  .download-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .certificate-container {
+    width: 100%;
+    padding: 10px;
+  }
+  .certificate-container p {
+    font-size: 12px;
+  }
+  .download-button {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
 }
 
 /*
@@ -179,6 +221,8 @@ span {
 				th:text="${userId}"></b>
 			</span>
 			<ul class="navbar-nav ms-auto">
+				<li class="nav-item"><a class="nav-link" th:href="@{/userCourse}">Home</a>
+				</li>
 				<li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a>
 				</li>
 			</ul>
@@ -187,7 +231,7 @@ span {
 
 	<div class="container">
 		<div class="certificate-container">
-			<h2>View/Download Certificate</h2>
+			<h2>Quiz Result</h2>
 			<!--         <p class="certificate-detail"> -->
 			<!--             This certifies that <span class="certificate-highlight" th:text="${userId}"></span> -->
 			<!--         </p> -->
@@ -208,11 +252,11 @@ span {
 				</p>
 
 				<div th:if="${passed}">
-					<b style="color: #008000;">"Congratulations! You have
-						successfully Passed the quiz."</b>
+					<h4><b style="color: #008000;">"Congratulations! You have
+						successfully Passed the quiz."</b></h4>
 				</div>
 				<div th:unless="${passed}">
-					<b style="color: #FF0000;">"You have not passed the quiz."</b>
+					<h4><b style="color: #FF0000;">"You have not passed the quiz."</b></h4>
 				</div>
 
 				<br>
