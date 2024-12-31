@@ -2,8 +2,10 @@ package com.springboot.training.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,6 +158,8 @@ public class TestController {
 	        }
 	        marks = question.getQuestionMarks();
 	    }
+	    LocalDateTime now = LocalDateTime.now();
+	    Date updatedDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
 
 	    // Calculate percentage
 	    double percentage = (totalMarks > 0) ? ((double) marksObtained / (totalQuestions*marks)) * 100 : 0;
@@ -170,10 +174,10 @@ public class TestController {
 	    quizDetails.setMarksObtained(marksObtained); // Marks for correct answers
 	    quizDetails.setQuestionAttempt(attemptedQuestions); // Number of questions attempted
 	    quizDetails.setStatus(quizStatus); 
-	    quizDetails.setCreatedDate(LocalDateTime.now());
+	    quizDetails.setCreatedDate(new Date());
 	    quizDetails.setCreatedBy(userId);
 	    quizDetails.setUpdatedBy(userId);
-	    quizDetails.setUpdatedDate(LocalDateTime.now());
+	    quizDetails.setUpdatedDate(new Date());
 	    quizDetails.setTotalMarks(totalQuestions*marks); // Total marks for all questions
 
 	    userQuizDetailsRepository.save(quizDetails);

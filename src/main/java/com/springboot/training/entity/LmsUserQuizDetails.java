@@ -1,6 +1,6 @@
 package com.springboot.training.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,13 +51,13 @@ public class LmsUserQuizDetails {
     private String updatedBy;
 
     @Column(name = "updated_date")
-    private LocalDateTime updatedDate;
+    private Date updatedDate;
 
     @Column(name = "created_by", length = 25)
     private String createdBy;
 
     @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    private Date createdDate;
 	
 	@ManyToOne
 	@JoinColumn(name = "training_id", referencedColumnName = "training_id", insertable = false, updatable = false)
@@ -134,11 +134,11 @@ public class LmsUserQuizDetails {
 		this.updatedBy = updatedBy;
 	}
 
-	public LocalDateTime getUpdatedDate() {
+	public Date getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(LocalDateTime updatedDate) {
+	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
@@ -150,11 +150,11 @@ public class LmsUserQuizDetails {
 		this.createdBy = createdBy;
 	}
 
-	public LocalDateTime getCreatedDate() {
+	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(LocalDateTime createdDate) {
+	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 
