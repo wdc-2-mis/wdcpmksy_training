@@ -284,6 +284,7 @@
 		    const hasAttemptedAtLeastOne = Object.keys(selectedAnswers).length > 0;
 		    submitButton.style.display =
 		      currentQuestionIndex === allQuestions.length - 1 && hasAttemptedAtLeastOne ? 'inline-block' : 'none';
+			  skipButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
 		  }
 		}
 
