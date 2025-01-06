@@ -68,10 +68,16 @@ public class UserServiceImpl implements UserService{
 
   	  public void saveUser(UserDto userDto) { User user = new User();
 	  user.setUser_id(userDto.getFirstName() + " " + userDto.getLastName());
+	  user.setUser_name(userDto.getFirstName() + " " + userDto.getLastName());
+	  user.setMobile_no(userDto.getPhone());
+	  user.setStcode(userDto.getState());
+	  user.setDcode(userDto.getDistrict());
+	  user.setBcode(userDto.getBlock());
+	  user.setUser_type(userDto.getRole());
 	  user.setEmail(userDto.getEmail()); 
 	  user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-	  
-	   user.setStatus("admin"); userRepository.save(user); }
+	  user.setStatus("active"); 
+	  userRepository.save(user); }
 	 
 
     @Override
