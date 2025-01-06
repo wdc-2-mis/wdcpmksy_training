@@ -50,7 +50,28 @@ public class User {
     @Column
     private String registration_id; 
     
+    @Column(nullable=false)
+    private String user_name;
+
+    @Column(nullable=false)
+    private Integer dcode;
+
+    @Column(nullable=false)
+    private Integer st_code;
 	
+    @ManyToOne
+    @JoinColumn(name = "bcode", referencedColumnName = "bcode", insertable = false, updatable = false)
+    private IwmpBlock iwmpBlock;
+
+    @ManyToOne
+    @JoinColumn(name = "dcode", referencedColumnName = "dcode", insertable = false, updatable = false)
+    private IwmpDistrict iwmpDistrict;
+
+    @ManyToOne
+    @JoinColumn(name = "st_code", referencedColumnName = "st_code", insertable = false, updatable = false)
+    private IwmpState iwmpState;
+    
+    
 	public String getEmail() {
 		return email;
 	}
@@ -157,6 +178,54 @@ public class User {
 
 	public void setRegistration_id(String registration_id) {
 		this.registration_id = registration_id;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public Integer getDcode() {
+		return dcode;
+	}
+
+	public void setDcode(Integer dcode) {
+		this.dcode = dcode;
+	}
+
+	public Integer getSt_code() {
+		return st_code;
+	}
+
+	public void setSt_code(Integer st_code) {
+		this.st_code = st_code;
+	}
+
+	public IwmpBlock getIwmpBlock() {
+		return iwmpBlock;
+	}
+
+	public void setIwmpBlock(IwmpBlock iwmpBlock) {
+		this.iwmpBlock = iwmpBlock;
+	}
+
+	public IwmpDistrict getIwmpDistrict() {
+		return iwmpDistrict;
+	}
+
+	public void setIwmpDistrict(IwmpDistrict iwmpDistrict) {
+		this.iwmpDistrict = iwmpDistrict;
+	}
+
+	public IwmpState getIwmpState() {
+		return iwmpState;
+	}
+
+	public void setIwmpState(IwmpState iwmpState) {
+		this.iwmpState = iwmpState;
 	}
 
 	/*
