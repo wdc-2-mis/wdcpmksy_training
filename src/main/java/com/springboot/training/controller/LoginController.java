@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.springboot.training.dto.CourseDetails;
 import com.springboot.training.dto.UserDto;
 import com.springboot.training.dto.UserUrlDto;
+import com.springboot.training.entity.IwmpBlock;
+import com.springboot.training.entity.IwmpDistrict;
+import com.springboot.training.entity.IwmpState;
 import com.springboot.training.entity.URLDetails;
 import com.springboot.training.entity.User;
+import com.springboot.training.repository.IwmpBlockRepository;
+import com.springboot.training.repository.IwmpDistrictRepository;
+import com.springboot.training.repository.IwmpStateRepository;
 import com.springboot.training.service.UserService;
 
 import java.io.BufferedOutputStream;
@@ -36,8 +43,10 @@ public class LoginController {
 
     private UserService userService;
     
-    
+    @Autowired
+    private IwmpStateRepository iwmpStateRepository;
 
+    
     public LoginController(UserService userService) {
         this.userService = userService;
     }
@@ -102,14 +111,18 @@ public class LoginController {
 		 * return "redirect:/login?error=Invalid OTP"; }
 		 */
      
-     @GetMapping("/register")
+    @GetMapping("/register")
     public String showRegistrationForm(Model model){
        
         UserDto user = new UserDto();
         model.addAttribute("user", user);
+        List<IwmpState> states = iwmpStateRepository.findAllStates();
+        model.addAttribute("states", states);
         return "register";
     }
 
+    
+    
     @PostMapping("/register/save")
     public String registration(@Valid @ModelAttribute("user") UserDto userDto,
                                BindingResult result,
