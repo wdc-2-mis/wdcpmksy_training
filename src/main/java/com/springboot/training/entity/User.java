@@ -57,7 +57,7 @@ public class User {
     private Integer dcode;
 
     @Column(nullable=false)
-    private Integer st_code;
+    private Integer stcode;
 	
     @ManyToOne
     @JoinColumn(name = "bcode", referencedColumnName = "bcode", insertable = false, updatable = false)
@@ -68,7 +68,7 @@ public class User {
     private IwmpDistrict iwmpDistrict;
 
     @ManyToOne
-    @JoinColumn(name = "st_code", referencedColumnName = "st_code", insertable = false, updatable = false)
+    @JoinColumn(name = "stcode", referencedColumnName = "st_code", insertable = false, updatable = false)
     private IwmpState iwmpState;
     
     
@@ -196,12 +196,12 @@ public class User {
 		this.dcode = dcode;
 	}
 
-	public Integer getSt_code() {
-		return st_code;
+	public Integer getStcode() {
+		return stcode;
 	}
 
-	public void setSt_code(Integer st_code) {
-		this.st_code = st_code;
+	public void setStcode(Integer stcode) {
+		this.stcode = stcode;
 	}
 
 	public IwmpBlock getIwmpBlock() {

@@ -40,19 +40,22 @@
             </div>
             <div class="card-body">
                 <form method="post" role="form" th:action="@{/register/save}" th:object="${user}">
-                    <div class="form-group mb-3">
-                        <label class="form-label">First Name</label>
-                        <input class="form-control" id="firstName" name="firstName" placeholder="Enter first name" 
-                               th:field="*{firstName}" autocomplete="off" type="text" />
-                        <p th:errors="*{firstName}" class="text-danger" th:if="${#fields.hasErrors('firstName')}"></p>
-                    </div>
+                    <div class="form-group mb-3 row">
+            <div class="col-md-5">
+                 <label class="form-label">First Name</label>
+                  <input class="form-control" id="firstName" name="firstName" placeholder="Enter first name" 
+                  th:field="*{firstName}" autocomplete="off" type="text" />
+                <p th:errors="*{firstName}" class="text-danger" th:if="${#fields.hasErrors('firstName')}"></p>
+           </div>
 
-                    <div class="form-group mb-3">
-                        <label class="form-label">Last Name</label>
-                        <input class="form-control" id="lastName" name="lastName" placeholder="Enter last name" 
-                               th:field="*{lastName}" autocomplete="off" type="text" />
-                        <p th:errors="*{lastName}" class="text-danger" th:if="${#fields.hasErrors('lastName')}"></p>
-                    </div>
+              <div class="col-md-5">
+              <label class="form-label">Last Name</label>
+               <input class="form-control" id="lastName" name="lastName" placeholder="Enter last name" 
+                  th:field="*{lastName}" autocomplete="off" type="text" />
+              <p th:errors="*{lastName}" class="text-danger" th:if="${#fields.hasErrors('lastName')}"></p>
+              </div>
+                </div>
+
 
                     <div class="form-group mb-3">
                         <label class="form-label">Email</label>
@@ -61,9 +64,19 @@
                         <p th:errors="*{email}" class="text-danger" th:if="${#fields.hasErrors('email')}"></p>
                     </div>
 
+                  <div class="form-group mb-3">
+                    <label class="form-label">Phone</label>
+                  <input class="form-control" id="phone" name="phone" placeholder="Enter Mobile No." 
+                     th:field="*{phone}" autocomplete="off" type="text" 
+                     pattern="^\d{10}$" maxlength="10" title="Please enter a valid 10-digit phone number" 
+                     oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
+                   <p th:errors="*{phone}" class="text-danger" th:if="${#fields.hasErrors('phone')}"></p>
+                   </div>
+
+
                     <div class="form-group mb-3">
-                        <label class="form-label">State:</label>
-                        <select class="form-control" id="state" name="state" th:field="*{state}">
+                        <label class="form-label col-md-2">State:</label>
+                         <select class="form-control" id="state" name="state" th:field="*{state}">
                             <option value="">Select State</option>
                             <option th:each="state : ${states}" th:value="${state.stCode}" th:text="${state.stName}"></option>
                         </select>
@@ -71,7 +84,7 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label class="form-label">District:</label>
+                        <label class="form-label col-md-2">District:</label>
                         <select class="form-control" id="district" name="district" th:field="*{district}">
                             <option value="">Select District</option>
                         </select>
@@ -93,7 +106,7 @@
                             <option value="user">User</option>
                             <option value="state">State</option>
                         </select>
-                        
+                        <p th:errors="*{role}" class="text-danger" th:if="${#fields.hasErrors('role')}"></p> 
                      </div>   
                     <div class="form-group mb-3">
                         <label class="form-label">Password</label>

@@ -2,6 +2,7 @@ package com.springboot.training.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -10,15 +11,32 @@ import lombok.NoArgsConstructor;
 public class UserDto {
 
 	private Long id;
-    @NotEmpty
+    @NotEmpty(message = "First Name must not be empty")
     private String firstName;
-    @NotEmpty
+    @NotEmpty(message = "Last Name must not be empty")
     private String lastName;
     @NotEmpty(message = "Email should not be empty")
     @Email
     private String email;
+    
     @NotEmpty(message = "Password should not be empty")
     private String password;
+    
+    @NotNull(message = "Please select a State.")
+    private Integer state;
+    
+    @NotNull(message = "Please select a District.")
+    private Integer district;
+    
+    @NotNull(message = "Please select a Block.")
+    private Integer block;
+    
+    @NotEmpty(message = "Role should not be empty")
+    private String role;
+    
+    @NotNull(message = "Please Enter Mobile No.")
+    private String phone;
+    
 	public Long getId() {
 		return id;
 	}
@@ -48,6 +66,36 @@ public class UserDto {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public Integer getState() {
+		return state;
+	}
+	public void setState(Integer state) {
+		this.state = state;
+	}
+	public Integer getDistrict() {
+		return district;
+	}
+	public void setDistrict(Integer district) {
+		this.district = district;
+	}
+	public Integer getBlock() {
+		return block;
+	}
+	public void setBlock(Integer block) {
+		this.block = block;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
     
     
