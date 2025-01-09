@@ -92,7 +92,7 @@
 			<p>Total Participants Attempt Quiz: <strong th:text="${list.useridcount}" /></p>
 			<p>Total Participants Passed: <strong th:text="${list.totpassed}" /></p>
 			<a id="achor" th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}">View Course Details </a>&nbsp;
-			<a id="achor" th:href="'/downloadMaterial/' + ${list.training_id}">View Course Material</a>&nbsp;
+			<a id="achor" th:href="'/downloadMaterial/' + ${list.training_id}" target="_blank" class="nav-link">View Course Material</a>&nbsp;
 			<span th:if="${list.status}=='D'">
 				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id})}">Add Questions</a>&nbsp;
 			</span>

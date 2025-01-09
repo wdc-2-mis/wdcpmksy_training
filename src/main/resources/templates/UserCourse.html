@@ -25,7 +25,7 @@
 	padding: 5px;
 	margin: 20px;
 	width: 300px;
-	height: 550px;
+	height: 600px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 	text-align: center;
 	background-color: #fff;
@@ -152,11 +152,8 @@ h2 {
 
 						<h5 style="text-decoration: underline;" id="title" th:text="${course.course_name}"></h5>
 
-						<p>
-							Course Material:
-
-<!-- 								<button th:onclick="|location.href='/downloadMaterial/' + ${course.training_id}|">Download File</button> -->
-							<a th:href="'/downloadMaterial/' + ${course.training_id}">View/Download</a>
+						<p style="display: flex; padding-left:20px;"> Course Material: 
+							<a th:href="'/downloadMaterial/' + ${course.training_id}" style=" padding: 1px 3px;" target="_blank" class="nav-link">View/Download</a>
 						</p>
 						<p>
 							Maximum Marks: <strong th:text="${map[course.training_id]}"></strong>

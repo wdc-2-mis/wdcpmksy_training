@@ -140,9 +140,9 @@ public class UserCourseController {
 
 			File file = new File(filePath + fileName + "." + fileExtension);
 			if (file.exists()) {
-				response.setContentType("application/octet-stream");
+				response.setContentType("application/pdf");
 				response.setHeader("Content-Disposition",
-						"attachment; filename=\"" + fileName + "." + fileExtension + "\"");
+						"inline; filename=\"" + fileName + "." + fileExtension + "\"");
 
 				Files.copy(file.toPath(), response.getOutputStream());
 				response.getOutputStream().flush();
