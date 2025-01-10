@@ -27,6 +27,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -166,6 +167,16 @@ public class UserCourseController {
 		
 		
 		LmsUserQuizDetails object = userQuizRepo.getQuizDetails(trainingId, userRegId);
+		
+		double percntge = 0.00;
+		String progress = "";
+		String grade = "";
+		
+		if(object.getStatus().equals("P")) {
+			percntge = (object.getTotalMarks() > 0) ? ((double) object.getMarksObtained() / object.getTotalMarks()) * 100 : 0;
+			progress = object.getGrade().getGrade_id()==1?"EXCELLENT":object.getGrade().getGrade_id()==2?"VERY GOOD":object.getGrade().getGrade_id()==3?"GOOD":"AVERAGE";
+			grade = object.getGrade().getGradeDesc();
+		}
 
 		Rectangle layout = new Rectangle(PageSize.A4.rotate());
 		layout.setBackgroundColor(new BaseColor(255, 255, 255));
@@ -249,12 +260,40 @@ public class UserCourseController {
 			String strDate= formatter.format(date);  
 			
 			Paragraph p1 = new Paragraph(
-					"This is to certify that he/she has successfully completed the online course on Watershed Structures in "+strDate+". The Course administered by Department of Land Resources, Ministry of Rural Development, Government of India in association with My Bharat Portal. ",
+					"This is to certify that he/she has successfully completed and scored "+percntge+"% the online course on Watershed Structures in "+strDate+". The Course administered by Department of Land Resources, Ministry of Rural Development, Government of India in association with My Bharat Portal. ",
 					FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.GRAY));
 			cell.addElement(p1);
 			table.addCell(cell);
-
 			
+			cell = new PdfPCell();
+			cell.setColspan(2);
+			Chunk chunk1 = new Chunk("Progress: ", FontFactory.getFont(FontFactory.TIMES_BOLD, 18, BaseColor.GRAY));
+			Chunk chunk2 = new Chunk(progress, FontFactory.getFont(FontFactory.TIMES_BOLDITALIC, 18, new BaseColor(0, 128, 0)));
+			Paragraph p2 = new Paragraph();
+			p2.add(chunk1);
+			p2.add(chunk2);
+			p2.setIndentationLeft(20);
+			Paragraph p3 = new Paragraph("________________________________________");
+			p3.setIndentationLeft(20);
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
+			cell.addElement(p2);
+			cell.addElement(p3);
+			table.addCell(cell);
+			
+			cell = new PdfPCell();
+			
+			Paragraph p8 = new Paragraph("Sign:", FontFactory.getFont(FontFactory.TIMES_BOLD, 18, BaseColor.GRAY));
+			p8.setIndentationLeft(30);
+			Paragraph p4 = new Paragraph("________________________________________");
+			p4.setIndentationLeft(30);
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
+			cell.addElement(p8);
+			cell.addElement(p4);
+			table.addCell(cell);
 
 		}else if(type.equals("participation")) {
 
@@ -286,40 +325,38 @@ public class UserCourseController {
 					FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.GRAY));
 			cell.addElement(p1);
 			table.addCell(cell);
-
 			
+			cell = new PdfPCell();
+			cell.setColspan(3);
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			Paragraph p2 = new Paragraph("Sign:", FontFactory.getFont(FontFactory.HELVETICA, 18, BaseColor.GRAY));
+			p2.setIndentationLeft(400);
+			cell.addElement(p2);
+			table.addCell(cell);
+
+			cell = new PdfPCell();
+			cell.setColspan(2);
+			Paragraph p3 = new Paragraph("________________________________________");
+			p3.setIndentationLeft(20);
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_TOP);
+			cell.addElement(p3);
+			table.addCell(cell);
+
+			cell = new PdfPCell();
+			Paragraph p4 = new Paragraph("________________________________________");
+			p4.setIndentationLeft(30);
+			cell.setBorder(Rectangle.BOTTOM);
+			cell.setBorderColor(BaseColor.WHITE);
+			cell.setVerticalAlignment(Element.ALIGN_TOP);
+			cell.addElement(p4);
+			table.addCell(cell);
 
 		}
 		
-		cell = new PdfPCell();
-		cell.setColspan(3);
-		cell.setBorder(Rectangle.BOTTOM);
-		cell.setBorderColor(BaseColor.WHITE);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		Paragraph p2 = new Paragraph("Sign:", FontFactory.getFont(FontFactory.HELVETICA, 18, BaseColor.GRAY));
-		p2.setIndentationLeft(400);
-		cell.addElement(p2);
-		table.addCell(cell);
-
-		cell = new PdfPCell();
-		cell.setColspan(2);
-		cell.setBorder(Rectangle.BOTTOM);
-		cell.setBorderColor(BaseColor.WHITE);
-		cell.setVerticalAlignment(Element.ALIGN_TOP);
-		Paragraph p3 = new Paragraph("________________________________________");
-		p3.setIndentationLeft(20);
-		cell.addElement(p3);
-		table.addCell(cell);
-
-		cell = new PdfPCell();
-		cell.setBorder(Rectangle.BOTTOM);
-		cell.setBorderColor(BaseColor.WHITE);
-		cell.setVerticalAlignment(Element.ALIGN_TOP);
-		Paragraph p4 = new Paragraph("________________________________________");
-		p4.setIndentationLeft(30);
-		cell.addElement(p4);
-		table.addCell(cell);
-
 		DateTimeFormatter  formatter =  DateTimeFormatter.ofPattern("dd-MMM-yyyy");
 		String strDate= formatter.format(LocalDate.now());
 		cell = new PdfPCell();
@@ -327,7 +364,7 @@ public class UserCourseController {
 		cell.setBorder(Rectangle.BOTTOM);
 		cell.setBorderColor(BaseColor.WHITE);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		Paragraph p5 = new Paragraph("Date: "+strDate, FontFactory.getFont(FontFactory.HELVETICA, 18, BaseColor.GRAY));
+		Paragraph p5 = new Paragraph("Date: "+strDate, FontFactory.getFont(FontFactory.TIMES_BOLD, 18, BaseColor.GRAY));
 		p5.setIndentationLeft(20);
 		cell.addElement(p5);
 		table.addCell(cell);
@@ -346,7 +383,7 @@ public class UserCourseController {
 		cell.setBorderColor(BaseColor.WHITE);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		Paragraph p6 = new Paragraph("Designation:",
-				FontFactory.getFont(FontFactory.HELVETICA, 16, BaseColor.GRAY));
+				FontFactory.getFont(FontFactory.TIMES_BOLD, 18, BaseColor.GRAY));
 		p6.setIndentationLeft(30);
 		cell.addElement(p6);
 		Paragraph p7 = new Paragraph("Department Name:",

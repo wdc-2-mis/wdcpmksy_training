@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.springboot.training.dto.CourseDetails;
 import com.springboot.training.dto.QuestionDTO;
 import com.springboot.training.dto.UserAnswerDTO;
+import com.springboot.training.entity.LMSMGrade;
 import com.springboot.training.entity.LMSTrainingDetails;
 import com.springboot.training.entity.LmsTrainingQuestion;
 import com.springboot.training.entity.LmsUserQuestionAnswer;
 import com.springboot.training.entity.LmsUserQuizDetails;
 import com.springboot.training.repository.CourseDtlRepository;
+import com.springboot.training.repository.LmsMGradeRepository;
 import com.springboot.training.repository.LmsTrainingQuestionRepository;
 import com.springboot.training.repository.LmsUserQuizDetailsRepository;
 import com.springboot.training.repository.UserQuestionAnswerRepository;
@@ -48,6 +50,9 @@ public class TestController {
 	
 	@Autowired
 	private LmsUserQuizDetailsRepository userQuizDetailsRepository;
+	
+	@Autowired
+	private LmsMGradeRepository lmsMgradeRepo;
 	
 	@GetMapping("/getTest")
 	public String getTest(HttpSession session, @RequestParam("training_id") Integer trainingId, Model model) {
@@ -122,6 +127,7 @@ public class TestController {
 	    Integer userRegId = Integer.parseInt(session.getAttribute("regid").toString());
 
 	    // Fetch all questions for the given training ID
+	    List<LMSMGrade> gradeList = lmsMgradeRepo.findAll();
 	    List<LmsTrainingQuestion> allQuestions = questionRepository.findByTrainingIdAndStatus(trainingId, "C");
 	    LMSTrainingDetails courses = courseDtlRepository.findById(trainingId).orElse(null);
 	    List<LmsTrainingQuestion> randomQuestions = allQuestions.subList(0, Math.min(courses.getAttempt_question(), allQuestions.size()));
@@ -179,7 +185,9 @@ public class TestController {
 	    quizDetails.setUpdatedBy(userId);
 	    quizDetails.setUpdatedDate(new Date());
 	    quizDetails.setTotalMarks(totalQuestions*marks); // Total marks for all questions
-
+	    gradeList.stream().filter(lms-> lms.getMinPer() <= percentage && lms.getMaxPer() >= percentage).forEach(s->{
+	    	quizDetails.setGrade(s);
+	    });
 	    userQuizDetailsRepository.save(quizDetails);
 
 	    System.out.println("Total Questions: " + totalQuestions);

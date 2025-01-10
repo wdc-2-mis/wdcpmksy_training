@@ -66,6 +66,10 @@ public class LmsUserQuizDetails {
 	@ManyToOne
 	@JoinColumn(name = "user_reg_id", referencedColumnName = "user_reg_id", insertable = false, updatable = false)
 	private User user;
+	
+	@ManyToOne
+	@JoinColumn(name = "grade_id", referencedColumnName = "grade_id", insertable = false, updatable = false)
+	private LMSMGrade grade;
 
 	
 	
@@ -180,6 +184,14 @@ public class LmsUserQuizDetails {
 
 	public void setTotalMarks(Integer totalMarks) {
 		this.totalMarks = totalMarks;
+	}
+
+	public LMSMGrade getGrade() {
+		return grade;
+	}
+
+	public void setGrade(LMSMGrade grade) {
+		this.grade = grade;
 	}
 	
 	
