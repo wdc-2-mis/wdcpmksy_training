@@ -1,174 +1,333 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>WDCpmksy Training Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function toggleAuthInput() {
-                const authType = document.querySelector('input[name="authType"]:checked').value;
-                const otpField = document.getElementById('otpField');
-                const passwordField = document.getElementById('passwordField');
-                const passwordInput = document.getElementById('password');
-                const otpInput = document.getElementById('otp');
-                const loginForm = document.getElementById("loginForm");
-
-                if (authType === 'otp') {
-                    otpField.style.display = 'block';
-                    passwordField.style.display = 'none';
-                    passwordInput.removeAttribute('required');
-                    otpInput.setAttribute('required', 'required');
-                    loginForm.setAttribute("action", "/login");
-
-                    // Trigger AJAX call to send OTP
-                    const username = document.getElementById('username').value;
-                    if (username) {
-                        sendOtp(username);
-                    } else {
-                        alert("Please enter your email/phone number first.");
-                    }
-                } else {
-                    otpField.style.display = 'none';
-                    passwordField.style.display = 'block';
-                    otpInput.removeAttribute('required');
-                    passwordInput.setAttribute('required', 'required');
-                    loginForm.setAttribute("action", "/login");
-                }
-            }
-
-            function sendOtp(username) {
-                const csrfToken = document.querySelector('input[name="_csrf"]').value;
-
-                $.ajax({
-                    type: "POST",
-                    url: "/send-otp",
-                    data: { username: username, _csrf: csrfToken },
-                   
-                    success: function(response) { 
-						if (response === "OTP sent successfully to registered Email-Id") 
-						{ 
-							alert(response);
-							} 
-							else { 
-								window.location.href = "/login?otpusernotfound"; 
-								} 
-								                }, 
-								error: function() 
-								{ 
-									alert("Error sending OTP. Please try again."); 
-								} 
-						}); 
-									   }
-
-            
-        
-
-            document.getElementById("otpAuth").addEventListener("change", toggleAuthInput);
-            document.getElementById("passwordAuth").addEventListener("change", toggleAuthInput);
-             // Trigger initial state
-            toggleAuthInput();
-        });
-    </script>
-    <script>
-		function resendOtp() {
-        const username = document.getElementById('username').value;
-        const csrfToken = document.querySelector('input[name="_csrf"]').value;
-
-        if (username) {
-            $.ajax({
-                type: "POST",
-                url: "/send-otp",
-                data: { username: username, _csrf: csrfToken },
-                success: function(response) {
-                    if (response === "OTP sent successfully to registered Email-Id") {
-                        alert("Resend again in your registered Email-Id. Please check your spam mail as well.");
-                    } else {
-                        window.location.href = "/login?otpusernotfound";
-                    }
-                },
-                error: function() {
-                    alert("Error sending OTP. Please try again.");
-                }
-            });
-        } else {
-            alert("Please enter your email ID first.");
+    <title>LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
         }
-    }
-	</script>
-</head>
 
+        .navbar {
+            height: 100px;
+        }
+
+        .navbar-brand img {
+            height: 100%;
+            width: auto;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand .d-flex {
+            flex-direction: column;
+        }
+
+        .navbar-brand span {
+            font-size: 14px;
+        }
+
+        .navbar .text-left {
+            text-align: left;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('images/login_image.png') no-repeat center center fixed;
+            background-size: cover;
+            background-position: center center;
+        }
+
+        .form-group.mb-3 {
+            margin-bottom: 20px;
+        }
+
+        .form-group span {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .card {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity */
+            border: none;
+            color: black;
+            min-height: 400px;
+            width: 100%; /* Full width for smaller screens */
+            max-width: 600px; /* Increase the maximum width */
+            margin: 0 auto; /* Center the card horizontally */
+            padding: 20px; /* Optional: Add padding for better spacing */
+        }
+
+        header {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+        }
+
+        footer {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+		
+		
+		.main-menu {
+		    list-style: none;
+		    padding: 0;
+		    margin: 0;
+		}
+
+		.main-menu > li {
+		    position: relative;
+		    display: inline-block;
+		}
+
+		/* Hide submenu by default */
+		.sub-menu {
+		    display: none;
+		    position: absolute;
+		    right: 0;
+		    background: #fff;
+		    min-width: 150px;
+		    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+		    padding: 0;
+		}
+
+		/* Show submenu on hover */
+		.main-menu li:hover > .sub-menu {
+		    display: block;
+		}
+
+		.sub-menu li {
+		    list-style: none;
+		}
+
+		.sub-menu li a {
+		    display: block;
+		    padding: 10px;
+		    text-decoration: none;
+		    color: #000;
+		}
+
+		.sub-menu li a:hover {
+		    background: #f2f2f2;
+		}
+
+		.navbar-nav .nav-link {
+         padding: 8px 15px;
+         transition: color 0.3s ease;
+       }
+
+       .navbar-nav .nav-link:hover {
+        color: #0056b3; /* darker blue on hover */
+        }
+
+       .dropdown-menu {
+         min-width: 140px;
+         text-align: center;
+        }
+		.navbar + .navbar {
+  margin-top: 5px;   /* small gap between stacked navbars */
+}
+		
+		.navbar-dark .nav-link {
+  color: #fff !important;
+  padding: 8px 15px;
+}
+.navbar-dark .nav-link:hover {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 5px;
+}
+    </style>
+</head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-<!--         <a class="navbar-brand" href="#">Home</a> -->
-		<h1 class="navbar-brand mx-auto">Learning Management System - WDCPMKSY2.0</h1>
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <!-- Logo + Department -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/ashoka-stambh.jpg" alt="Ashoka Stambh" class="me-2">
+      <div class="d-flex flex-column">
+        <span class="fw-bold">भूमि संसाधन विभाग</span>
+        <span>DEPARTMENT OF LAND RESOURCES</span>
+        <span>MINISTRY OF RURAL DEVELOPMENT</span>
+      </div>
+    </a>
+    <!-- LMS Title -->
+    <div class="mx-auto">
+      <span class="h4">Learning Management System - WDCPMKSY2.0</span>
     </div>
+    
+   <div class="text-right">
+            <select id="languageSwitcher" class="form-select form-select-sm">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+        </div>
+    
+  </div>
 </nav>
 
+<!-- Second Navbar for Menu -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <!-- Events Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Events
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
+            <li><a class="dropdown-item" th:href="@{/pictures}">📸 Pictures</a></li>
+            <li><a class="dropdown-item" th:href="@{/videos}">🎥 Videos</a></li>
+          </ul>
+        </li>
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
+        <!-- Media Coverage -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getMediaTypeDetails}">📰 Media Coverage</a>
+        </li>
 
-            <!-- Error Messages -->
-            <div th:if="${param.otperror}" class="alert alert-danger">Invalid Email or OTP. Please try again.</div>
-            <div th:if="${param.error}" class="alert alert-danger">Invalid Email or Password. Please try again.</div>
-            <div th:if="${param.logout}" class="alert alert-success">You have been logged out successfully.</div>
-            <div th:if="${param.otpusernotfound}" class="alert alert-danger">User not registered, Please register User.</div>
-    
+        <!-- Report -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getStateWiseNoofUserDetail}">📊 Report</a>
+        </li>
+
+       <li class="nav-item">
+          <a class="nav-link" th:href="@{/register}">📝 Register</a>
+        </li>
+       
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid content">
+    <div class="row justify-content-center align-items-center" style="height: calc(100vh - 180px);">
+        <div class="col-md-18">
+            <div th:if="${param.error}">
+                <div class="alert alert-danger" data-translate="invalidemail">Invalid Email or Password</div>
+            </div>
+            <div th:if="${param.logout}">
+                <div class="alert alert-success" data-translate="logoutmsg"> You have been logged out.</div>
+            </div>
+
             <div class="card">
-                <div class="card-header"> 
-                    <h2 class="text-center">Login</h2>
+                <div class="card-header">
+                    <h2 class="text-center" data-translate="login">Login</h2>
                 </div>
                 <div class="card-body">
                     <form id="loginForm" method="post" th:action="@{/login}" class="form-horizontal">
-
-                        <!-- CSRF Token -->
-                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-
-                        <!-- Email Field -->
                         <div class="form-group mb-3">
-                            <label class="control-label"> Email</label>
-                            <input type="email" id="username" name="username" class="form-control" autocomplete="off" placeholder="Enter email Id." required />
+                            <label class="control-label" data-translate="email"> Email</label>
+                            <input type="text" id="username" name="username" class="form-control" autocomplete="off" placeholder="Enter email address" data-placeholder-en="Enter email address" data-placeholder-hi="ईमेल पता दर्ज करें" oninput="this.value = this.value.toLowerCase();"/>
                         </div>
 
-                        <!-- Authentication Type Selection -->
                         <div class="form-group mb-3">
-                            <label>Select Authentication Type:</label><br />
-                            <input class="form-check-input" type="radio" name="authType" id="otpAuth" value="otp">
-                            <label for="otpAuth">OTP</label>
-
-                            <input class="form-check-input" type="radio" name="authType" id="passwordAuth" value="password" checked>
-                            <label for="passwordAuth">Password</label>
+                            <label class="control-label" data-translate="password"> Password</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" data-placeholder-en="Enter password" data-placeholder-hi="पासवर्ड दर्ज करें" />
                         </div>
 
-                        <!-- Password Field -->
-                        <div id="passwordField" class="form-group mb-3">
-                            <label>Password</label>
-                            <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
+                        <div class="form-group mb-3" style="text-align:right">
+                            <a th:href="@{/forgot-password}" data-translate="forgotPassword">Forgot Password?</a>
                         </div>
-
-                        <!-- OTP Field -->
-                        <div id="otpField" class="form-group mb-3" style="display: none;">
-                            <label>OTP</label>
-                            <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP">
-                            <a href="#" onclick="resendOtp()">Resend OTP</a>
-                        </div>
-
-                        <!-- Submit Button -->
+                        
                         <div class="form-group mb-3">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                          <button type="submit" class="btn btn-primary w-100" data-translate="submit">Submit</button>
                         </div>
+
+                        <div class="form-group">
+                          <span data-translate="notRegistered" style="display: inline;">Not registered? </span><a th:href="@{/register}" data-translate="registerHere" style="display: inline;">Register/Signup here</a>
+                        </div>
+
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<footer>
+    <p>Content Owned by Department of Land Resources, Ministry of Rural Development</p>
+    <p>Developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India</p>
+</footer>
+
+<script>
+const translations = {
+    en: {
+        login: "Login",
+        email: "Email",
+        password: "Password",
+        submit: "Submit",
+        notRegistered: "Not registered?",
+        registerHere: "Register/Signup here",
+        invalidemail: "Invalid Email or Password",
+        logoutmsg: "You have been logged out.",
+        forgotPassword: "Forgot Password?"
+    },
+    hi: {
+        login: "लॉगिन",
+        email: "ईमेल",
+        password: "पासवर्ड",
+        submit: "सबमिट करें",
+        notRegistered: "रजिस्टर नहीं है?",
+        registerHere: "यहां रजिस्टर/साइनअप करें",
+        invalidemail: "अमान्य ईमेल या पासवर्ड",
+        logoutmsg: "आप लॉग आउट हो चुके हैं।",
+        forgotPassword: "पासवर्ड भूल गए?"
+    }
+};
+ 
+const switchLanguage = (lang) => {
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        element.innerText = translations[lang][key];
+    });
+    document.querySelectorAll('[data-placeholder-en]').forEach(element => { 
+        element.placeholder = element.getAttribute(`data-placeholder-${lang}`); 
+    });
+    sessionStorage.setItem('selectedLanguage', lang);
+};
+
+document.getElementById('languageSwitcher').addEventListener('change', (event) => {
+    switchLanguage(event.target.value);
+});
+
+const savedLanguage = sessionStorage.getItem('selectedLanguage') || 'en'; 
+document.getElementById('languageSwitcher').value = savedLanguage; 
+switchLanguage(savedLanguage);
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+        
 </body>
 </html>

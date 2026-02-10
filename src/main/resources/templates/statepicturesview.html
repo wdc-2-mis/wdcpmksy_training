@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>WDCPMKSY media</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+	<style type="text/css">
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.navbar {
+			height: 100px;
+		}
+
+		.navbar-brand img {
+			height: 100%;
+			width: auto;
+		}
+
+		.navbar-brand {
+			display: flex;
+			align-items: center;
+		}
+
+		.navbar-brand .d-flex {
+			flex-direction: column;
+		}
+
+		.navbar-brand span {
+			font-size: 14px;
+		}
+
+		.navbar .text-left {
+			text-align: left;
+		}
+
+		.content {
+			flex: 1;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: url('images/login_image.png') no-repeat center center fixed;
+			background-size: cover;
+			background-position: center center;
+		}
+
+		.form-group.mb-3 {
+			margin-bottom: 20px;
+		}
+
+		.form-group span {
+			display: block;
+			margin-top: 10px;
+			text-align: center;
+		}
+        footer {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+		.card {
+			background-color: rgba(214, 245, 245, 0.7);
+			/* Light cyan with 70% opacity */
+			border: none;
+			color: black;
+			min-height: 400px;
+			width: 100%;
+			/* Full width for smaller screens */
+			max-width: 600px;
+			/* Increase the maximum width */
+			margin: 0 auto;
+			/* Center the card horizontally */
+			padding: 20px;
+			/* Optional: Add padding for better spacing */
+		}
+
+		header {
+			background-color: rgba(214, 245, 245, 0.7);
+			/* Light cyan with 70% opacity, same as card */
+		}
+
+
+		.main-menu {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.main-menu>li {
+			position: relative;
+			display: inline-block;
+		}
+
+		/* Hide submenu by default */
+		.sub-menu {
+			display: none;
+			position: absolute;
+			right: 0;
+			background: #fff;
+			min-width: 150px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+			padding: 0;
+		}
+
+		/* Show submenu on hover */
+		.main-menu li:hover>.sub-menu {
+			display: block;
+		}
+
+		.sub-menu li {
+			list-style: none;
+		}
+
+		.sub-menu li a {
+			display: block;
+			padding: 10px;
+			text-decoration: none;
+			color: #000;
+		}
+
+		.sub-menu li a:hover {
+			background: #f2f2f2;
+		}
+
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 20px;
+		}
+
+		#searchbar {
+			margin: 10px;
+			padding: 10px;
+			border-radius: 5px;
+			width: 50%;
+			box-sizing: border-box;
+		}
+
+
+		.user-row {
+			display: table-row;
+		}
+		
+		h2 {
+			text-align: center;
+		}
+
+		.video-grid {
+			display: grid;
+			grid-template-columns: repeat(1, 1fr);
+			gap: 20px;
+		}
+
+		iframe {
+			width: 100%;
+			height: 250px;
+		}
+
+
+
+		.card-img-top {
+			height: 220px;
+			width: 100%;
+			object-fit: cover;
+			border-radius: 8px 8px 0 0;
+		}
+
+		.card-body {
+			padding: 2px;
+			text-align: center;
+		}
+
+		.card-title {
+			margin: 0;
+			font-weight: bold;
+		}
+
+		.container1 {
+			max-width: 1500px;
+			/* controls left & right margin */
+			margin: 0 auto;
+			/* center horizontally */
+			padding: 20px;
+			/* inner spacing */
+		}
+
+		.gallery {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			/* 5 per row */
+			gap: 20px;
+		}
+
+		.image-frame {
+			background: #ffffff;
+			padding: 10px;
+			border-radius: 12px;
+			border: 3px solid #8a8a00;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+			overflow: hidden;
+		}
+
+		.image-frame img {
+			width: 100%;
+			height: 200px;
+			object-fit: contain;
+			background: #f8f8f8;
+			cursor: pointer;
+			transition: transform 0.3s ease;
+		}
+
+
+		/* Hover effect */
+		.image-frame:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+
+		}
+
+		.image-frame:hover img {
+			transform: scale(1.08);
+		}
+		
+		
+		 .dropdown-menu {
+         min-width: 140px;
+         text-align: center;
+        }
+		.navbar + .navbar {
+  margin-top: 5px;   /* small gap between stacked navbars */
+}
+		
+		.navbar-dark .nav-link {
+  color: #fff !important;
+  padding: 8px 15px;
+}
+.navbar-dark .nav-link:hover {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 5px;
+}
+	</style>
+
+	<title>Image Gallery</title>
+
+</head>
+
+<body>
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <!-- Logo + Department -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/ashoka-stambh.jpg" alt="Ashoka Stambh" class="me-2">
+      <div class="d-flex flex-column">
+        <span class="fw-bold">भूमि संसाधन विभाग</span>
+        <span>DEPARTMENT OF LAND RESOURCES</span>
+        <span>MINISTRY OF RURAL DEVELOPMENT</span>
+      </div>
+    </a>
+    <!-- LMS Title -->
+    <div class="mx-auto">
+      <span class="h4">Learning Management System - WDCPMKSY2.0</span>
+    </div>
+    
+   <div class="text-right">
+            <select id="languageSwitcher" class="form-select form-select-sm">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+        </div>
+    
+  </div>
+</nav>
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <!-- Events Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Events
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
+            <li><a class="dropdown-item" th:href="@{/pictures}">📸 Pictures</a></li>
+            <li><a class="dropdown-item" th:href="@{/videos}">🎥 Videos</a></li>
+          </ul>
+        </li>
+
+        <!-- Media Coverage -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getMediaTypeDetails}">📰 Media Coverage</a>
+        </li>
+
+        <!-- Report -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getStateWiseNoofUserDetail}">📊 Report</a>
+        </li>
+
+       <li class="nav-item">
+          <a class="nav-link" th:href="@{/login}">🔑 Login</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/register}">📝 Register</a>
+        </li>    
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<br />
+	
+	<h2>Pictures</h2>
+	<br />
+	<br />
+	
+
+
+	<div class="container1">
+		<div class="gallery">
+
+			<!-- Andhra Pradesh -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=28)}">
+					<img src="/images/states/AndhraPradesh.jpeg" class="card-img-top" alt="Andhra Pradesh">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Andhra Pradesh</h5>
+				</div>
+			</div>
+
+
+			<!-- Arunachal Pradesh -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=12)}">
+					<img src="/images/states/ArunachalPradesh.jpeg" class="card-img-top" alt="Arunachal Pradesh">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Arunachal Pradesh</h5>
+				</div>
+			</div>
+
+			<!-- Assam -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=18)}">
+					<img src="/images/states/Assam.jpeg" class="card-img-top" alt="Assam">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Assam</h5>
+				</div>
+			</div>
+
+			<!-- Bihar -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=10)}">
+					<img src="/images/states/Bihar.jpeg" class="card-img-top" alt="Bihar">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Bihar</h5>
+				</div>
+			</div>
+
+			<!-- Chhattisgarh -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=22)}">
+					<img src="/images/states/Chhattisgarh.jpeg" class="card-img-top" alt="Chhattisgarh">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Chhattisgarh</h5>
+				</div>
+			</div>
+
+			<!-- Himachal Pradesh -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=2)}">
+					<img src="/images/states/HimachalPradesh.jpeg" class="card-img-top" alt="Himachal Pradesh">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Himachal Pradesh</h5>
+				</div>
+			</div>
+
+			<!-- Jammu and Kashmir -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=1)}">
+					<img src="/images/states/JammuKashmir.jpeg" class="card-img-top" alt="Jammu Kashmir">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Jammu and Kashmir</h5>
+				</div>
+			</div>
+
+			<!-- Jharkhand -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=20)}">
+					<img src="/images/states/Jharkhand.jpeg" class="card-img-top" alt="Jharkhand">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Jharkhand</h5>
+				</div>
+			</div>
+
+			<!-- Karnataka -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=29)}">
+					<img src="/images/states/Karnataka.jpeg" class="card-img-top" alt="Karnataka">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Karnataka</h5>
+				</div>
+			</div>
+
+			<!-- Kerala -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=32)}">
+					<img src="/images/states/Kerala.jpeg" class="card-img-top" alt="Kerala">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Kerala</h5>
+				</div>
+			</div>
+
+			<!-- Madhya Pradesh -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=23)}">
+					<img src="/images/states/MadhyaPradesh.jpg" class="card-img-top" alt="Madhya Pradesh">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Madhya Pradesh</h5>
+				</div>
+			</div>
+
+			<!-- Maharashtra -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=27)}">
+					<img src="/images/states/Maharashtra.jpeg" class="card-img-top" alt="Maharashtra">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Maharashtra</h5>
+				</div>
+			</div>
+
+			<!-- Manipur -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=14)}">
+					<img src="/images/states/Manipur.jpeg" class="card-img-top" alt="Manipur">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Manipur</h5>
+				</div>
+			</div>
+
+			<!-- Meghalaya -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=17)}">
+					<img src="/images/states/Meghalaya.jpeg" class="card-img-top" alt="Meghalaya">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Meghalaya</h5>
+				</div>
+			</div>
+
+			<!-- Mizoram -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=15)}">
+					<img src="/images/states/Mizoram.jpeg" class="card-img-top" alt="Mizoram">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Mizoram</h5>
+				</div>
+			</div>
+
+			<!-- Nagaland -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=13)}">
+					<img src="/images/states/Nagaland.jpg" class="card-img-top" alt="Nagaland">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Nagaland</h5>
+				</div>
+			</div>
+
+			<!-- Odisha -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=21)}">
+					<img src="/images/states/Odisha.jpeg" class="card-img-top" alt="Odisha">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Odisha</h5>
+				</div>
+			</div>
+
+			<!-- Punjab -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=3)}">
+					<img src="/images/states/Punjab.jpg" class="card-img-top" alt="Punjab">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Punjab</h5>
+				</div>
+			</div>
+
+			<!-- Rajasthan -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=8)}">
+					<img src="/images/states/Rajasthan.jpeg" class="card-img-top" alt="Rajasthan">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Rajasthan</h5>
+				</div>
+			</div>
+
+			<!-- Tamil Nadu -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=33)}">
+					<img src="/images/states/Tamilnadu.jpeg" class="card-img-top" alt="Tamilnadu">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Tamil Nadu</h5>
+				</div>
+			</div>
+
+			<!-- Telangana -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=36)}">
+					<img src="/images/states/Telangana.jpeg" class="card-img-top" alt="Telangana">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">Telangana</h5>
+				</div>
+			</div>
+
+			<!-- UT Ladakh -->
+			<div class="image-frame">
+				<a th:href="@{'/getStatepictures'(stateid=37)}">
+					<img src="/images/states/Ladakh.jpg" class="card-img-top" alt="Ladakh">
+				</a>
+				<div class="card-body">
+					<h5 class="card-title">UT Ladakh</h5>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+
+<footer>
+    <p>Content Owned by Department of Land Resources, Ministry of Rural Development</p>
+    <p>Developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India</p>
+</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx"
+		crossorigin="anonymous"></script>
+		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

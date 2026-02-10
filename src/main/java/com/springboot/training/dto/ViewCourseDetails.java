@@ -64,6 +64,7 @@ private Integer training_id;
 
 
 	public String getCourse_name() {
+		course_name = course_name.replaceAll("\\s+", " ");
 		String[] crse = course_name.split("\\s");
 		StringBuilder strb = new StringBuilder();
 		for(String str : crse) {

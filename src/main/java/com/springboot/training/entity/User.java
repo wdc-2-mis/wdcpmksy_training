@@ -59,6 +59,11 @@ public class User {
     @Column(nullable=false)
     private Integer stcode;
 	
+    @Column(nullable=false)
+    private Integer security_id;
+    
+    @Column(nullable=false)
+    private String address;
     @ManyToOne
     @JoinColumn(name = "bcode", referencedColumnName = "bcode", insertable = false, updatable = false)
     private IwmpBlock iwmpBlock;
@@ -71,6 +76,12 @@ public class User {
     @JoinColumn(name = "stcode", referencedColumnName = "st_code", insertable = false, updatable = false)
     private IwmpState iwmpState;
     
+    @ManyToOne
+    @JoinColumn(name = "security_id", referencedColumnName = "security_id", insertable = false, updatable = false)
+    private LmsSecurityQuestion lmsSecurityQuestion;
+    
+    @Column(nullable=false)
+    private String security_answer;
     
 	public String getEmail() {
 		return email;
@@ -228,6 +239,39 @@ public class User {
 		this.iwmpState = iwmpState;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public LmsSecurityQuestion getLmsSecurityQuestion() {
+		return lmsSecurityQuestion;
+	}
+
+	public void setLmsSecurityQuestion(LmsSecurityQuestion lmsSecurityQuestion) {
+		this.lmsSecurityQuestion = lmsSecurityQuestion;
+	}
+
+	public String getSecurity_answer() {
+		return security_answer;
+	}
+
+	public void setSecurity_answer(String security_answer) {
+		this.security_answer = security_answer;
+	}
+
+	public Integer getSecurity_id() {
+		return security_id;
+	}
+
+	public void setSecurity_id(Integer security_id) {
+		this.security_id = security_id;
+	}
+
+	
 	/*
 	 * @OneToMany(fetch=FetchType.LAZY, mappedBy="user") public
 	 * Set<LMSTrainingDetails> getLmsTrainingDetails() { return lmsTrainingDetails;

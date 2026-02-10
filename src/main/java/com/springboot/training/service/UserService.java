@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.GrantedAuthority;
+/*import org.springframework.mail.javamail.JavaMailSender;
+*/import org.springframework.security.core.GrantedAuthority;
 
 import com.springboot.training.dto.AddCourseQuestion;
 import com.springboot.training.dto.CourseDetails;
@@ -35,5 +35,7 @@ public interface UserService {
 	void saveaddQuestion(@Valid AddCourseQuestion question, HttpSession session, Integer trainingId);
      void generateAndSendOtp(String email);
     
-   
+     boolean verifyUserDetails(String email, Integer securityQuestion, String security_answer);
+
+ 	 boolean updatePassword(String email, String newPassword);
 }

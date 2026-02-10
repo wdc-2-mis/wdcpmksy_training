@@ -43,16 +43,22 @@ public class SpringSecurity {
         return http.getSharedObject(AuthenticationManagerBuilder.class).build();
     }
 
-    @Bean
+    @Bean 
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager);
         customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
 
         http.csrf().disable()
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register", "/registration/districts/**", "/registration/blocks/**","/index", "/saveurl", "/send-otp", "/otp-login", "/login", "/custom-login", "/page/**").permitAll()
-                .requestMatchers("/showCourseDetail", "/addCourseQuestion", "/listofUserSearch" ,"/getCourseDetail").hasRole("ADMIN")
-                 .requestMatchers("/userCourse", "/takeATest","/submitTest", "/getquestions", "/getTesstt","/getTest").hasRole("USER")
+            .authorizeHttpRequests(auth -> auth 
+                .requestMatchers("/distWiseReportingStatusExcel","/ReportingStatusExcel","/distWiseReportingStatusPDF","/getDistWiseNoofUserDetail","/ReportingStatusPDF","/getStateWiseNoofUserDetail","/register", "/register/**", "/images/**", "/sound/**", "/registration/districts/**", "/submitTest", "/getquestions", "/getTest","/getTest/**", "/getTesstt", "/userCourse", "/downloadMaterial/**",
+                		"/getStatepictures","/pictures","/videos","/img/**",  "/picture/**",  "/getMediaTypeDetails","/downloadCertificate", "/viewCertificate", "/registration/blocks/**","/index", "/saveurl", "/getCourseDetail", "/viewCourseDetail/**","/viewAllQuestions", "/saveCourseQuestion", "/savedraftCourseQuestion",
+                		  "/addCourseQuestion", "/showCourseDetail", "/saveCourseDetails","/listofUserSearch", "/send-otp", "/otp-login", "/login", "/custom-login","/page/**", "/change-language", "/forgot-password", "/checkuserdtl", "/reset-password").permitAll()
+						/*
+						 * .requestMatchers("/showCourseDetail", "/addCourseQuestion",
+						 * "/listofUserSearch" ,"/getCourseDetail").hasRole("ADMIN")
+						 * .requestMatchers("/userCourse", "/takeATest","/submitTest", "/getquestions",
+						 * "/getTesstt","/getTest").hasRole("USER")
+						 */ // https://www.sql-practice.com/
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

@@ -25,7 +25,7 @@ public class RegistrationController {
         return distrepo.findByStateCode(stateCode);
     }
 
-    
+     
     @GetMapping("/blocks/{districtCode}")
     public List<IwmpBlock> getBlocks(@PathVariable Integer districtCode) {
         return blockrepo.findByDistrictCode(districtCode);

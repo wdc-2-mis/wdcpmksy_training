@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>WDCPMKSY media</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+	<style type="text/css">
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.navbar {
+			 padding: 10px 20px;
+		}
+
+		.navbar-brand img {
+			height: 100%;
+			width: auto;
+		}
+
+		.navbar-brand {
+			display: flex;
+			align-items: center;
+		}
+
+		.navbar-brand .d-flex {
+			flex-direction: column;
+		}
+
+		.navbar-brand span {
+			font-size: 14px;
+		}
+
+		.navbar .text-left {
+			text-align: left;
+		}
+
+		.content {
+			flex: 1;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: url('images/login_image.png') no-repeat center center fixed;
+			background-size: cover;
+			background-position: center center;
+		}
+
+		.form-group.mb-3 {
+			margin-bottom: 20px;
+		}
+
+		.form-group span {
+			display: block;
+			margin-top: 10px;
+			text-align: center;
+		}
+		 footer {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+		.card {
+			background-color: rgba(214, 245, 245, 0.7);
+			/* Light cyan with 70% opacity */
+			border: none;
+			color: black;
+			min-height: 400px;
+			width: 100%;
+			/* Full width for smaller screens */
+			max-width: 600px;
+			/* Increase the maximum width */
+			margin: 0 auto;
+			/* Center the card horizontally */
+			padding: 20px;
+			/* Optional: Add padding for better spacing */
+		}
+
+		header {
+			background-color: rgba(214, 245, 245, 0.7);
+			/* Light cyan with 70% opacity, same as card */
+		}
+
+
+		.main-menu {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.main-menu>li {
+			position: relative;
+			display: inline-block;
+		}
+
+		/* Hide submenu by default */
+		.sub-menu {
+			display: none;
+			position: absolute;
+			right: 0;
+			background: #fff;
+			min-width: 150px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+			padding: 0;
+		}
+
+		/* Show submenu on hover */
+		.main-menu li:hover>.sub-menu {
+			display: block;
+		}
+
+		.sub-menu li {
+			list-style: none;
+		}
+
+		.sub-menu li a {
+			display: block;
+			padding: 10px;
+			text-decoration: none;
+			color: #000;
+		}
+
+		.sub-menu li a:hover {
+			background: #f2f2f2;
+		}
+
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 20px;
+		}
+
+		#searchbar {
+			margin: 10px;
+			padding: 10px;
+			border-radius: 5px;
+			width: 50%;
+			box-sizing: border-box;
+		}
+
+
+		.user-row {
+			display: table-row;
+		}
+
+
+		h2 {
+			text-align: center;
+			font-weight: Bold;
+			text-decoration: underline;
+		}
+				
+		p{
+			text-align: center;
+			font-style: italic;
+		}
+
+		.video-grid {
+			display: grid;
+			grid-template-columns: repeat(1, 1fr);
+			gap: 20px;
+		}
+
+		iframe {
+			width: 100%;
+			height: 250px;
+		}
+
+
+		.container1 {
+			max-width: 1500px;
+			/* controls left & right margin */
+			margin: 0 auto;
+			/* center horizontally */
+			padding: 20px;
+			/* inner spacing */
+		}
+
+		.gallery {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			/* 5 per row */
+			gap: 20px;
+		}
+
+		.image-frame {
+			background: #ffffff;
+			padding: 10px;
+			border-radius: 12px;
+			border: 3px solid #8a8a00;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+			overflow: hidden;
+		}
+
+		.image-frame img {
+			width: 100%;
+			height: 200px;
+			/* fixed frame height */
+			object-fit: contain;
+			/* SHOW FULL IMAGE */
+			background: #f8f8f8;
+			/* fills empty space */
+			cursor: pointer;
+		}
+
+
+		/* Hover effect */
+		.image-frame:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+		}
+
+		.image-frame:hover img {
+			transform: scale(1.08);
+		}
+
+		/* --- Modal Image Popup Styling --- */
+		.modal-content.bg-dark {
+		    background-color: rgba(0, 0, 0, 0.95);
+		    border-radius: 15px;
+		    overflow: hidden;
+		    transition: all 0.4s ease;
+		    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+		}
+
+		.modal-body {
+		    padding: 0;
+		    position: relative;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+			pointer-events: none;
+		    background: radial-gradient(circle at center, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.98) 100%);
+		}
+		
+		.modal-body .btn,
+		.modal-body .btn-close {
+		    z-index: 1056;
+			pointer-events: auto;
+		}
+
+		/* Modal Image */
+		/* --- Modal Image Popup Styling --- */
+		.modal-content.bg-dark {
+		    background-color: rgba(0, 0, 0, 0.95);
+		    border-radius: 15px;
+		    overflow: hidden;
+		    transition: all 0.4s ease;
+		    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+		}
+
+		.modal-body {
+		    padding: 0;
+		    position: relative;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+			pointer-events: none;
+		    background: radial-gradient(circle at center, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.98) 100%);
+		}
+
+		/* Modal Image */
+		#modalImage {
+		    max-height: 85vh;
+		    width: auto;
+		    border-radius: 12px;
+		    transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
+		    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+		    filter: drop-shadow(0 0 10px #fff);
+		}
+
+		#modalImage:hover {
+		    transform: scale(1.02);
+		    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
+		    filter: drop-shadow(0 0 20px #fff);
+		}
+
+		/* Navigation Buttons */
+		.modal-body .btn {
+		    background: rgba(255, 255, 255, 0.2);
+		    border: none;
+		    font-size: 40px;
+		    width: 60px;
+		    height: 60px;
+		    border-radius: 50%;
+		    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    color: #fff;
+		    text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+		}
+
+		.modal-body .btn:hover {
+		    background: rgba(255, 255, 255, 0.5);
+		    transform: scale(1.15);
+		    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+		}
+
+		/* Close Button */
+		
+		.btn-close-white {
+		    width: 40px;
+		    height: 40px;
+		    opacity: 1;
+		    border-radius: 6px;
+		    background-color: rgba(255, 0, 0, 0.08);
+		    box-shadow: 0 0 0 rgba(255, 0, 0, 0);
+		    transform: rotate(0deg) scale(1);
+		    transition:
+		        transform 0.35s ease-in-out,
+		        box-shadow 0.35s ease-in-out,
+		        background-color 0.35s ease-in-out;
+			filter: none;
+		}
+
+		.btn-close-white:hover {
+		    background-color: rgba(0, 255, 255, 0.12);
+		    box-shadow:
+		        0 0 8px #8a8a00,
+		        0 0 18px #8a8a00,
+		        0 0 28px #8a8a00,
+		        inset 0 0 6px rgba(255, 255, 255, 0.35);
+		    transform: rotate(90deg) scale(1.2);
+		}
+
+
+		/* Modal Overlay */
+		.modal-backdrop.show {
+		    opacity: 0.9;
+		    background: radial-gradient(circle at center, rgba(0,0,0,0.9), rgba(0,0,0,0.98));
+		}
+
+		/* Image fade effect on change */
+		#modalImage.fade-in {
+		    animation: fadeIn 0.4s ease-in-out forwards;
+		}
+
+		@keyframes fadeIn {
+		    from { opacity: 0; transform: scale(0.98); }
+		    to { opacity: 1; transform: scale(1); }
+		}
+
+		/* Mobile adjustments */
+		@media (max-width: 768px) {
+		    #modalImage {
+		        max-height: 70vh;
+		    }
+		    .modal-body .btn {
+		        width: 45px;
+		        height: 45px;
+		        font-size: 30px;
+		    }
+		}
+
+ .dropdown-menu {
+         min-width: 140px;
+         text-align: center;
+        }
+		.navbar + .navbar {
+  margin-top: 5px;   /* small gap between stacked navbars */
+}
+		
+		.navbar-dark .nav-link {
+  color: #fff !important;
+  padding: 8px 15px;
+}
+.navbar-dark .nav-link:hover {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 5px;
+}
+	</style>
+
+	<title>Image Gallery</title>
+
+</head>
+
+<body>
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <!-- Logo + Department -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/ashoka-stambh.jpg" alt="Ashoka Stambh" class="me-2">
+      <div class="d-flex flex-column">
+        <span class="fw-bold">भूमि संसाधन विभाग</span>
+        <span>DEPARTMENT OF LAND RESOURCES</span>
+        <span>MINISTRY OF RURAL DEVELOPMENT</span>
+      </div>
+    </a>
+    <!-- LMS Title -->
+    <div class="mx-auto">
+      <span class="h4">Learning Management System - WDCPMKSY2.0</span>
+    </div>
+    
+   <div class="text-right">
+            <select id="languageSwitcher" class="form-select form-select-sm">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+        </div>
+    
+  </div>
+</nav>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <!-- Events Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Events
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
+            <li><a class="dropdown-item" th:href="@{/pictures}">📸 Pictures</a></li>
+            <li><a class="dropdown-item" th:href="@{/videos}">🎥 Videos</a></li>
+          </ul>
+        </li>
+
+        <!-- Media Coverage -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getMediaTypeDetails}">📰 Media Coverage</a>
+        </li>
+
+        <!-- Report -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getStateWiseNoofUserDetail}">📊 Report</a>
+        </li>
+
+       <li class="nav-item">
+          <a class="nav-link" th:href="@{/login}">🔑 Login</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/register}">📝 Register</a>
+        </li>    
+      </ul>
+    </div>
+  </div>
+</nav>
+	<!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+         Welcome User 
+        <span class="navbar-text text-white">
+            <a class="nav-link" th:href="@{/login}"><b>Home</b></a>
+        </span>
+				
+	</div>
+</nav>		-->
+<span class="navbar-text text-white">
+		            <a class="nav-link" th:href="@{/pictures}" style="font-size: medium;"><b>Back</b></a>
+		</span>
+
+	<h2><b>Memorable Moments</b></h2>
+	<br />
+	<p>The moments that reflect the spirit of change, community, and the impact of our collective efforts in the Watershed Yatra.</p>
+	<br />
+
+
+	<div class="container1">
+		<div class="gallery">
+			<div class="image-frame" th:each="img : ${images}">
+				<!--				<img th:src="@{/picture/{stateid}/{name}(stateid=${stateid}, name=${img})}" />-->
+
+					<img class="popup-img" th:src="@{/picture/{stateid}/{name}(stateid=${stateid}, name=${img})}" alt="Image">
+					
+			</div>
+		</div>
+	</div>
+	
+
+	<div class="modal fade" id="imageModal" tabindex="-1">
+	  <div class="modal-dialog modal-dialog-centered modal-xl">
+	    <div class="modal-content bg-dark">
+	      <div class="modal-body text-center position-relative p-0">
+
+	        <!-- Close button -->
+	        <button type="button"
+	                class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+	                data-bs-dismiss="modal" aria-label="Close"></button>
+
+	        <!-- Left navigation -->
+	        <button class="btn btn-light position-absolute start-0 top-50 translate-middle-y"
+	                onclick="prevImage()">❮</button>
+
+	        <!-- Image -->
+	        <img id="modalImage" class="img-fluid rounded" style="max-height: 80vh;" />
+
+	        <!-- Right navigation -->
+	        <button class="btn btn-light position-absolute end-0 top-50 translate-middle-y"
+	                onclick="nextImage()">❯</button>
+
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+
+
+
+
+<!--	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx" crossorigin="anonymous"></script>-->
+	
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+		<script>
+		let images = [];
+		let currentIndex = 0;
+		let modal;
+
+		document.addEventListener("DOMContentLoaded", function () {
+
+		    modal = new bootstrap.Modal(document.getElementById("imageModal"));
+
+		    const imgs = document.querySelectorAll(".popup-img");
+
+		    imgs.forEach((img, index) => {
+		        images.push(img.src);
+
+		        img.addEventListener("click", function () {
+		            currentIndex = index;
+		            document.getElementById("modalImage").src = images[currentIndex];
+		            modal.show();
+		        });
+		    });
+			
+			
+			document.addEventListener("keydown", function (e) {
+			           const modalElement = document.getElementById("imageModal");
+
+			           if (!modalElement.classList.contains("show")) return;
+
+			           if (e.key === "ArrowRight") {
+			               nextImage();
+			           } else if (e.key === "ArrowLeft") {
+			               prevImage();
+			           }
+			       });
+		});
+
+
+		function nextImage() {
+		    currentIndex = (currentIndex + 1) % images.length;
+		    document.getElementById("modalImage").src = images[currentIndex];
+		}
+
+		function prevImage() {
+		    currentIndex = (currentIndex - 1 + images.length) % images.length;
+		    document.getElementById("modalImage").src = images[currentIndex];
+		}
+		
+		
+		</script>
+
+
+<footer>
+    <p>Content Owned by Department of Land Resources, Ministry of Rural Development</p>
+    <p>Developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx"
+		crossorigin="anonymous"></script>
+
+</body>
+
+</html>

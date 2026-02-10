@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,28 +15,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.training.dto.CourseDetails;
+import com.springboot.training.dto.ResetPasswordRequest;
 import com.springboot.training.dto.UserDto;
 import com.springboot.training.dto.UserUrlDto;
 import com.springboot.training.entity.IwmpBlock;
 import com.springboot.training.entity.IwmpDistrict;
 import com.springboot.training.entity.IwmpState;
+import com.springboot.training.entity.LmsSecurityQuestion;
 import com.springboot.training.entity.URLDetails;
 import com.springboot.training.entity.User;
 import com.springboot.training.repository.IwmpBlockRepository;
 import com.springboot.training.repository.IwmpDistrictRepository;
 import com.springboot.training.repository.IwmpStateRepository;
+import com.springboot.training.repository.LmsSecurityQuesRepository;
 import com.springboot.training.service.UserService;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +54,15 @@ public class LoginController {
     @Autowired
     private IwmpStateRepository iwmpStateRepository;
 
+    @Autowired
+    private LmsSecurityQuesRepository securityrepo;
     
+    @Autowired
+	private  IwmpDistrictRepository distrepo;
+	
+	@Autowired
+	private IwmpBlockRepository blockrepo;
+	
     public LoginController(UserService userService) {
         this.userService = userService;
     }
@@ -76,7 +92,7 @@ public class LoginController {
 	        return "redirect:/userurl?success";
 	    }
 	  
-	  
+	   
     @GetMapping("/login")
     public String login(){
         return "login";
@@ -111,38 +127,95 @@ public class LoginController {
 		 * return "redirect:/login?error=Invalid OTP"; }
 		 */
      
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model){
+     @GetMapping("/register")
+     public String showRegistrationForm(Model model){
        
         UserDto user = new UserDto();
         model.addAttribute("user", user);
         List<IwmpState> states = iwmpStateRepository.findAllStates();
+        List<LmsSecurityQuestion> securityques = securityrepo.findAll();
         model.addAttribute("states", states);
+        model.addAttribute("securityques", securityques);
         return "register";
     }
 
-    
-    
-    @PostMapping("/register/save")
-    public String registration(@Valid @ModelAttribute("user") UserDto userDto,
-                               BindingResult result,
-                               Model model){
-        User existingUser = userService.findUserByEmail(userDto.getEmail());
-        if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
-            result.rejectValue("email", null,
-                    "There is already an account registered with the same email");
-        }
+     
+     
+     @PostMapping("/register/save")
+     public String registration(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, Model model) {
+         // Check if user already exists by email
+         User existingUser = userService.findUserByEmail(userDto.getEmail());
+         List<IwmpState> states = iwmpStateRepository.findAllStates(); // Fetch states
+         List<LmsSecurityQuestion> securityques = securityrepo.findAll(); // Fetch security questions
+         
+         model.addAttribute("states", states);
+         model.addAttribute("securityques", securityques);
 
-        if(result.hasErrors()){
-            model.addAttribute("user", userDto);
-            return "/register";
-        }
+         // Check for validation errors and add error for existing email
+         if (existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()) {
+             result.rejectValue("email", null, "There is already an account registered with the same email");
+         }
 
-        userService.saveUser(userDto);
-        return "redirect:/register?success";
+         // If validation errors, re-render the form
+         if (result.hasErrors()) {
+             model.addAttribute("user", userDto);
+
+             // Fetch districts if the state is selected
+             if (userDto.getState() != null) {
+            	 List<IwmpDistrict> districts = distrepo.findByStateCode(userDto.getState());
+                 model.addAttribute("districts", districts);
+             }
+
+             // Fetch blocks if the district is selected
+             if (userDto.getDistrict() != null) {
+                 List<IwmpBlock> blocks = blockrepo.findByDistrictCode(userDto.getDistrict());
+                 model.addAttribute("blocks", blocks);
+             }
+
+             return "/register";
+         }
+
+         // If no errors, save the user and redirect
+         userService.saveUser(userDto);
+         return "redirect:/register?success";
+     }
+
+
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordPage(Model model) {
+    	List<LmsSecurityQuestion> securityques = securityrepo.findAll();
+        model.addAttribute("securityques", securityques);
+    	return "forgotPassword";
     }
-
     
+    
+     
+    @PostMapping("/checkuserdtl")
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> checkUserDetails(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Integer securityQuestion = Integer.parseInt(request.get("securityQuestion"));
+        String securityAnswer = request.get("securityAnswer");
+
+        boolean isValidUser = userService.verifyUserDetails(email, securityQuestion, securityAnswer);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("valid", isValidUser);
+
+        return ResponseEntity.ok(response);
+    }
+     
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        System.out.println("hello:" +request.getEmail());
+    	boolean isUpdated = userService.updatePassword(request.getEmail(), request.getNewPassword());
+        
+        if (isUpdated) {
+            return ResponseEntity.ok("Password updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating password");
+        }
+    }
     
     @GetMapping("/users")
     public String users(Model model){
@@ -229,8 +302,8 @@ public class LoginController {
 					return "Please select Only .pdf, file for upload!"+"\\n file content exe/malware or Others";
 				}
 		 
-				//filePath = "/usr/local/apache-tomcat90-nic/webapps/filepath/vanyatradoc";
-				filePath="D:\\vanyatradoc\\";
+				filePath = "/usr/local/apache-tomcat90-nic/webapps/filepath/vanyatradoc";
+				//filePath="D:\\vanyatradoc\\";
 				String fileName = mfile.getOriginalFilename();
 				
 				Pattern p = Pattern.compile("[.]");

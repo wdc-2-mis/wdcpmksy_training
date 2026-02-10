@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WDCPMKSY Training</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+          rel="stylesheet" 
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+          crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>	  
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            height: 100px;
+        }
+
+        .navbar-brand img {
+            height: 100%;
+            width: auto;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand .d-flex {
+            flex-direction: column;
+        }
+
+        .navbar-brand span {
+            font-size: 14px;
+        }
+
+        .navbar .text-left {
+            text-align: left;
+        }
+         header {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+        }
+        footer {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        #searchbar {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        
+        .user-row {
+            display: table-row;
+        }
+		
+		
+		
+		   table {
+		     width: 100%;
+		     border-collapse: collapse;
+		   }
+		   th {
+		     border: 1px solid black;
+		     padding: 8px;
+		     text-align: center; /* Center align text in th and td */
+		   }
+	   h2 {
+	       text-align: center;
+	     }
+		
+		
+		.dropdown-menu {
+         min-width: 140px;
+         text-align: center;
+        }
+		.navbar + .navbar {
+  margin-top: 5px;   /* small gap between stacked navbars */
+}
+		
+		.navbar-dark .nav-link {
+  color: #fff !important;
+  padding: 8px 15px;
+}
+.navbar-dark .nav-link:hover {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 5px;
+}
+    </style>    
+
+    <script type="text/javascript">
+		
+		
+		function downloadPdfFile()
+		{
+			document.distUserDetailForm.action ="distWiseReportingStatusPDF";	
+			document.distUserDetailForm.method = "POST";
+			document.distUserDetailForm.submit();
+		}
+
+		function ExportToExcel()
+		{
+			document.distUserDetailForm.action ="distWiseReportingStatusExcel";	
+			document.distUserDetailForm.method = "POST";
+			document.distUserDetailForm.submit();
+		}
+
+		
+        function search_user() {
+            let input = document.getElementById('searchbar').value.toLowerCase();
+            let rows = document.getElementsByClassName('user-row');
+
+            for (let i = 0; i < rows.length; i++) {
+                let username = rows[i].getElementsByClassName('username')[0].innerHTML.toLowerCase();
+                let regid = rows[i].getElementsByClassName('regid')[0].innerHTML.toLowerCase();
+                if (username.includes(input) || regid.includes(input)) {
+                    rows[i].style.display = "table-row";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+            updateSerialNumbers();
+        }
+
+        function updateSerialNumbers() {
+            let visibleRows = document.querySelectorAll('.user-row:not([style*="display: none"])');
+            visibleRows.forEach((row, index) => {
+                row.querySelector('.sno').innerText = index + 1;
+            });
+        }
+    </script>  
+</head>
+<body>
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <!-- Logo + Department -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/ashoka-stambh.jpg" alt="Ashoka Stambh" class="me-2">
+      <div class="d-flex flex-column">
+        <span class="fw-bold">भूमि संसाधन विभाग</span>
+        <span>DEPARTMENT OF LAND RESOURCES</span>
+        <span>MINISTRY OF RURAL DEVELOPMENT</span>
+      </div>
+    </a>
+    <!-- LMS Title -->
+    <div class="mx-auto">
+      <span class="h4">Learning Management System - WDCPMKSY2.0</span>
+    </div>
+    
+   <div class="text-right">
+            <select id="languageSwitcher" class="form-select form-select-sm">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+        </div>
+    
+  </div>
+</nav>
+
+<!-- Second Navbar for Menu -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <!-- Events Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Events
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
+            <li><a class="dropdown-item" th:href="@{/pictures}">📸 Pictures</a></li>
+            <li><a class="dropdown-item" th:href="@{/videos}">🎥 Videos</a></li>
+          </ul>
+        </li>
+
+        <!-- Media Coverage -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getMediaTypeDetails}">📰 Media Coverage</a>
+        </li>
+
+        <!-- Report -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/login}">🔑 Login</a>
+        </li>
+
+       <li class="nav-item">
+          <a class="nav-link" th:href="@{/register}">📝 Register</a>
+        </li>
+       
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex justify-content-center align-items-center">
+<div class="container mt-4">
+    <div id="content"> 
+        <div id="course-details-content">
+        
+        <form th:action="@{/getDistWiseNoofUserDetail}" method="post" name="distUserDetailForm" id="distUserDetailForm">
+			
+			<input type="hidden" name="stcode" th:value="${state_id}">
+			<input type="hidden" name="stname" th:value="${stname}">
+			
+		            
+		</form>
+		
+			</br>
+			<h2 >District wise Quiz Participants Details</h2>
+			</br>
+           <!-- <h2>Search User</h2>
+            <input id="searchbar" onkeyup="search_user()" type="text" name="search" placeholder="Search by User Name or Registration ID..." /> -->
+			<a href="#" onclick="downloadPdfFile()">
+				   <input name="pdf" id="pdf1" src="images/pdf.png" style="height:40px;width:30px;border-width:0px;" type="image" title="pdf Report">
+			   </a>
+&nbsp; &nbsp; &nbsp; 		
+			<a href="#" onclick="ExportToExcel()">
+			   	   <input name="excel" id="excel" src="images/excellogo.png" style="height:40px;width:30px;border-width:0px;" type="image" title="Download excel">
+			   </a>
+
+			
+			
+            <table class="table table-bordered table-hover" id="J2">
+                <thead class="table-dark">
+					<tr>
+						<th colspan="6" style="text-align: left;">State Name: <b th:text="${stname}"></b></th>
+					</tr>
+                    <tr>
+                        <th>S.No.</th>
+                        <th>District Name</th> 
+                        <th>Total Register User</th> 
+                        <th>Total User Attempted Quiz</th> 
+                        <th>Total Passed User</th> 
+                        <th>Total Failed User</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="user-row" th:each="usr,usrcount:${user}">
+                        <td class="sno" th:text="${usrcount.count}"></td>
+                       	<td class="regid" th:text="${usr.st_name}"></td>
+						<!--<td> <a th:href="@{'/getDistWiseNoofUserDetail' (state_id=${usr.st_code}, statename=${usr.st_name})}" th:text="${usr.st_name}"></a> </td>-->
+                        <td class="username" th:text="${usr.stuser}"></td>
+                        <td th:text="${usr.stparticipant}"></td>
+                        <td th:text="${usr.stpassparticipant}"></td>
+                        <td th:text="${usr.stfailparticipant}"></td>
+                       
+                    </tr>
+					<tr class="user-row" >
+					      <td style="background-color: lightblue; color: black;" ></td>
+					      <td style="background-color: lightblue; color: black;" ><b>Grand Total</b></td>
+						  <td style="background-color: lightblue; color: black;" ><b th:text="${totuser}"></b></td>
+						  <td style="background-color: lightblue; color: black;" ><b th:text="${totpart}"></b></td>
+					      <td style="background-color: lightblue; color: black;" ><b th:text="${totpass}"></b></td>
+					      <td style="background-color: lightblue; color: black;" ><b th:text="${totfail}"></b></td>
+					</tr>
+                </tbody>
+            </table>
+        </div> 
+    </div>
+</div>
+</div>
+<footer>
+    <p>Content Owned by Department of Land Resources, Ministry of Rural Development</p>
+    <p>Developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx" 
+        crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

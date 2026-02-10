@@ -31,11 +31,18 @@ public class UserDto {
     @NotNull(message = "Please select a Block.")
     private Integer block;
     
-    @NotEmpty(message = "Role should not be empty")
-    private String role;
     
-    @NotNull(message = "Please Enter Mobile No.")
+    @NotEmpty(message = "Please Enter Mobile No.")
     private String phone;
+    
+    @NotEmpty(message = "Address must not be empty")
+    private String address;
+    
+    @NotNull(message = "Please Choose Security Question")
+    private Integer securityques;
+    
+    @NotEmpty(message = "Security Answer should not be empty")
+    private String security_answer;
     
 	public Long getId() {
 		return id;
@@ -85,17 +92,30 @@ public class UserDto {
 	public void setBlock(Integer block) {
 		this.block = block;
 	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
+	
 	public String getPhone() {
 		return phone;
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public Integer getSecurityques() {
+		return securityques;
+	}
+	public void setSecurityques(Integer securityques) {
+		this.securityques = securityques;
+	}
+	public String getSecurity_answer() {
+		return security_answer;
+	}
+	public void setSecurity_answer(String security_answer) {
+		this.security_answer = security_answer;
 	}
     
     

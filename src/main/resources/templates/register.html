@@ -7,122 +7,296 @@
           rel="stylesheet" 
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
           crossorigin="anonymous">
+    <style>
+    html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            height: 100px;
+        }
+
+        .navbar-brand img {
+            height: 100%;
+            width: auto;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand .d-flex {
+            flex-direction: column;
+        }
+
+        .navbar-brand span {
+            font-size: 14px;
+        }
+
+        .navbar .text-left {
+            text-align: left;
+        }
+         header {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+        }
+        footer {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .card {
+            background-color: rgba(207, 248, 186, 0.7); /* Light green with 70% opacity */
+            border: none;
+            color: black;
+            min-height: 400px;
+            width: 100%; /* Full width for smaller screens */
+            max-width: 1500px; /* Set a larger maximum width */
+            margin: 0 auto; /* Center the card horizontally */
+            padding: 20px; /* Optional: Add padding for better spacing */
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('/images/Course_Register.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-position: center center;
+        }
+        
+         .dropdown-menu {
+         min-width: 140px;
+         text-align: center;
+        }
+		.navbar + .navbar {
+  margin-top: 5px;   /* small gap between stacked navbars */
+}
+		
+		.navbar-dark .nav-link {
+  color: #fff !important;
+  padding: 8px 15px;
+}
+.navbar-dark .nav-link:hover {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 5px;
+}
+    </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/index}">Home</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
-                </li>
-            </ul>
-        </div>
+
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <!-- Logo + Department -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/ashoka-stambh.jpg" alt="Ashoka Stambh" class="me-2">
+      <div class="d-flex flex-column">
+        <span class="fw-bold">भूमि संसाधन विभाग</span>
+        <span>DEPARTMENT OF LAND RESOURCES</span>
+        <span>MINISTRY OF RURAL DEVELOPMENT</span>
+      </div>
+    </a>
+    <!-- LMS Title -->
+    <div class="mx-auto">
+      <span class="h4">Learning Management System - WDCPMKSY2.0</span>
     </div>
+    
+   <div class="text-right">
+            <select id="languageSwitcher" class="form-select form-select-sm">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+        </div>
+    
+  </div>
 </nav>
-<br /><br /><br />
-<div class="container">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <!-- Events Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Events
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
+            <li><a class="dropdown-item" th:href="@{/pictures}">📸 Pictures</a></li>
+            <li><a class="dropdown-item" th:href="@{/videos}">🎥 Videos</a></li>
+          </ul>
+        </li>
+
+        <!-- Media Coverage -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getMediaTypeDetails}">📰 Media Coverage</a>
+        </li>
+
+        <!-- Report -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getStateWiseNoofUserDetail}">📊 Report</a>
+        </li>
+
+       <li class="nav-item">
+          <a class="nav-link" th:href="@{/login}">🔑 Login</a>
+        </li>
+
+            
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid content">
     <div class="row col-md-8 offset-md-2">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center">Registration</h2>
+                <h2 class="text-center" data-translate="register">Registration</h2>
             </div>
             <div th:if="${param.success}">
-                <div class="alert alert-info">
+                <div class="alert alert-info" data-translate="success">
                     Users successfully registered!
                 </div>
             </div>
             <div class="card-body">
                 <form method="post" role="form" th:action="@{/register/save}" th:object="${user}">
                     <div class="form-group mb-3 row">
-            <div class="col-md-5">
-                 <label class="form-label">First Name</label>
-                  <input class="form-control" id="firstName" name="firstName" placeholder="Enter first name" 
-                  th:field="*{firstName}" autocomplete="off" type="text" />
-                <p th:errors="*{firstName}" class="text-danger" th:if="${#fields.hasErrors('firstName')}"></p>
-           </div>
-
-              <div class="col-md-5">
-              <label class="form-label">Last Name</label>
-               <input class="form-control" id="lastName" name="lastName" placeholder="Enter last name" 
-                  th:field="*{lastName}" autocomplete="off" type="text" />
-              <p th:errors="*{lastName}" class="text-danger" th:if="${#fields.hasErrors('lastName')}"></p>
-              </div>
-                </div>
-
-
-                    <div class="form-group mb-3">
-                        <label class="form-label">Email</label>
-                        <input class="form-control" id="email" name="email" placeholder="Enter email address" 
-                               th:field="*{email}" autocomplete="off" type="email" />
-                        <p th:errors="*{email}" class="text-danger" th:if="${#fields.hasErrors('email')}"></p>
-                    </div>
-
-                  <div class="form-group mb-3">
-                    <label class="form-label">Phone</label>
-                  <input class="form-control" id="phone" name="phone" placeholder="Enter Mobile No." 
-                     th:field="*{phone}" autocomplete="off" type="text" 
-                     pattern="^\d{10}$" maxlength="10" title="Please enter a valid 10-digit phone number" 
-                     oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
-                   <p th:errors="*{phone}" class="text-danger" th:if="${#fields.hasErrors('phone')}"></p>
+                        <div class="col-md-5">
+                           <label class="form-label" data-translate="firstname">First Name</label>
+                           <input class="form-control" id="firstName" name="firstName" placeholder="Enter First Name"
+                            th:field="*{firstName}" autocomplete="off" type="text"
+                            data-placeholder-en="Enter first name" data-placeholder-hi="पहला नाम दर्ज करें"/>
+                            <p th:errors="*{firstName}" class="text-danger" th:if="${#fields.hasErrors('firstName')}"></p>
+                     </div>
+                   <div class="col-md-5">
+                           <label class="form-label" data-translate="lastname">Last Name</label>
+                           <input class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name"
+                           th:field="*{lastName}" autocomplete="off" type="text"
+                           data-placeholder-en="Enter last name" data-placeholder-hi="अंतिम नाम दर्ज करें"
+                           oninput="formatName(this)" />
+                           <p th:errors="*{lastName}" class="text-danger" th:if="${#fields.hasErrors('lastName')}"></p>
                    </div>
-
+                    </div>
+                    <div class="form-group mb-3">
+                            <label class="form-label" data-translate="email">Email</label>
+                            <input class="form-control" id="email" name="email" placeholder="Enter Email Address"
+                                   th:field="*{email}" autocomplete="off" type="email"
+                                   data-placeholder-en="Enter email address" data-placeholder-hi="ईमेल पता दर्ज करें" 
+                                  oninput="this.value = this.value.toLowerCase()" />
+                            <p th:errors="*{email}" class="text-danger" th:if="${#fields.hasErrors('email')}"></p>
+                        </div>
+                    <div class="form-group mb-3">
+                            <label class="form-label" data-translate="password">Password</label>
+                            <input class="form-control" id="password" name="password" placeholder="Enter New password"
+                                   th:field="*{password}" type="password"
+                                   data-placeholder-en="Enter New password" data-placeholder-hi="नया पासवर्ड दर्ज करें" />
+                            <p th:errors="*{password}" class="text-danger" th:if="${#fields.hasErrors('password')}"></p>
+                        </div>
 
                     <div class="form-group mb-3">
-                        <label class="form-label col-md-2">State:</label>
-                         <select class="form-control" id="state" name="state" th:field="*{state}">
-                            <option value="">Select State</option>
+                        <label class="form-label" data-translate="phone">Phone</label>
+                        <input class="form-control" id="phone" name="phone" placeholder="Enter Mobile No." 
+                               th:field="*{phone}" autocomplete="off" type="text" 
+                               pattern="^\d{10}$" maxlength="10" title="Please enter a valid 10-digit phone number" 
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'');" 
+                               data-placeholder-en="Enter Mobile No." data-placeholder-hi="मोबाइल नंबर दर्ज करें" />
+                        <p th:errors="*{phone}" class="text-danger" th:if="${#fields.hasErrors('phone')}"></p>
+                        </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label col-md-2" data-translate="state">State:</label>
+                        <select class="form-control" id="state" name="state" th:field="*{state}">
+                            <option value="" data-translate="selectState">Select State</option>
                             <option th:each="state : ${states}" th:value="${state.stCode}" th:text="${state.stName}"></option>
                         </select>
                         <p th:errors="*{state}" class="text-danger" th:if="${#fields.hasErrors('state')}"></p>
                     </div>
+                    
+                  
+                    <!-- District Dropdown -->
+                    <div class="form-group mb-3">
+                       <label class="form-label col-md-2" data-translate="district">District:</label>
+                      <select class="form-control" id="district" name="district" th:field="*{district}">
+                      <option value="" data-translate="selectDistrict">Select District</option>
+                         <option th:each="district : ${districts}" 
+                          th:value="${district.dcode}" 
+                          th:text="${district.distName}" 
+                          th:selected="*{district} == ${district.dcode}"></option>
+                      </select>
+                       <p th:errors="*{district}" class="text-danger" th:if="${#fields.hasErrors('district')}"></p>
+                      </div>
+
 
                     <div class="form-group mb-3">
-                        <label class="form-label col-md-2">District:</label>
-                        <select class="form-control" id="district" name="district" th:field="*{district}">
-                            <option value="">Select District</option>
+                       <label class="form-label col-md-2" data-translate="block">Block:</label>
+                    <select class="form-control" id="block" name="block" th:field="*{block}">
+                     <option value="" data-translate="selectBlock">Select Block</option>
+                      <option th:each="block : ${blocks}" 
+                        th:value="${block.bcode}" 
+                        th:text="${block.blockName}" 
+                        th:selected="*{block} == ${block.bcode}"></option>
+                   </select>
+                     <p th:errors="*{block}" class="text-danger" th:if="${#fields.hasErrors('block')}"></p>
+                   </div>
+
+                     <div class="form-group mb-3">
+						<label class="form-label col-md-2" data-translate="address">Address:</label>
+						<input class="form-control" id="address" name="address" placeholder="Enter Complete Address" th:field="*{address}"
+							autocomplete="off" type="text" 
+							data-placeholder-en="Enter Complete Address" data-placeholder-hi="पूरा पता दर्ज करें" />
+
+						<p th:errors="*{address}" class="text-danger" th:if="${#fields.hasErrors('address')}"></p>
+					</div>
+					
+					 <div class="form-group mb-3">
+                       <label class="form-label col-md-2" data-translate="securityques">Choose a security question:</label>
+                      <select class="form-control" id="securityques" name="securityques" th:field="*{securityques}">
+                      <option value="" data-translate="selectSecurity">Select Security Question</option>
+                      <option th:each="security : ${securityques}" th:value="${security.security_id}" th:text="${security.security_question}"></option>
                         </select>
-                        <p th:errors="*{district}" class="text-danger" th:if="${#fields.hasErrors('district')}"></p>
-                    </div>
+                      <p th:errors="*{securityques}" class="text-danger" th:if="${#fields.hasErrors('securityques')}"></p>
+                      </div>
+
+					
+					<div class="form-group mb-3">
+                    <label class="form-label col-md-2" data-translate="security_answer">Your answer:</label>
+                    <input type="text" class="form-control" id="security_answer" name="security_answer" placeholder="Enter Your Answer" th:field="*{security_answer}"
+                    autocomplete="off" data-placeholder-en="Enter Your Answer" data-placeholder-hi="अपना उत्तर दर्ज करें" />
                     
-                    <div class="form-group mb-3">
-                        <label class="form-label">Block:</label>
-                        <select class="form-control" id="block" name="block" th:field="*{block}">
-                            <option value="">Select Block</option>
-                        </select>
-                        <p th:errors="*{block}" class="text-danger" th:if="${#fields.hasErrors('block')}"></p>
+                    <p th:errors="*{security_answer}" class="text-danger" th:if="${#fields.hasErrors('security_answer')}"></p>
                     </div>
-                    
-                    <div class="form-group mb-3">
-                        <label class="form-label">Role:</label>
-                        <select class="form-control" id="role" name="role" th:field="*{role}">
-                            <option value="">Select Role</option>
-                            <option value="user">User</option>
-                            <option value="state">State</option>
-                        </select>
-                        <p th:errors="*{role}" class="text-danger" th:if="${#fields.hasErrors('role')}"></p> 
-                     </div>   
-                    <div class="form-group mb-3">
-                        <label class="form-label">Password</label>
-                        <input class="form-control" id="password" name="password" placeholder="Enter password" 
-                               th:field="*{password}" type="password" />
-                        <p th:errors="*{password}" class="text-danger" th:if="${#fields.hasErrors('password')}"></p>
-                    </div>
+					
                     <div class="form-group">
-                        <button class="btn btn-primary" type="submit">Register</button>
-                        <span>Already registered? <a th:href="@{/login}">Login here</a></span>
+                        <button class="btn btn-primary" type="submit" data-translate="registerbutton">Register</button>
+                        <span data-translate="alreadyregister">Already registered?</span> <a th:href="@{/login}" data-translate="loginhere">Login here</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<footer>
+    <p>Content Owned by Department of Land Resources, Ministry of Rural Development</p>
+    <p>Developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India</p>
+</footer>
 
 <!-- Add jQuery CDN here -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery before other scripts -->
@@ -132,9 +306,9 @@
             const stateCode = $(this).val();
             if (stateCode) {
                 $.get(`/registration/districts/${stateCode}`, function (data) {
-                    $('#district').empty().append('<option value="">Select District</option>');
+                    $('#district').empty().append('<option value="" data-translate="selectDistrict">Select District</option>');
                     data.forEach(function (district) {
-						$('#district').append(`<option value="${district.dcode}">${district.distName}</option>`);
+                        $('#district').append(`<option value="${district.dcode}">${district.distName}</option>`);
                     });
                 });
             }
@@ -144,7 +318,7 @@
             const districtCode = $(this).val();
             if (districtCode) {
                 $.get(`/registration/blocks/${districtCode}`, function (data) {
-                    $('#block').empty().append('<option value="">Select Block</option>');
+                    $('#block').empty().append('<option value="" data-translate="selectBlock">Select Block</option>');
                     data.forEach(function (block) {
                         $('#block').append(`<option value="${block.bcode}">${block.blockName}</option>`);
                     });
@@ -152,6 +326,90 @@
             }
         });
     });
+    
+    function formatName(input) {
+    const value = input.value.trim().toLowerCase();
+    input.value = value.charAt(0).toUpperCase() + value.slice(1);
+}
 </script>
+<script>
+const translations = {
+    en: {
+        register: "Registration",
+        firstname: "First Name",
+        lastname: "Last Name",
+        email: "Email",
+        password: "Password",
+        phone: "Phone",
+        submit: "Register",
+        state: "State",
+        district: "District",
+        block: "Block",
+        address: "Address",
+        selectState: "Select State",
+        selectDistrict: "Select District",
+        selectBlock: "Select Block",
+        alreadyRegistered: "Already registered?",
+        loginHere: "Login here",
+        registerbutton: "Register",
+        alreadyregister: "Already registered?",
+        loginhere: "Login here",
+        success: "Users successfully registered!",
+        securityques: "Choose a security question:",
+        security_answer: "Your answer:",
+        selectSecurity: "Select Security Question"
+    },
+    hi: {
+        register: "पंजीकरण",
+        firstname: "पहला नाम",
+        lastname: "उपनाम",
+        email: "ईमेल",
+        password: "पासवर्ड",
+        phone: "फ़ोन",
+        submit: "रजिस्टर करें",
+        state: "राज्य",
+        district: "ज़िला",
+        block: "ब्लॉक",
+        address: "पता",
+        selectState: "राज्य चुनें",
+        selectDistrict: "जिला चुनें",
+        selectBlock: "ब्लॉक चुनें",
+        alreadyRegistered: "पहले से पंजीकृत हैं?",
+        loginHere: "यहां लॉगिन करें",
+        registerbutton: "पंजीकरण करे",
+        alreadyregister: "पहले से ही पंजीकृत?",
+        loginhere: "यहां लॉगिन करें",
+        success: "उपयोगकर्ता सफलतापूर्वक पंजीकृत!",
+        securityques: "एक सिक्योरिटी प्रश्न चुनें:",
+        security_answer: "आपका उत्तर:",
+        selectSecurity: "सिक्योरिटी प्रश्न चुनें"
+    }
+};
+
+const switchLanguage = (lang) => {
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        element.innerText = translations[lang][key];
+    });
+    document.querySelectorAll('[data-placeholder-en]').forEach(element => {
+        element.placeholder = element.getAttribute(`data-placeholder-${lang}`);
+    });
+    sessionStorage.setItem('selectedLanguage', lang);
+};
+
+document.getElementById('languageSwitcher').addEventListener('change', (event) => {
+    switchLanguage(event.target.value);
+});
+
+// Set default language
+const savedLanguage = sessionStorage.getItem('selectedLanguage') || 'en'; 
+document.getElementById('languageSwitcher').value = savedLanguage; 
+switchLanguage(savedLanguage);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+        
 </body>
 </html>

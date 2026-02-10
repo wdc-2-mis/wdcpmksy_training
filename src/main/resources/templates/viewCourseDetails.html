@@ -69,13 +69,16 @@
 			<!-- Tabs Navigation -->
 			<ul class="navbar-nav ms-auto">
 				<li class="nav-item">
-					<a class="nav-link" th:classappend="${activeTab == 'course-details' ? 'active' : ''}"
-						th:href="@{/showCourseDetail}">Add Course Details</a>
+				    <form action="/userCourse" method="post" style="display: inline;">
+				        <input type="hidden" name="regid" th:value="${userRegId}">
+				        <button type="submit" class="nav-link btn btn-link" style="padding: 0; border: none; background: none; color: inherit;">Home</button>
+				    </form>
+				</li>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				<li class="nav-item">
+				    <a class="nav-link" th:href="@{/logout}" style="padding: 0; border: none; background: none; color: inherit;">Logout</a>
 				</li>
 
-				<li class="nav-item">
-					<a class="nav-link" th:href="@{/logout}">Logout</a>
-				</li>
 			</ul>
 		</div>
 	</nav>
@@ -91,15 +94,16 @@
 			<p>Total Question Entered: <strong th:text="${list.noof_question}" /></p>
 			<p>Total Participants Attempt Quiz: <strong th:text="${list.useridcount}" /></p>
 			<p>Total Participants Passed: <strong th:text="${list.totpassed}" /></p>
-			<a id="achor" th:href="@{/viewCourseDetail/{id}(id = ${list.training_id})}">View Course Details </a>&nbsp;
+			<a id="achor" th:href="@{/viewCourseDetail/{id}(id = ${list.training_id},regid = ${regid})}">View Course Details </a>&nbsp;
 			<a id="achor" th:href="'/downloadMaterial/' + ${list.training_id}" target="_blank" class="nav-link">View Course Material</a>&nbsp;
 			<span th:if="${list.status}=='D'">
-				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id})}">Add Questions</a>&nbsp;
+				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id}, regid=${regid})}">Add Questions</a>&nbsp;
+			   
 			</span>
 			<span th:if="${list.status}=='C'">
-				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id})}">View Questions</a>&nbsp;
+				<a id="achor" th:href="@{/addCourseQuestion(trainingId=${list.training_id}, regid=${regid})}">View Questions</a>&nbsp;
 			</span>
-			<a id="achor" th:href="@{/listofUserSearch/{id}(id = ${list.training_id})}">View Course Details </a>&nbsp;
+			<a id="achor" th:href="@{/listofUserSearch/{id}(id = ${list.training_id}, regid=${regid})}">View Course Details </a>&nbsp;
 
 		</div>
 	</div>

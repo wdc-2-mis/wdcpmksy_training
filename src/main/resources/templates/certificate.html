@@ -1,348 +1,202 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WDCPMKSY Training Certificate</title>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-	crossorigin="anonymous">
-<style>
-body {
-	background-color: #F7F7F7;
-	font-family: 'Arial', sans-serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WDCPMKSY Training Certificate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            background: url('/images/register.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .navbar {
+            background: linear-gradient(45deg, #4CAF50, #008CBA);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .certificate-container {
+            background: #E5E5EA;
+            border: 1px solid #ddd;
+            padding: 40px;
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            background-color: #008CBA;
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+            border-top-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: #333333;
+            text-align: left;
+        }
+        span {
+            color: #5F58D5;
+        }
+        .certificate-highlight {
+            font-size: 20px;
+            font-weight: bold;
+            color: #5F58D5;
+        }
+        .download-button {
+            background-color: #008CBA;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px 10px;
+        }
+        .download-button:hover {
+            background-color: sandybrown;
+            box-shadow: 0 0 10px rgba(165, 42, 42, 0.2);
+            border: 2px solid #786c3b;
+        }
+        @media only screen and (max-width: 768px) {
+            .certificate-container { padding: 20px; }
+            .download-button { font-size: 14px; padding: 8px 15px; }
+        }
+        footer {
+            background-color: rgba(214, 245, 245, 0.7);
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        #fireworks-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.10.8/dist/index.umd.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Prevent going back
+            history.pushState(null, null, location.href);
+            window.onpopstate = function () {
+                history.go(1);
+            };
 
-.navbar {
-	margin-bottom: 20px;
-}
+            
+            const isPassed = document.getElementById('passed').value;
+            const container = document.getElementById('fireworks-container');
+             const sound = new Audio('/sound/fireworks-sound.mp3'); 
+            if (isPassed && container) {
+				 sound.play();
+                const fireworks = new Fireworks.default(container, {
+                    autoresize: true,
+                    opacity: 0.7,
+                    speed: 3,
+                    acceleration: 1.05,
+                    particles: 150,
+                });
+                fireworks.start();
 
-.certificate-container {
-	background: #E5E5EA; /* #ffffff; */
-	/* 	border: 3px solid #008CBA; /* #5F58D5; */
-	border: 1px solid #ddd;
-	padding: 40px;
-	width: 50%;
-	max-width: 800px;
-	margin: 20px auto;
-	text-align: center;
-	border-radius: 15px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-h2 {
-	/* 	font-family: 'Georgia', serif; */
-	/* 	color: #008CBA; /* #5F58D5; */
-	/* 	text-transform: uppercase; */
-	/* 	margin-bottom: 30px; */
-	background-color: #008CBA;
-	color: #fff;
-	padding: 2rem;
-	text-align: center;
-	border-top-left-radius: 15px;
-	border-bottom-right-radius: 15px;
-}
-
-p {
-	font-size: 18px;
-	margin-bottom: 15px;
-	font-weight: 500;
-	color: #333333;
-	text-align: left;
-	margin-right: 100px;
-	white-space: nowrap;
-}
-
-/* strong { */
-/*   text-align: right; /* Align the strong text to the right */
-/*   padding-right: 10px; /* Add some padding to create space between the colon and the value */
-/* } */
-span {
-	color: #5F58D5;
-}
-/*
-.certificate-detail {
-	font-size: 18px;
-	margin-bottom: 15px;
-	font-weight: 500;
-	color: #333333; 
-	background-color: #E5E5EA;
-	padding: 2rem;
-}
-*/
-.certificate-highlight {
-	font-size: 20px;
-	font-weight: bold;
-	color: #5F58D5;
-}
-
-.download-button {
-	background-color: #008CBA;
-	border: none;
-	color: white;
-	padding: 10px 20px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
-	cursor: pointer;
-	border-radius: 5px;
-	margin: 10px 10px;
-}
-
-.button-container {
-	text-align: center;
-}
-
-.button-container button {
-	margin: 0 10px;
-}
-
-.download-button:link, .download-button:visited {
-	flex-wrap: wrap;
-	background-color: cornflowerblue;
-	color: white;
-	padding: 4px 7px;
-	text-align: center;
-	font-weight: bold;
-	display: block;
-}
-
-.download-button:hover, .download-button:active {
-	background-color: sandybrown;
-	box-shadow: 0 0 10px rgba(165, 42, 42, 0.2);
-	border: 2px solid #786c3b;
-}
-
-/* Responsive design */
-@media only screen and (max-width: 1024px) {
-  .certificate-container {
-    width: 80%;
-    padding: 25px;
-  }
-  .certificate-container p {
-    font-size: 16px;
-  }
-  .download-button {
-    padding: 10px 18px;
-    font-size: 14px;
-  }
-}
-
-@media only screen and (max-width: 768px) {
-	.certificate-container {
-		width: 90%;
-		padding: 20px;
-	}
-	.certificate-container p {
-		font-size: 16px;
-	}
-	.download-button {
-		padding: 8px 15px;
-		font-size: 14px;
-	}
-}
-
-@media only screen and (max-width: 576px) {
-  .certificate-container {
-    width: 95%;
-    padding: 15px;
-  }
-  .certificate-container p {
-    font-size: 14px;
-  }
-  .download-button {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
-}
-
-@media only screen and (max-width: 320px) {
-  .certificate-container {
-    width: 100%;
-    padding: 10px;
-  }
-  .certificate-container p {
-    font-size: 12px;
-  }
-  .download-button {
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-}
-
-/*
-.download-button {
-	background-color: #008CBA;
-	border: none;
-	color: white;
-	padding: 10px 20px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
-	display: flex;
-	font-size: 16px;
-	cursor: pointer;
-	border-radius: 5px;
-	position: relative;
-	justify-content: space-between;
-	top: 5px;
-	bottom: 20px;
-	left: 50%;
-	transform: translateX(-50%);
-	margin: 10px 0;
-	color: white;
-	padding: 10px 20px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
-	display: flex;
-	font-size: 16px;
-	cursor: pointer;
-	border-radius: 5px;
-} */
-</style>
-
-<script>
-	history.pushState(null, null, location.href);
-	window.onpopstate = function() {
-		history.go(1);
-	};
-</script>
+                setTimeout(() => {
+                fireworks.stop();
+                sound.pause();
+                sound.currentTime = 0; 
+            }, 10000);
+            }
+        });
+    </script>
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<div class="container-fluid">
-			<span class="navbar-text text-white"> Welcome, <b
-				th:text="${userId}"></b>
-			</span>
-			<ul class="navbar-nav ms-auto">
-				<li class="nav-item"><a class="nav-link" th:href="@{/userCourse}">Home</a>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <span class="navbar-text text-white">Welcome, <b th:text="${userId}"></b></span>
+            <ul class="navbar-nav ms-auto">
+				<li class="nav-item">
+				    <form action="/userCourse" method="post" style="display: inline;">
+				        <input type="hidden" name="regid" th:value="${userRegId}">
+				        <button type="submit" class="nav-link btn btn-link" style="padding: 0; border: none; background: none; color: inherit;">Home</button>
+				    </form>
 				</li>
-				<li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				<li class="nav-item">
+				    <a class="nav-link" th:href="@{/logout}" style="padding: 0; border: none; background: none; color: inherit;">Logout</a>
 				</li>
+
 			</ul>
-		</div>
-	</nav>
+        
+    </div>
+</nav>
 
-	<div class="container">
-		<div class="certificate-container">
-			<h2>Quiz Result</h2>
-			<!--         <p class="certificate-detail"> -->
-			<!--             This certifies that <span class="certificate-highlight" th:text="${userId}"></span> -->
-			<!--         </p> -->
-			<!--         <p class="certificate-detail"> -->
-			<!--             has successfully completed the course -->
-			<!--         </p> -->
-			<!--         <p class="certificate-highlight" th:text="${courseName}"></p> -->
-
-			<hr style="margin: 20px 0; border-top: 1px solid #cccccc;">
-
-			<!-- 			<p style="color: #FF0000; text-align: center; text-transform: uppercase;"> -->
-			<!-- 				<strong><i> <h3><span th:text="${userName}"></span> </h3></i> </strong> -->
-			<!-- 			</p> -->
-			<div class="certificate-detail">
-				<p
-					style="color: #FF0000; text-align: center; text-transform: uppercase;">
-					<strong><i><h3 th:text="${userName}"></h3></i></strong>
-				</p>
-
-				<div th:if="${passed}">
-					<h4><b style="color: #008000;">"Congratulations! You have
-						successfully Passed the quiz."</b></h4>
-				</div>
-				<div th:unless="${passed}">
-					<h4><b style="color: #FF0000;">"You have not passed the quiz."</b></h4>
-				</div>
-
-				<br>
-
-
-				<p>
-					<strong>Course Name
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span
-						th:text="${courseName}"></span>
-				</p>
-				<!-- 			<p> -->
-				<!-- 				<strong>User Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span th:text="${userName}"></span> -->
-				<!-- 			</p> -->
-				<p>
-					<strong>Total Questions
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span
-						th:text="${totalQuestions}"></span>
-				</p>
-				<p>
-					<strong>Questions Attempted &nbsp; :
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span
-						th:text="${questionsAttempted}"></span>
-				</p>
-				<p>
-					<strong>Passing Marks
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span
-						th:text="${passingMarks}"></span>
-				</p>
-				<p>
-					<strong>Marks Obtained
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong> <span
-						class="certificate-highlight" th:text="${marksObtained}"></span>
-				</p>
-
-
-				<div th:if="${passed}">
-					<p style="color: #008000;">
-						<strong style="color: #333333;">Result
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>PASSED
-					</p>
-				</div>
-				<div th:unless="${passed}">
-					<p style="color: #FF0000;">
-						<strong style="color: #333333;">Result
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>FAILED
-					</p>
-				</div>
-
-
-				<!-- 			<div th:if="${passed}"> -->
-				<!-- <!-- 			<b style="color: #008000;">"Congratulations! You have successfully Passed the quiz."</b> -->
-				<!-- 				<button class="download-button" -->
-				<!-- 					th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=participation'|"> -->
-				<!-- 					Participation Certificate</button> -->
-
-				<!-- 				<button class="download-button" -->
-				<!-- 					th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&type=completion'|"> -->
-				<!-- 					Completion Certificate</button> -->
-				<!-- 			</div>  -->
-
-
-				<div th:if="${passed}" class="button-container">
-					<button class="download-button"
-						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&userRegId=' + ${userRegId} + '&type=participation'|">
-						Participation Certificate</button>
-
-					<button class="download-button"
-						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&userRegId=' + ${userRegId} + '&type=completion'|">
-						Completion Certificate</button>
-				</div>
-
-
-				<div th:unless="${passed}">
-					<!-- 				<b style="color: #FF0000;">"You have not passed the quiz. You can review the Course Material and attempt the exam again."</b> -->
-					<button class="download-button"
-						th:onclick="|location.href='/downloadCertificate?training_id=' + ${courseId} + '&userRegId=' + ${userRegId} + '&type=participation'|">
-						Participation Certificate</button>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="container">
+    <div id="fireworks-container"></div>
+    <div class="certificate-container">
+        <h2>Quiz Result</h2>
+        <div class="certificate-detail">
+            <p style="color: #FF0000; text-align: center; text-transform: uppercase;">
+                <strong><i><h3 th:text="${userName}"></h3></i></strong>
+            </p>
+            <div th:if="${passed}">
+                <h4><b style="color: #008000;">"Congratulations! You have successfully Passed the quiz."</b></h4>
+                 <input type="hidden" id="passed" th:value="${passed}" />
+            </div>
+            <div th:unless="${passed}">
+                <h4><b style="color: #FF0000;">"You have not passed the quiz."</b></h4>
+            </div>
+            <br>
+            <p><strong>Course Name: </strong><span th:text="${courseName}"></span></p>
+            <p><strong>Total Questions: </strong><span th:text="${totalQuestions}"></span></p>
+            <p><strong>Questions Attempted: </strong><span th:text="${questionsAttempted}"></span></p>
+            <p><strong>Passing Marks: </strong><span th:text="${passingMarks}"></span></p>
+            <p><strong>Marks Obtained: </strong><span class="certificate-highlight" th:text="${marksObtained}"></span></p>
+            <div th:if="${passed}">
+                <p style="color: #008000;"><strong>Result: </strong>PASSED</p>
+                <!-- Participation Certificate Form -->
+                <form th:action="@{/downloadCertificate}" method="POST" style="display: inline;">
+                    <input type="hidden" name="training_id" th:value="${courseId}" />
+                    <input type="hidden" name="userRegId" th:value="${userRegId}" />
+                    <input type="hidden" name="type" value="participation" />
+                    <button type="submit" class="download-button">Participation Certificate</button>
+                </form>
+                <!-- Completion Certificate Form -->
+                <form th:action="@{/downloadCertificate}" method="POST" style="display: inline;">
+                    <input type="hidden" name="training_id" th:value="${courseId}" />
+                    <input type="hidden" name="userRegId" th:value="${userRegId}" />
+                    <input type="hidden" name="type" value="completion" />
+                    <button type="submit" class="download-button">Completion Certificate</button>
+                </form>
+            </div>
+            <div th:unless="${passed}">
+                <p style="color: #FF0000;"><strong>Result: </strong>FAILED</p>
+                <!-- Participation Certificate Form for Non-Passed Users -->
+                <form th:action="@{/downloadCertificate}" method="POST" style="display: inline;">
+                    <input type="hidden" name="training_id" th:value="${courseId}" />
+                    <input type="hidden" name="userRegId" th:value="${userRegId}" />
+                    <input type="hidden" name="type" value="participation" />
+                    <button type="submit" class="download-button">Participation Certificate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<tr></tr>
+<tr></tr>
+<footer>
+    <p>Content Owned by Department of Land Resources, Ministry of Rural Development</p>
+    <p>Developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India</p>
+</footer>
 </body>
 </html>

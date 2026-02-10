@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.training.dto.CourseDetails;
 import com.springboot.training.dto.ViewCourseDetails;
@@ -17,6 +19,7 @@ import com.springboot.training.entity.LmsTrainingQuestion;
 import com.springboot.training.repository.CourseDtlRepository;
 import com.springboot.training.repository.CousreDetailBeanRepository;
 import com.springboot.training.repository.QuestionRepository;
+import com.springboot.training.repository.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -32,10 +35,13 @@ public class ViewCourseAndAddQuestionController {
 	@Autowired
 	QuestionRepository qustnRepo;
 	
+	@Autowired
+    UserRepository repo;
 	
-	@GetMapping("/getCourseDetail")
-	public String viewCourseDtlAndAddQustn(HttpSession session, Model model) {
-		String userId = (String) session.getAttribute("userId");
+	@PostMapping("/getCourseDetail")
+	public String viewCourseDtlAndAddQustn(HttpSession session, Model model, @RequestParam("regid")Integer regid) {
+		String userId =  repo.findusername(regid);
+		
 //		List<LMSTrainingDetails> lmsTrainingList =  new ArrayList<>();
 //		lmsTrainingList = courseDtlRepo.findAll();
 		List<ViewCourseDetails> courseDtlList =  new ArrayList<>();
@@ -62,13 +68,14 @@ public class ViewCourseAndAddQuestionController {
 		model.addAttribute("lmsTrainingList", courseDtlList);
 		model.addAttribute("lmsTrainingListSize", courseDtlList.size());
 		model.addAttribute("userId", userId);
+		model.addAttribute("regid", regid);
 		return "viewCourseDetails";
 		
 	}
 	
 	@GetMapping("/viewCourseDetail/{id}")
-	public String viewCourseDtl(HttpSession session, @PathVariable("id") int id, Model model) {
-		String userId = (String) session.getAttribute("userId");
+	public String viewCourseDtl(HttpSession session, @PathVariable("id") int id, Model model, @RequestParam("regid") Integer regid) {
+		String userId = repo.findusername(regid);
 		List<LMSTrainingDetails> lmsTrainingList =  new ArrayList<>();
 		LMSTrainingDetails list = courseDtlRepo.findById(id).orElse(null);
 		lmsTrainingList.add(list);
@@ -80,6 +87,7 @@ public class ViewCourseAndAddQuestionController {
 		model.addAttribute("questionList", qList);
 		model.addAttribute("questionListSize", qList.size());
 		model.addAttribute("courseDesc",list.getCourse_description());
+		model.addAttribute("regid", regid);
 //		List<CourseDetails> courseDtlList =  new ArrayList<>();
 //		for(LMSTrainingDetails dtl: lmsTrainingList) {
 //			CourseDetails courseDtl = new CourseDetails();

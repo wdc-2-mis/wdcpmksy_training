@@ -10,6 +10,13 @@
 	crossorigin="anonymous">
 
 <style>
+	body { background: url('/images/register.jpg') no-repeat center center fixed; 
+	background-size: cover; 
+	}
+	 .navbar { 
+		 background: linear-gradient(45deg, #4CAF50, #008CBA); 
+		 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+		 }
 .course-container {
 	display: flex;
 	flex-wrap: wrap;
@@ -26,15 +33,15 @@
 	margin: 20px;
 	width: 300px;
 	height: 600px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	text-align: center;
-	background-color: #fff;
+	background-color: rgba(255, 255, 255, 0.9);
 	position: relative;
 }
 
 .course-container :hover {
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-	border: 2px solid #aaa;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+	border: 2px solid #008CBA;
 }
 
 h2 {
@@ -109,7 +116,28 @@ h2 {
 	height: 25%;
 	border-radius: 8%;
 }
+
+footer {
+            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+            position: relative;	
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
 </style>
+
 
 </head>
 <body>
@@ -122,8 +150,10 @@ h2 {
 
 			<!-- Tabs Navigation -->
 			<ul class="navbar-nav ms-auto">
-				<li class="nav-item"><a class="nav-link"
-					th:href="@{/userCourse}">Home</a></li>
+				<!--<li class="nav-item">
+				  <a class="nav-link" th:href="@{/userCourse(regid=${userRegId})}">Home</a>
+				</li>-->
+
 				<li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a>
 				</li>
 			</ul>
@@ -138,22 +168,17 @@ h2 {
 			</div>
 
 			<div id="course-details-content">
-				<h2 style="text-decoration: underline;">Welcome To QUIZ</h2>
+				<h2 style="text-decoration: underline; color: white">Welcome To QUIZ</h2>
 
 				<div class="course-container">
-<!-- 					<div th:each="course : ${courses}"> -->
-<!-- 					<div th:if="${map[course.training_id]} ne null"> -->
 					<div class="course-box" th:each="course : ${courses}" th:if="${map[course.training_id]} ne null">
 						<img th:src="@{/images/project_temp_image.jpg}" />
-						
-<!-- 							<p> -->
-<!-- 								Course Name: <b><span th:text="${course.course_name}"></span></b> -->
-<!-- 							</p> -->
-
+					
 						<h5 style="text-decoration: underline;" id="title" th:text="${course.course_name}"></h5>
-
-						<p style="display: flex; padding-left:20px;"> Course Material: 
-							<a th:href="'/downloadMaterial/' + ${course.training_id}" style=" padding: 1px 3px;" target="_blank" class="nav-link">View/Download</a>
+					
+						<p style="display: flex; padding-left:20px;"> Course Material:
+															<a href="https://wdcpmksylms.dolr.gov.in/filepath/vanyatradoc/Watershed%20Development%20Course%20-%20Watershed%20Yatra.pdf" style=" padding: 1px 3px;" target="_blank"
+															class="nav-link">View/Download</a>								
 						</p>
 						<p>
 							Maximum Marks: <strong th:text="${map[course.training_id]}"></strong>
@@ -165,63 +190,89 @@ h2 {
 							Minimum Qualifying Marks: <strong th:text="${course.min_pass_marks}"></strong>
 						</p>
 						<p>
-							Duration: <strong th:text="${course.duration_exam}"></strong> Minutes 
+							Duration: <strong th:text="${course.duration_exam}"></strong> Minutes
 						</p>
-<!-- 						<p> -->
-<!-- 							Date: <strong th:text="${#dates.format(course.created_date, 'dd-MMM-yyyy')}" ></strong> -->
-<!-- 						</p> -->
-
+					
+						<!-- Participate Button -->
 						<span th:if="${firstTimeUser[course.training_id]}">
-							<button class="participate-button" th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">Participate</button>
-
-<!-- <button class="participate-button" th:onclick="|location.href='/viewCertificate?trainingId=' + ${course.training_id}|">Participate</button> -->
+							<form th:action="@{/getTest}" method="POST" th:id="'participateForm_' + ${course.training_id}">
+								<input type="hidden" name="training_id" th:value="${course.training_id}" />
+								<input type="hidden" name="userRegId" th:value="${userRegId}" />
+							</form>
+							<button class="participate-button"
+								th:onclick="'document.getElementById(\'participateForm_' + ${course.training_id} + '\').submit();'">Participate</button>
 						</span>
-						
-						<span th:unless="${firstTimeUser[course.training_id]}"> 
+					
+						<!-- ReAttempt Button -->
+						<span th:unless="${firstTimeUser[course.training_id]}">
 							<span th:if="${userPassed[course.training_id]}">
-<!-- 							<p> -->
-<!-- 							Date: <strong th:text="${#dates.format(course.created_date, 'dd-MMM-yyyy')}" ></strong> -->
-<!-- 							</p> -->
-								<button class="download-button" style="background-color: #4CAF50; text-align: center;"
-									th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">ReAttempt</button>
-
-								<button class="download-button" th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&userRegId=' + ${userRegId} + '&type=participation'|">
-									Participation Certificate</button> 
-<!-- 	<button class="download-button" th:onclick="|location.href='/viewCertificate?trainingId=' + ${course.training_id}|">Participate</button> -->
-
-<!-- 									<button class="download-button" --> 
-<!-- 									th:onclick="|location.href='/viewCertificate?training_id=' + ${course.training_id}|"> -->
-<!-- 									Participation Certificate</button> -->
-
-
-								<button class="download-button" th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&userRegId=' + ${userRegId} + '&type=completion'|">
-									Completion Certificate</button>
-							</span> 
-							
+								<form th:action="@{/getTest}" method="POST" th:id="'reAttemptForm_' + ${course.training_id}">
+									<input type="hidden" name="training_id" th:value="${course.training_id}" />
+									<input type="hidden" name="userRegId" th:value="${userRegId}" />
+								</form>
+								<button class="download-button"
+									th:onclick="'document.getElementById(\'reAttemptForm_' + ${course.training_id} + '\').submit();'">ReAttempt</button>
+					
+								<form th:action="@{/downloadCertificate}" method="POST"
+									th:id="'participationCertificateForm_' + ${course.training_id}">
+									<input type="hidden" name="training_id" th:value="${course.training_id}" />
+									<input type="hidden" name="userRegId" th:value="${userRegId}" />
+									<input type="hidden" name="type" value="participation" />
+								</form>
+								<button class="download-button"
+									th:onclick="'document.getElementById(\'participationCertificateForm_' + ${course.training_id} + '\').submit();'">Participation
+									Certificate</button>
+					
+								<form th:action="@{/downloadCertificate}" method="POST"
+									th:id="'completionCertificateForm_' + ${course.training_id}">
+									<input type="hidden" name="training_id" th:value="${course.training_id}" />
+									<input type="hidden" name="userRegId" th:value="${userRegId}" />
+									<input type="hidden" name="type" value="completion" />
+								</form>
+								<button class="download-button"
+									th:onclick="'document.getElementById(\'completionCertificateForm_' + ${course.training_id} + '\').submit();'">Completion
+									Certificate</button>
+							</span>
+					
 							<span th:unless="${userPassed[course.training_id]}">
-								<button class="download-button" style="background-color: #4CAF50; text-align: center;"
-									th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">ReAttempt</button>
-
-								<button class="download-button" th:onclick="|location.href='/downloadCertificate?training_id=' + ${course.training_id} + '&userRegId=' + ${userRegId} + '&type=participation'|">
-									Participation Certificate</button>
+								<form th:action="@{/getTest}" method="POST" th:id="'reAttemptForm_' + ${course.training_id}">
+									<input type="hidden" name="training_id" th:value="${course.training_id}" />
+									<input type="hidden" name="userRegId" th:value="${userRegId}" />
+								</form>
+								<button class="download-button"
+									th:onclick="'document.getElementById(\'reAttemptForm_' + ${course.training_id} + '\').submit();'">ReAttempt</button>
+					
+								<form th:action="@{/downloadCertificate}" method="POST"
+									th:id="'participationCertificateForm_' + ${course.training_id}">
+									<input type="hidden" name="training_id" th:value="${course.training_id}" />
+									<input type="hidden" name="userRegId" th:value="${userRegId}" />
+									<input type="hidden" name="type" value="participation" />
+								</form>
+								<button class="download-button"
+									th:onclick="'document.getElementById(\'participationCertificateForm_' + ${course.training_id} + '\').submit();'">Participation
+									Certificate</button>
 							</span>
 						</span>
-
-
-<!-- 							<button th:onclick="'javascript:window.location.href=\'' + @{/test/{training_id}(training_id=${course.training_id})} + '\''">Participate</button> -->
-<!-- 							<button th:onclick="|location.href='/getTest?training_id=' + ${course.training_id}|">Participate</button> -->
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- 		</div> -->
-	<!-- 	</div> -->
-
-
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx"
 		crossorigin="anonymous"></script>
+		
+		<script>
+		         history.pushState(null, null, location.href);
+		            window.onpopstate = function () {
+		                history.go(1);
+		            };
+
+		</script>
+	<footer>
+    <p>Content Owned by Department of Land Resources, Ministry of Rural Development</p>
+    <p>Developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India</p>
+</footer>
 </body>
 </html>

@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.data.jpa.repository.Modifying;
+/*import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;*/
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +38,7 @@ import com.springboot.training.repository.UserRepository;
 import com.springboot.training.service.UserService;
 
 import jakarta.servlet.http.*;
+import jakarta.transaction.Transactional;
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService{
 	private SaveURLRepository saveURlRepository;
 	 private RoleRepository roleRepository; 
 	 private LmsTrainingQuestionRepository trainingQuestionRepository;
-	 private final JavaMailSender javaMailSender;
+		/* private final JavaMailSender javaMailSender; */
     private PasswordEncoder passwordEncoder;
      public UserServiceImpl(UserRepository userRepository,
 				/* RoleRepository roleRepository, */
@@ -54,7 +56,7 @@ public class UserServiceImpl implements UserService{
                            SaveURLRepository saveURlRepository,
                            CourseDtlRepository courseDtlRepository,
                            LmsTrainingQuestionRepository trainingQuestionRepository,
-                           JavaMailSender javaMailSender,
+				/* JavaMailSender javaMailSender, */
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
 		/* this.roleRepository = roleRepository; */
@@ -62,22 +64,51 @@ public class UserServiceImpl implements UserService{
         this.saveURlRepository = saveURlRepository;
         this.reportRepository = reportRepository;
         this.courseDtlRepository = courseDtlRepository;
-        this.javaMailSender = javaMailSender;
+		/* this.javaMailSender = javaMailSender; */
         this.trainingQuestionRepository = trainingQuestionRepository;
     }
+     private String capitalizeName(String name) {
+    	    if (name == null || name.isEmpty()) {
+    	        return name;
+    	    }
+    	    // Trim leading/trailing spaces and replace multiple spaces with a single space
+    	    name = name.trim().replaceAll("\\s+", " ");
 
-  	  public void saveUser(UserDto userDto) { User user = new User();
-	  user.setUser_id(userDto.getFirstName() + " " + userDto.getLastName());
-	  user.setUser_name(userDto.getFirstName() + " " + userDto.getLastName());
-	  user.setMobile_no(userDto.getPhone());
-	  user.setStcode(userDto.getState());
-	  user.setDcode(userDto.getDistrict());
-	  user.setBcode(userDto.getBlock());
-	  user.setUser_type(userDto.getRole());
-	  user.setEmail(userDto.getEmail()); 
-	  user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-	  user.setStatus("active"); 
-	  userRepository.save(user); }
+    	    // Capitalize the first letter of each word and ensure the rest are lowercase
+    	    String[] nameParts = name.split(" ");
+    	    StringBuilder capitalizedName = new StringBuilder();
+
+    	    for (String part : nameParts) {
+    	        capitalizedName.append(part.substring(0, 1).toUpperCase())  // Capitalize first letter
+    	                       .append(part.substring(1).toLowerCase())         // Lowercase the rest
+    	                       .append(" ");                                     // Add a space between words
+    	    }
+
+    	    // Remove the trailing space and return the result
+    	    return capitalizedName.toString().trim();
+    	}
+
+     
+      public void saveUser(UserDto userDto) { 
+      User user = new User();
+      
+      String firstName = capitalizeName(userDto.getFirstName().trim());
+      String lastName = capitalizeName(userDto.getLastName());
+      
+      user.setUser_id(firstName + " " + lastName);
+      user.setUser_name(firstName + " " + lastName);
+   	  user.setMobile_no(userDto.getPhone());
+   	  user.setStcode(userDto.getState());
+   	  user.setDcode(userDto.getDistrict());
+   	  user.setBcode(userDto.getBlock());
+   	  user.setUser_type("user");
+   	  user.setEmail(userDto.getEmail()); 
+   	  user.setAddress(userDto.getAddress());
+   	  user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+   	  user.setSecurity_id(userDto.getSecurityques());
+   	  user.setSecurity_answer(userDto.getSecurity_answer().toUpperCase());
+   	  user.setStatus("active"); 
+   	  userRepository.save(user); }
 	 
 
     @Override
@@ -215,7 +246,7 @@ public class UserServiceImpl implements UserService{
 	        userRepository.save(user);
 
 	        // Send OTP to user's email
-	        sendOtpToEmail(user.getEmail(), otp);
+			/* sendOtpToEmail(user.getEmail(), otp); */
 	    }
 	}
 
@@ -227,19 +258,35 @@ public class UserServiceImpl implements UserService{
 		return generatedOtp;
 	}
 
-	
-	private void sendOtpToEmail(String email, String otp) {
-	    SimpleMailMessage message = new SimpleMailMessage();
-	    message.setTo(email);
-	    message.setSubject("One Time Password");
-
-	    // Update the message format
-	    String emailContent = String.format(
-	        "Dear User,\n\n%s is the One Time Password for your login which is valid for only 5 minutes. " +
-	        "Please don't share it with anyone for security reasons.\n\nBest Regards,\nDoLR, Ministry of Rural Development"
-	    , otp);
-
-	    message.setText(emailContent);
-	    javaMailSender.send(message); 
+	@Override
+	public boolean verifyUserDetails(String email, Integer securityQuestion, String security_answer) {
+		boolean userverify = userRepository.checkUserDtl(email, securityQuestion, security_answer.toUpperCase());
+	    	
+	     if(userverify)
+	     {
+	    	 return true;
+	     }
+	     return false;
 	}
+ 
+	@Override
+	@Transactional
+	@Modifying
+	public boolean updatePassword(String email, String newPassword) {
+		int updatedRows = userRepository.updateUserPassword(email, passwordEncoder.encode(newPassword));
+        return updatedRows > 0;
+	}
+	/*
+	 * private void sendOtpToEmail(String email, String otp) { SimpleMailMessage
+	 * message = new SimpleMailMessage(); message.setTo(email);
+	 * message.setSubject("One Time Password");
+	 * 
+	 * // Update the message format String emailContent = String.format(
+	 * "Dear User,\n\n%s is the One Time Password for your login which is valid for only 5 minutes. "
+	 * +
+	 * "Please don't share it with anyone for security reasons.\n\nBest Regards,\nDoLR, Ministry of Rural Development"
+	 * , otp);
+	 * 
+	 * message.setText(emailContent); javaMailSender.send(message); }
+	 */
 }

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -50,7 +49,7 @@
             font-size: 16px;
             color: #1a0000;
             margin-bottom: 10px;
-			background-color: white;
+            background-color: white;
         }
 
         #questionText {
@@ -82,35 +81,34 @@
             background-color: #218838;
             border-color: #218838;
         }
-		
-		.btn-secondary:hover {
-			background-color: #0056b3;
-			            border-color: #0056b3;
-		      }
+        
+        .btn-secondary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
 
         /* Navbar Styling */
         nav {
             margin-bottom: 20px;
         }
-		.btn-skip {
-		    background-color: #17a589; /* Teal color */
-		    color: white;
-		    border: none;
-		    min-width: 100px;
-		}
 
-		.btn-skip:hover {
-		    background-color: #17a589; /* Darker teal */
-		    color: white;
-		    border: none;
-		}
+        .btn-skip {
+            background-color: #17a589; /* Teal color */
+            color: white;
+            border: none;
+            min-width: 100px;
+        }
 
-
+        .btn-skip:hover {
+            background-color: #17a589; /* Darker teal */
+            color: white;
+            border: none;
+        }
     </style>
 </head>
 <body>
     <!-- Navbar Section -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <span class="navbar-text text-white">
                 Welcome, <b th:text="${userId}"></b>
@@ -121,7 +119,7 @@
                 </li>
             </ul>
         </div>
-    </nav>
+    </nav>-->
 
     <!-- Main Container for Quiz -->
     <div class="container">
@@ -145,235 +143,274 @@
                 <div class="mb-3">
                     <!-- Instruction Label with Navy Blue Background -->
                     <label class="form-label instruction-label">
-<!--                        <b>Instructions:</b> Choose the correct option for the following questions:-->
-					<b>Instructions: </b>Test your knowledge and obtain a Certificate of Completion,by answering the questions given below. Choose 1 response only. 
+                        <b>Instructions: </b>Test your knowledge and obtain a Certificate of Completion, by answering the questions given below. Choose 1 response only. 
                     </label>
+                    <div id="message-container"></div>
                     <p id="questionCounter" style="font-weight: bold;"></p>
                     <p id="questionText"></p>
                     <p id="questionMark" style="font-weight: bold; text-align: right;"></p>
                 </div>
                 <div class="mb-3" id="options"></div>
-				<div class="d-flex justify-content-end gap-2">
-				    <button type="button" id="prevButton" class="btn btn-secondary" disabled>Prev</button>
-				    <button type="button" id="skipButton" class="btn btn-skip">Skip</button>
-				    <button type="button" id="nextButton" class="btn btn-primary">Next</button>
-				    <button type="submit" id="submitButton" class="btn btn-success" style="display: none;">Final Submit</button>
-				</div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" id="prevButton" class="btn btn-secondary" disabled>Prev</button>
+                    <button type="button" id="skipButton" class="btn btn-skip">Skip</button>
+                    <button type="button" id="nextButton" class="btn btn-primary">Next</button>
+                    <button type="submit" id="submitButton" class="btn btn-success" style="display: none;">Final Submit</button>
+                </div>
             </div>
         </form>
     </div>
 
     <!-- JavaScript -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const timerDisplay = document.getElementById('timerDisplay');
+        const courseDetails = document.getElementById('courseDetails');
+        const courseDescription = document.getElementById('courseDescription');
+        const questionForm = document.getElementById('questionForm');
+        const questionCounter = document.getElementById('questionCounter');
+        const questionText = document.getElementById('questionText');
+        const questionMark = document.getElementById('questionMark');
+        const optionsContainer = document.getElementById('options');
+        const prevButton = document.getElementById('prevButton');
+        const skipButton = document.getElementById('skipButton');
+        const nextButton = document.getElementById('nextButton');
+        const submitButton = document.getElementById('submitButton');
+        const currentDateInput = document.getElementById('currentDate');
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString('en-GB'); // 'en-GB' uses dd/mm/yyyy format
+        currentDateInput.textContent = formattedDate;
+
+        let currentQuestionIndex = 0;
+        let allQuestions = [];
+        let selectedAnswers = {}; // To store user answers
+        let examTimer;
+
+        const trainingId = '[[${trainingId}]]';
+        const userRegId= '[[${userRegId}]]';
+
+        // Fetch course and exam details
+        fetch(`/getTesstt?trainingId=${trainingId}`)
+          .then(response => response.json())
+          .then(data => {
+            courseDetails.style.display = 'block';
+            courseDescription.textContent = data.cdesc;
+            document.getElementById('examDuration').textContent = data.durexam;
+            startExamTimer(data.durexam); // Start timer
+            fetchQuestions(trainingId);
+          });
+
+        // Start exam timer
+        function startExamTimer(durationMinutes) {
+          let remainingTime = durationMinutes * 60;
+          let fiveMinuteWarningShown = false;
+
+          updateTimerDisplay(remainingTime);
+
+          examTimer = setInterval(() => {
+            remainingTime--;
+            updateTimerDisplay(remainingTime);
+
+            if (remainingTime === 300 && !fiveMinuteWarningShown) {
+              alert('You have 5 minutes remaining!');
+              fiveMinuteWarningShown = true;
+            }
+
+            if (remainingTime <= 0) {
+              clearInterval(examTimer);
+              saveTestAutomatically();
+            }
+          }, 1000);
+        }
+
+        function updateTimerDisplay(remainingTime) {
+          const minutes = Math.floor(remainingTime / 60);
+          const seconds = remainingTime % 60;
+          timerDisplay.textContent = `Time Remaining: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+        }
+
+        // Fetch questions
+        function fetchQuestions(trainingId) {
+          fetch(`/getquestions?trainingId=${trainingId}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data) {
+                allQuestions = shuffleArray(data); // Shuffle questions
+                displayQuestion();
+              }
+            });
+        }
+    
+        function displayQuestion() {
+          if (allQuestions.length > 0) {
+            questionForm.style.display = 'block';
+            const question = allQuestions[currentQuestionIndex];
+
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${allQuestions.length}`;
+            questionText.textContent = question.questionDescription;
+            questionMark.textContent = `Mark: ${question.questionMarks}`;
+
+            // Render options
+            optionsContainer.innerHTML = `
+              <div>
+                <input type="radio" name="option" value="${question.option1}" id="option1">
+                <label for="option1">A. ${question.option1}</label>
+              </div>
+              <div>
+                <input type="radio" name="option" value="${question.option2}" id="option2">
+                <label for="option2">B. ${question.option2}</label>
+              </div>
+              <div>
+                <input type="radio" name="option" value="${question.option3}" id="option3">
+                <label for="option3">C. ${question.option3}</label>
+              </div>
+              <div>
+                <input type="radio" name="option" value="${question.option4}" id="option4">
+                <label for="option4">D. ${question.option4}</label>
+              </div>
+            `;
+
+            // Restore previously selected answer
+            if (selectedAnswers[currentQuestionIndex]) {
+              document.querySelector(`input[name="option"][value="${selectedAnswers[currentQuestionIndex]}"]`).checked = true;
+            }
+
+            prevButton.disabled = currentQuestionIndex === 0;
+            nextButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
+
+            // Show submit button only on the last question and if at least one question is attempted
+            const hasAttemptedAtLeastOne = Object.keys(selectedAnswers).length > 0;
+            submitButton.style.display =
+              currentQuestionIndex === allQuestions.length - 1 && hasAttemptedAtLeastOne ? 'inline-block' : 'none';
+              skipButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
+          }
+        }
+
+        // Shuffle array
+        function shuffleArray(array) {
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+          return array;
+        }
+
+        nextButton.addEventListener('click', () => {
+          const selectedOption = document.querySelector('input[name="option"]:checked');
+         if (!selectedOption) {
+		  	        // Create a new span element for the message
+		  	        const messageSpan = document.createElement('span');
+		  	        messageSpan.textContent = '*Please select an answer before proceeding to the next question*';
+		  	        messageSpan.style.color = 'red';  // You can style it as needed
+
+		  	        // Find the message container and append the span message
+		  	        const messageContainer = document.getElementById('message-container');
+		  	        messageContainer.innerHTML = ''; // Clear any previous messages
+		  	        messageContainer.appendChild(messageSpan);
+
+		  	        return; // Prevent navigating to the next question
+		  	    } else{
+		  			const messageContainer = document.getElementById('message-container');
+		  			messageContainer.innerHTML = ''; 
+		  		}
+          saveCurrentAnswer();
+          if (currentQuestionIndex < allQuestions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+          }
+        });
+
+        prevButton.addEventListener('click', () => {
+          saveCurrentAnswer();
+          if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+          }
+        });
+
+        skipButton.addEventListener('click', () => {
+          if (currentQuestionIndex < allQuestions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+          }
+        });
+
+        submitButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          saveCurrentAnswer();
+          submitTest();
+        });
+
+        // Save current answer
+        function saveCurrentAnswer() {
+          const selectedOption = document.querySelector('input[name="option"]:checked');
+          if (selectedOption) {
+            selectedAnswers[currentQuestionIndex] = selectedOption.value;
+          }
+        }
+
+        // Submit test
+        function submitTest() {
+          const answers = Object.keys(selectedAnswers).map(index => ({
+            questionId: allQuestions[index].questionId,
+            userAnswer: selectedAnswers[index]
+          }));
+
+          fetch(`/submitTest?trainingId=${trainingId}&regid=${userRegId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(answers)
+          })
+            .then(response => {
+              if (!response.ok) {
+                return;
+              }
+              viewCertificate(); // After submitting, trigger viewCertificate function
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        }
+
+        // Auto-submit test when time is up
+        function saveTestAutomatically() {
+          saveCurrentAnswer();
+          submitTest();
+        }
+
+        // Convert the GET request to POST request for submitting the certificate
+        function viewCertificate() {
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '/viewCertificate';
+
+          // Append the necessary parameters as hidden inputs
+          const trainingIdInput = document.createElement('input');
+          trainingIdInput.type = 'hidden';
+          trainingIdInput.name = 'trainingId';
+          trainingIdInput.value = trainingId;
+
+          const regIdInput = document.createElement('input');
+          regIdInput.type = 'hidden';
+          regIdInput.name = 'regid';
+          regIdInput.value = userRegId;
+
+          form.appendChild(trainingIdInput);
+          form.appendChild(regIdInput);
+
+          // Append the form to the document body and submit it
+          document.body.appendChild(form);
+          form.submit();
+        }
+      });
+    </script>
 	<script>
-	  document.addEventListener('DOMContentLoaded', () => {
-	    const timerDisplay = document.getElementById('timerDisplay');
-	    const courseDetails = document.getElementById('courseDetails');
-	    const courseDescription = document.getElementById('courseDescription');
-	    const questionForm = document.getElementById('questionForm');
-	    const questionCounter = document.getElementById('questionCounter');
-	    const questionText = document.getElementById('questionText');
-	    const questionMark = document.getElementById('questionMark');
-	    const optionsContainer = document.getElementById('options');
-	    const prevButton = document.getElementById('prevButton');
-	    const skipButton = document.getElementById('skipButton');
-	    const nextButton = document.getElementById('nextButton');
-	    const submitButton = document.getElementById('submitButton');
-	    const currentDateInput = document.getElementById('currentDate');
+			         history.pushState(null, null, location.href);
+			            window.onpopstate = function () {
+			                history.go(1);
+			            };
 
-	    const currentDate = new Date();
-	    const formattedDate = currentDate.toLocaleDateString('en-GB'); // 'en-GB' uses dd/mm/yyyy format
-	    currentDateInput.textContent = formattedDate;
-
-	    let currentQuestionIndex = 0;
-	    let allQuestions = [];
-	    let selectedAnswers = {}; // To store user answers
-	    let examTimer;
-
-	    const trainingId = '[[${trainingId}]]';
-
-	    // Fetch course and exam details
-	    fetch(`/getTesstt?trainingId=${trainingId}`)
-	      .then(response => response.json())
-	      .then(data => {
-	        courseDetails.style.display = 'block';
-	        courseDescription.textContent = data.cdesc;
-	        document.getElementById('examDuration').textContent = data.durexam;
-	        startExamTimer(data.durexam); // Start timer
-	        fetchQuestions(trainingId);
-	      });
-
-	    // Start exam timer
-	    function startExamTimer(durationMinutes) {
-	      let remainingTime = durationMinutes * 60;
-	      let fiveMinuteWarningShown = false;
-
-	      updateTimerDisplay(remainingTime);
-
-	      examTimer = setInterval(() => {
-	        remainingTime--;
-	        updateTimerDisplay(remainingTime);
-
-	        if (remainingTime === 300 && !fiveMinuteWarningShown) {
-	          alert('You have 5 minutes remaining!');
-	          fiveMinuteWarningShown = true;
-	        }
-
-	        if (remainingTime <= 0) {
-	          clearInterval(examTimer);
-	          saveTestAutomatically();
-	        }
-	      }, 1000);
-	    }
-
-	    function updateTimerDisplay(remainingTime) {
-	      const minutes = Math.floor(remainingTime / 60);
-	      const seconds = remainingTime % 60;
-	      timerDisplay.textContent = `Time Remaining: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-	    }
-
-	    // Fetch questions
-	    function fetchQuestions(trainingId) {
-	      fetch(`/getquestions?trainingId=${trainingId}`)
-	        .then(response => response.json())
-	        .then(data => {
-	          if (data) {
-	            allQuestions = shuffleArray(data); // Shuffle questions
-	            displayQuestion();
-	          }
-	        });
-	    }
-	
-		function displayQuestion() {
-		  if (allQuestions.length > 0) {
-		    questionForm.style.display = 'block';
-		    const question = allQuestions[currentQuestionIndex];
-
-		    questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${allQuestions.length}`;
-		    questionText.textContent = question.questionDescription;
-		    questionMark.textContent = `Mark: ${question.questionMarks}`;
-
-		    // Render options
-		    optionsContainer.innerHTML = `
-		      <div>
-		        <input type="radio" name="option" value="${question.option1}" id="option1">
-		        <label for="option1">A. ${question.option1}</label>
-		      </div>
-		      <div>
-		        <input type="radio" name="option" value="${question.option2}" id="option2">
-		        <label for="option2">B. ${question.option2}</label>
-		      </div>
-		      <div>
-		        <input type="radio" name="option" value="${question.option3}" id="option3">
-		        <label for="option3">C. ${question.option3}</label>
-		      </div>
-		      <div>
-		        <input type="radio" name="option" value="${question.option4}" id="option4">
-		        <label for="option4">D. ${question.option4}</label>
-		      </div>
-		    `;
-
-		    // Restore previously selected answer
-		    if (selectedAnswers[currentQuestionIndex]) {
-		      document.querySelector(`input[name="option"][value="${selectedAnswers[currentQuestionIndex]}"]`).checked = true;
-		    }
-
-		    prevButton.disabled = currentQuestionIndex === 0;
-		    nextButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
-
-		    // Show submit button only on the last question and if at least one question is attempted
-		    const hasAttemptedAtLeastOne = Object.keys(selectedAnswers).length > 0;
-		    submitButton.style.display =
-		      currentQuestionIndex === allQuestions.length - 1 && hasAttemptedAtLeastOne ? 'inline-block' : 'none';
-			  skipButton.style.display = currentQuestionIndex < allQuestions.length - 1 ? 'inline-block' : 'none';
-		  }
-		}
-
-	  	    // Shuffle array
-	    function shuffleArray(array) {
-	      for (let i = array.length - 1; i > 0; i--) {
-	        const j = Math.floor(Math.random() * (i + 1));
-	        [array[i], array[j]] = [array[j], array[i]];
-	      }
-	      return array;
-	    }
-
-	   
-
-	   nextButton.addEventListener('click', () => {
-	     const selectedOption = document.querySelector('input[name="option"]:checked');
-	     if (!selectedOption) {
-	       //alert('Please select an answer before proceeding to the next question.');
-	       return; // Prevent navigating to the next question
-	     }
-	     saveCurrentAnswer();
-	     if (currentQuestionIndex < allQuestions.length - 1) {
-	       currentQuestionIndex++;
-	       displayQuestion();
-	     }
-	   });
-
-	    prevButton.addEventListener('click', () => {
-	      saveCurrentAnswer();
-	      if (currentQuestionIndex > 0) {
-	        currentQuestionIndex--;
-	        displayQuestion();
-	      }
-	    });
-
-	    skipButton.addEventListener('click', () => {
-	      if (currentQuestionIndex < allQuestions.length - 1) {
-	        currentQuestionIndex++;
-	        displayQuestion();
-	      }
-	    });
-
-	    submitButton.addEventListener('click', (e) => {
-		  e.preventDefault();
-	      saveCurrentAnswer();
-	      submitTest();
-	    });
-
-	    // Save current answer
-	    function saveCurrentAnswer() {
-	      const selectedOption = document.querySelector('input[name="option"]:checked');
-	      if (selectedOption) {
-	        selectedAnswers[currentQuestionIndex] = selectedOption.value;
-	      }
-	    }
-
-	    // Submit test
-	    function submitTest() {
-	      const answers = Object.keys(selectedAnswers).map(index => ({
-	        questionId: allQuestions[index].questionId,
-	        userAnswer: selectedAnswers[index]
-	      }));
-
-	      fetch(`/submitTest?trainingId=${trainingId}`, {
-	        method: 'POST',
-	        headers: { 'Content-Type': 'application/json' },
-	        body: JSON.stringify(answers)
-	      })
-	        .then(response => {
-	          if (!response.ok) {
-	            //throw new Error('Failed to submit test');
-	          }
-	          return response.text();
-	        })
-	        .then(() => {
-	          window.location.href = `/viewCertificate?trainingId=${trainingId}`;
-	        })
-	        .catch(error => {
-	          console.error('Error:', error);
-	        });
-	    }
-
-	    // Auto-submit test when time is up
-	    function saveTestAutomatically() {
-	      saveCurrentAnswer();
-	      submitTest();
-	    }
-	  });
-	</script>
-
+			</script>
 </body>
 </html>

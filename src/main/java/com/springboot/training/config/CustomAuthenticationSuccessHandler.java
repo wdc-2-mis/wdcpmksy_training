@@ -1,18 +1,26 @@
 package com.springboot.training.config;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import com.springboot.training.entity.User;
+import com.springboot.training.repository.UserRepository;
 import com.springboot.training.service.UserService;
 
 import java.io.IOException;
 
 @Component
 public class CustomAuthenticationSuccessHandler implements org.springframework.security.web.authentication.AuthenticationSuccessHandler {
+    @Autowired
+    UserRepository repo;
+
     private final UserService userService;
 
     public CustomAuthenticationSuccessHandler(UserService userService) {
@@ -20,26 +28,45 @@ public class CustomAuthenticationSuccessHandler implements org.springframework.s
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String email = authentication.getName();
         User user = userService.findUserByEmail(email);
+        Integer regid = repo.findregid(email);
+
+        System.out.println("hello regid:" + regid);
 
         if (user != null) {
-            request.getSession().setAttribute("regid", user.getUser_reg_id());
-            request.getSession().setAttribute("userId", user.getUser_id());
-            request.getSession().setAttribute("userType", user.getUser_type());
-            // Verify that session attributes are set
-            System.out.println("Session attributes set: " + request.getSession().getAttribute("userId"));
-        }
-
-        System.out.println("User authenticated: " + email);
-        System.out.println("User role: " + authentication.getAuthorities());
-
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            response.sendRedirect("/getCourseDetail");
-        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
-            response.sendRedirect("/userCourse");
+            HttpSession session = request.getSession(true); // Create session after successful login
+            session.setAttribute("email", email);
+            System.out.println("Session ID after login: " + session.getId());
+            // Redirect to a page where we can trigger a POST request
+            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                response.setContentType("text/html");
+                response.getWriter().write(
+                        "<html><body>" +
+                                "<form id='redirectForm' method='POST' action='/getCourseDetail'>" +
+                                "<input type='hidden' name='regid' value='" + regid + "' />" +
+                                "</form>" +
+                                "<script type='text/javascript'>" +
+                                "document.getElementById('redirectForm').submit();" +
+                                "</script>" +
+                                "</body></html>"
+                );
+                
+            } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+                // Create a small HTML form with POST method to submit the `regid`
+                response.setContentType("text/html");
+                response.getWriter().write(
+                        "<html><body>" +
+                                "<form id='redirectForm' method='POST' action='/userCourse'>" +
+                                "<input type='hidden' name='regid' value='" + regid + "' />" +
+                                "</form>" +
+                                "<script type='text/javascript'>" +
+                                "document.getElementById('redirectForm').submit();" +
+                                "</script>" +
+                                "</body></html>"
+                );
+            }
         } else {
             response.sendRedirect("/login?error");
         }

@@ -31,6 +31,7 @@ import com.springboot.training.repository.LmsMGradeRepository;
 import com.springboot.training.repository.LmsTrainingQuestionRepository;
 import com.springboot.training.repository.LmsUserQuizDetailsRepository;
 import com.springboot.training.repository.UserQuestionAnswerRepository;
+import com.springboot.training.repository.UserRepository;
 import com.springboot.training.service.UserCourseService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,9 +55,12 @@ public class TestController {
 	@Autowired
 	private LmsMGradeRepository lmsMgradeRepo;
 	
-	@GetMapping("/getTest")
-	public String getTest(HttpSession session, @RequestParam("training_id") Integer trainingId, Model model) {
-	    String userId = (String) session.getAttribute("userId");
+	@Autowired
+    UserRepository repo;
+	
+	@PostMapping("/getTest")
+	public String getTest(HttpSession session, @RequestParam("userRegId")Integer regid,  @RequestParam("training_id") Integer trainingId, Model model) {
+	    String userId = repo.findusername(regid);
 	    List<LMSTrainingDetails> courses = new ArrayList<>();
 	    LMSTrainingDetails crse = courseDtlRepository.getById(trainingId);
 
@@ -64,6 +68,7 @@ public class TestController {
 	    model.addAttribute("courses", courses);
 	    model.addAttribute("userId", userId);
 	    model.addAttribute("trainingId", trainingId); 
+	    model.addAttribute("userRegId", regid);
 	    return "getTestt";
 	}
 
@@ -120,11 +125,11 @@ public class TestController {
 	public String submitTest(
 	        @RequestBody List<UserAnswerDTO> answers,
 	        @RequestParam Integer trainingId,
-	        HttpSession session) {
+	        @RequestParam("regid")Integer regid) {
 
 	    // Retrieve user details from the session
-	    String userId = (String) session.getAttribute("userId");
-	    Integer userRegId = Integer.parseInt(session.getAttribute("regid").toString());
+	    String userId = repo.findusername(regid);
+	    Integer userRegId = regid;
 
 	    // Fetch all questions for the given training ID
 	    List<LMSMGrade> gradeList = lmsMgradeRepo.findAll();
@@ -185,9 +190,17 @@ public class TestController {
 	    quizDetails.setUpdatedBy(userId);
 	    quizDetails.setUpdatedDate(new Date());
 	    quizDetails.setTotalMarks(totalQuestions*marks); // Total marks for all questions
-	    gradeList.stream().filter(lms-> lms.getMinPer() <= percentage && lms.getMaxPer() >= percentage).forEach(s->{
-	    	quizDetails.setGrade(s);
-	    });
+//	    gradeList.stream()
+//	    .filter(grade -> ((double) grade.getMinPer() <= percentage) && ((double) grade.getMaxPer() >= percentage))
+//	    .forEach(grade -> {
+//	        quizDetails.setGrade(grade);
+//	    });
+	    for(LMSMGrade grade : gradeList) {
+	    	if(((double) grade.getMinPer() <= percentage) && ((double) grade.getMaxPer() >= percentage)){
+	    		quizDetails.setGrade(grade);
+	    	}
+	    }
+
 	    userQuizDetailsRepository.save(quizDetails);
 
 	    System.out.println("Total Questions: " + totalQuestions);

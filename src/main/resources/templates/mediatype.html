@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WDCPMKSY media</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+          rel="stylesheet" 
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+          crossorigin="anonymous">
+		  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		          crossorigin="anonymous"></script>
+
+	
+		<script>
+		    function openImage(src) {
+		        document.getElementById("modalImage").src = src;
+		        var modal = new bootstrap.Modal(document.getElementById('imageModal'));
+		        modal.show();
+		    }
+		</script>
+
+    <style type="text/css">
+		html, body {
+		            height: 100%;
+		            margin: 0;
+		            display: flex;
+		            flex-direction: column;
+		        }
+
+		        .navbar {
+		            padding: 10px 20px;
+		        }
+
+		        .navbar-brand img {
+		            height: 100%;
+		            width: auto;
+		        }
+
+		        .navbar-brand {
+		            display: flex;
+		            align-items: center;
+		        }
+
+		        .navbar-brand .d-flex {
+		            flex-direction: column;
+		        }
+
+		        .navbar-brand span {
+		            font-size: 14px;
+		        }
+
+		        .navbar .text-left {
+		            text-align: left;
+		        }
+
+		        .content {
+		            flex: 1;
+		            display: flex;
+		            justify-content: center;
+		            align-items: center;
+		            background: url('images/login_image.png') no-repeat center center fixed;
+		            background-size: cover;
+		            background-position: center center;
+		        }
+
+		        .form-group.mb-3 {
+		            margin-bottom: 20px;
+		        }
+
+		        .form-group span {
+		            display: block;
+		            margin-top: 10px;
+		            text-align: center;
+		        }
+
+		        .card {
+		            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity */
+		            border: none;
+		            color: black;
+		            min-height: 400px;
+		            width: 100%; /* Full width for smaller screens */
+		            max-width: 600px; /* Increase the maximum width */
+		            margin: 0 auto; /* Center the card horizontally */
+		            padding: 20px; /* Optional: Add padding for better spacing */
+		        }
+
+		        header {
+		            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+		        }
+
+		        footer {
+		            background-color: rgba(214, 245, 245, 0.7); /* Light cyan with 70% opacity, same as card */
+		            padding: 20px;
+		            text-align: center;
+		            font-size: 14px;
+		            color: #6c757d;
+		            position: relative;
+		            bottom: 0;
+		            width: 100%;
+		        }
+				
+
+				.main-menu {
+				    list-style: none;
+				    padding: 0;
+				    margin: 0;
+				}
+
+				.main-menu > li {
+				    position: relative;
+				    display: inline-block;
+				}
+
+				/* Hide submenu by default */
+				.sub-menu {
+				    display: none;
+				    position: absolute;
+				    right: 0;
+				    background: #fff;
+				    min-width: 150px;
+				    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+				    padding: 0;
+				}
+
+				/* Show submenu on hover */
+				.main-menu li:hover > .sub-menu {
+				    display: block;
+				}
+
+				.sub-menu li {
+				    list-style: none;
+				}
+
+				.sub-menu li a {
+				    display: block;
+				    padding: 10px;
+				    text-decoration: none;
+				    color: #000;
+				}
+
+				.sub-menu li a:hover {
+				    background: #f2f2f2;
+				}
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        #searchbar {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        
+        .user-row {
+            display: table-row;
+        }
+		
+		
+	   h2 {
+	       text-align: center;
+	     }
+		
+		 .container1 {
+		     max-width: 1500px;   /* controls left & right margin */
+		     margin: 0 auto;     /* center horizontally */
+		     padding: 20px;      /* inner spacing */
+		 }
+
+		 .gallery {
+		     display: grid;
+			 grid-template-columns: repeat(4, 1fr); /* 5 per row */
+			 gap: 20px;
+		 }
+
+		 @media (max-width: 992px) {
+		     .gallery {
+		         grid-template-columns: repeat(3, 1fr);
+		     }
+		 }
+
+		 /* Mobile */
+		 @media (max-width: 576px) {
+		     .gallery {
+		         grid-template-columns: repeat(2, 1fr);
+		     }
+		 }
+		 
+		 .gallery img {
+		     width: 100%;
+		     object-fit: cover;
+		     border-radius: 8px;
+		 }
+		 
+		.video-grid {
+		 	 display: grid;
+		 	 grid-template-columns: repeat(1, 1fr);
+		 	 gap: 20px;
+		}
+
+		iframe {
+		 	width: 100%;
+		 	height: 250px;
+		}
+		 
+		/* Image frame styling */
+		.image-frame {
+		    background: #ffffff;
+		    padding: 10px;
+		    border-radius: 12px;
+		    border: 3px solid #8a8a00;
+		    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+		    overflow: hidden;
+		}
+
+		.image-frame img {
+		    width: 100%;
+		    height: 200px;              /* fixed frame height */
+		    object-fit: contain;        /* SHOW FULL IMAGE */
+		    background: #f8f8f8;        /* fills empty space */
+		    cursor: pointer;
+		}
+
+
+		/* Hover effect */
+		.image-frame:hover {
+		    transform: translateY(-6px);
+		    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+		}
+
+		.image-frame:hover img {
+		    transform: scale(1.08);
+		}
+
+.navbar-nav .nav-link {
+         padding: 8px 15px;
+         transition: color 0.3s ease;
+       }
+
+       .navbar-nav .nav-link:hover {
+        color: #0056b3; /* darker blue on hover */
+        }
+.dropdown-menu {
+         min-width: 140px;
+         text-align: center;
+        }
+.navbar + .navbar {
+  margin-top: 5px;   /* small gap between stacked navbars */
+}
+		
+		.navbar-dark .nav-link {
+  color: #fff !important;
+  padding: 8px 15px;
+}
+.navbar-dark .nav-link:hover {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 5px;
+}
+    </style> 
+	
+	<title>Image Gallery</title>
+	  
+</head>
+<!-- Image Preview Modal -->
+
+
+<body>
+	<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <!-- Logo + Department -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/ashoka-stambh.jpg" alt="Ashoka Stambh" class="me-2">
+      <div class="d-flex flex-column">
+        <span class="fw-bold">भूमि संसाधन विभाग</span>
+        <span>DEPARTMENT OF LAND RESOURCES</span>
+        <span>MINISTRY OF RURAL DEVELOPMENT</span>
+      </div>
+    </a>
+    <!-- LMS Title -->
+    <div class="mx-auto">
+      <span class="h4">Learning Management System - WDCPMKSY2.0</span>
+    </div>
+    
+   <div class="text-right">
+            <select id="languageSwitcher" class="form-select form-select-sm">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+        </div>
+    
+  </div>
+</nav>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <!-- Events Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Events
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
+            <li><a class="dropdown-item" th:href="@{/pictures}">📸 Pictures</a></li>
+            <li><a class="dropdown-item" th:href="@{/videos}">🎥 Videos</a></li>
+          </ul>
+        </li>
+
+        <!-- Report -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/getStateWiseNoofUserDetail}">📊 Report</a>
+        </li>
+
+       <li class="nav-item">
+          <a class="nav-link" th:href="@{/login}">🔑 Login</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/register}">📝 Register</a>
+        </li>    
+      </ul>
+    </div>
+  </div>
+</nav>
+	
+	
+
+<!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+         Welcome User 
+        <span class="navbar-text text-white">
+            <a class="nav-link" th:href="@{/login}">Home</a>
+        </span>
+				
+	</div>
+</nav>		-->
+
+<!-- Image Preview Modal -->
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Image Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <!-- Body (Scrollable) -->
+            <div class="modal-body text-center" style="overflow:auto;">
+                <img id="modalImage"
+                     src=""
+                     alt="Preview">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<h2><b>Media Coverage</b></h2>
+<br/> <br/>
+<div class="container1">
+    <div class="gallery">
+        <div class="image-frame" th:each="img : ${images}">
+            <img th:src="@{/img/{name}(name=${img})}"
+                 onclick="openImage(this.src)"
+                 loading="lazy"
+                 alt="Media Coverage">
+        </div>
+    </div>
+</div>
+
+<br/> <br/>
+
+<nav aria-label="Page navigation" class="mt-4">
+	    <ul class="pagination justify-content-center">
+
+	        <!-- Previous -->
+	        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+	            <a class="page-link"
+	               th:href="@{/getMediaTypeDetails(page=${currentPage - 1})}">
+	                Previous
+	            </a>
+	        </li>
+
+	        <!-- Page Numbers -->
+	        <li class="page-item"
+	            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+	            th:classappend="${i == currentPage} ? 'active'">
+	            <a class="page-link"
+	               th:href="@{/getMediaTypeDetails(page=${i})}"
+	               th:text="${i + 1}">
+	            </a>
+	        </li>
+
+	        <!-- Next -->
+	        <li class="page-item"
+	            th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+	            <a class="page-link"
+	               th:href="@{/getMediaTypeDetails(page=${currentPage + 1})}">
+	                Next
+	            </a>
+	        </li>
+
+	    </ul>
+	</nav>
+<footer>
+    <p>Content Owned by Department of Land Resources, Ministry of Rural Development</p>
+    <p>Developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-MrcW6ZMFy78wYIqqTu64t8MO9sAu8bUAnrTwQeZ4iOz2K6c4e51tFKNhKTwtK5gx" 
+        crossorigin="anonymous"></script>
+        
+       
+</body>
+
+</html>
